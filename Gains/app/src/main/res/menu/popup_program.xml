@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item
+        android:id="@+id/setDefault"
+        android:orderInCategory="100"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Set Default"/>
+    
+    <item
+        android:id="@+id/edit"
+         android:orderInCategory="200"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="Edit"/>
+    
+    
+    <item
+        android:id="@+id/delete"
+        android:orderInCategory="300"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Delete"/>
+    
+</menu>

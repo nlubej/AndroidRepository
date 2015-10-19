@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tutorialFlipper"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+   
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent" 
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white" >
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:scaleX="1.1"
+                    android:scaleY="1.1"
+                    android:text="Before You Start"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/custom_black" />
+
+                <View
+                    android:id="@+id/deviderr"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/textView2"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/menu" />
+
+                <View
+                    android:id="@+id/seperator2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:layout_alignBottom="@+id/imageWeight"
+                    android:layout_alignParentLeft="true"
+                    android:background="@color/lightest_gray" />
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/radioButton1"
+                    android:layout_below="@+id/radioButton1"
+                    android:text="Imperial" />
+
+                <RadioButton
+                    android:id="@+id/radioButton1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@+id/imageWeight"
+                    android:layout_below="@+id/seperator2"
+                    android:layout_marginTop="5dp"
+                    android:text="Metric" />
+
+                <View
+                    android:id="@+id/View01"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/textHeight"
+                    android:background="@color/lightest_gray" />
+
+                <TextView
+                    android:id="@+id/textHeight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/radioButton2"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="35dp"
+                    android:text="WEIGHT INCREMENT"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/menu"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/weightIncrementSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/radioButton2"
+                    android:layout_alignRight="@+id/TextView03"
+                    android:layout_below="@+id/View01"
+                    android:entries="@array/weightIncrement" />
+
+                <TextView
+                    android:id="@+id/TextView03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/radioButton2"
+                    android:layout_alignBottom="@+id/radioButton2"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@+id/radioButton2"
+                    android:text="(LBS)"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/radioButton1"
+                    android:layout_alignBottom="@+id/radioButton1"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@+id/radioButton1"
+                    android:text="(KG)"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/imageWeight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/textHeight"
+                    android:layout_below="@+id/deviderr"
+                    android:layout_marginTop="34dp"
+                    android:text="UNIT SYSTEM"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/menu"
+                    android:textStyle="bold" />
+                
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+    
+    
+    
+     <ScrollView
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="178dp" >
+
+          <RelativeLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:background="@color/white" >
+		
+		    <TextView
+		        android:id="@+id/textView2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_alignParentRight="true"
+		        android:layout_alignParentTop="true"
+		        android:layout_marginLeft="30dp"
+		        android:layout_marginTop="10dp"
+		        android:gravity="center_vertical"
+		        android:scaleX="1.1"
+		        android:scaleY="1.1"
+		        android:text="Info"
+		        android:textAppearance="?android:attr/textAppearanceLarge"
+		        android:textColor="@color/custom_black" />
+		
+		    <View
+		        android:id="@+id/deviderr"
+		        android:layout_width="fill_parent"
+		        android:layout_height="2dp"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/textView2"
+		        android:layout_marginTop="5dp"
+		        android:background="@color/menu" />
+		
+		    <TextView
+		        android:id="@+id/textDate"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_alignTop="@+id/timage1"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginTop="-5dp"
+		        android:layout_toRightOf="@+id/timage1"
+		        android:text="In Log tab, you can view graph of a particular strength exercise"
+		        android:textAllCaps="true"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        android:textColor="@color/custom_black"
+		        android:textStyle="bold" />
+		
+		    <ImageView
+		        android:id="@+id/timage1"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/textView2"
+		        android:layout_below="@+id/deviderr"
+		        android:layout_marginTop="25dp"
+		        android:src="@drawable/chart_icon_grey" />
+		
+		    <ImageView
+		        android:id="@+id/ImageView01"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/timage1"
+		        android:layout_below="@+id/textDate"
+		        android:layout_marginTop="32dp"
+		        android:src="@drawable/height_icon" />
+		
+		    <TextView
+		        android:id="@+id/textBMi"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/textDate"
+		        android:layout_alignParentRight="true"
+		        android:layout_alignTop="@+id/ImageView01"
+		        android:text="In My Stats tab, you can set your height by clicking on the icon"
+		        android:textAllCaps="true"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        android:textColor="@color/custom_black"
+		        android:textStyle="bold" />
+		
+		    <TextView
+		        android:id="@+id/TextView02"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/textBMi"
+		        android:layout_alignParentRight="true"
+		        android:layout_alignRight="@+id/timage3"
+		        android:layout_below="@+id/textBMi"
+		        android:layout_marginTop="21dp"
+		        android:layout_toRightOf="@+id/timage3"
+		        android:text="In My Stats tab, you can set your weight by clicking on the icon"
+		        android:textAllCaps="true"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        android:textColor="@color/custom_black"
+		        android:textStyle="bold" />
+		
+		    <TextView
+		        android:id="@+id/TextView03"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/TextView02"
+		        android:layout_alignParentRight="true"
+		        android:layout_alignTop="@+id/ImageView02"
+		        android:layout_marginTop="-5dp"
+		        android:text="(coming soon) in My Stats tab, you can see achievements by clicking on the icon"
+		        android:textAllCaps="true"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        android:textColor="@color/custom_black"
+		        android:textStyle="bold" />
+		
+		    <ImageView
+		        android:id="@+id/timage3"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignRight="@+id/timage1"
+		        android:layout_alignTop="@+id/TextView02"
+		        android:layout_marginTop="5dp"
+		        android:src="@drawable/scale_icon" />
+		
+		    <ImageView
+		        android:id="@+id/ImageView02"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/ImageView01"
+		        android:layout_below="@+id/TextView02"
+		        android:layout_marginTop="35dp"
+		        android:src="@drawable/achievement_icon" />
+
+		    <TextView
+		        android:id="@+id/textView3"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/ImageView02"
+		        android:layout_below="@+id/ImageView02"
+		        android:layout_marginTop="40dp"
+		        android:text="* Default Program is marked in BLUE color"
+		        android:textAllCaps="true"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        android:textColor="@color/menu"
+		        android:textStyle="bold" />
+
+		    <View
+		        android:id="@+id/View01"
+		        android:layout_width="fill_parent"
+		        android:layout_height="20dp"
+		        android:layout_alignParentBottom="true"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/textView3"
+		        android:background="@android:color/transparent" />
+
+		</RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+    
+    
+     
+    </ViewFlipper>

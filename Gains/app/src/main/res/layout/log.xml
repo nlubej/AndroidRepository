@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+     	xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:fillViewport="true"
+	    android:scrollbars="none" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white" >
+
+        <RelativeLayout
+            android:id="@+id/rlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white" >
+
+            <View
+                android:id="@+id/log_space"
+                android:layout_width="fill_parent"
+                android:layout_height="15dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/spinner"
+                android:background="@android:color/transparent" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"/>
+
+            <ListView
+                android:id="@+id/logList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/log_space"
+                android:layout_marginBottom="5dp"
+                android:divider="@android:color/transparent" >
+            </ListView>
+            
+            <TextView
+		        android:id="@+id/warninLog"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/spinner"
+		        android:layout_alignRight="@+id/spinner"
+		        android:layout_below="@+id/spinner"
+		        android:layout_marginLeft="10dp"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
+		        android:textColor="@color/gray"
+		        android:textSize="13sp" />
+
+        </RelativeLayout>
+	</LinearLayout>      
+</ScrollView>

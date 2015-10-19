@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    
+    <item
+        android:id="@+id/add"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_new"
+        android:title="@string/app_name"
+        android:showAsAction="always"/>
+    
+    <item
+        android:id="@+id/edit"
+        android:icon="@drawable/white_arrow"
+        android:orderInCategory="200"
+        android:title=""
+        android:showAsAction="always|withText"/>
+
+
+    
+    
+    
+
+</menu>

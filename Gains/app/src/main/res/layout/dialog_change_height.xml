@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="1" >
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center_vertical"
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:text="Height"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/custom_black" />
+
+                <EditText
+                    android:id="@+id/edit_height"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/deviderr"
+                    android:minEms="10"
+        			android:maxEms="15"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="16dp"
+                    android:inputType="numberSigned" />
+
+                    <View
+                        android:id="@+id/space"
+                        android:layout_width="fill_parent"
+                        android:layout_height="30dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/edit_height"
+                        android:background="@android:color/transparent" />
+
+                    <View
+                        android:id="@+id/deviderr"
+                        android:layout_width="fill_parent"
+                        android:layout_height="2dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView2"
+                        android:layout_marginTop="4dp"
+                        android:background="@color/menu" />
+
+</RelativeLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:apps="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    
+	<com.nlubej.fitnessapp.DragSortListView
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:listSelector="@android:color/transparent"
+	    xmlns:dslv="http://schemas.android.com/apk/res-auto"
+	    android:id="@+id/list"
+	    android:layout_width="fill_parent"
+	    android:divider="@color/themeColor"
+	    android:dividerHeight="1.0dp"
+	    android:layout_margin="8dp"
+	    android:layout_height="fill_parent"
+	    android:padding="8dp"
+	    dslv:drag_enabled="true"
+	    dslv:collapsed_height="1px"
+	    dslv:drag_scroll_start="0.33"
+	    dslv:float_alpha="0.5"
+	    dslv:slide_shuffle_speed="0.3"
+	    dslv:drag_start_mode="onDown"
+	    dslv:drag_handle_id="@id/drag_handle"
+	    dslv:remove_enabled="true"
+	    dslv:remove_mode="clickRemove"
+	    dslv:click_remove_id="@id/click_remove" />
+
+</RelativeLayout>
+   <!--   android:dividerHeight="1px" -->

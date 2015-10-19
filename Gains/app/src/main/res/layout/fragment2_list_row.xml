@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+     android:background="@drawable/custom_shape"
+     android:descendantFocusability="blocksDescendants"     >
+  <!--  -->
+ 
+   <TextView
+       android:id="@+id/show"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentTop="true"
+       android:layout_toLeftOf="@+id/edit_btn"
+       android:background="@drawable/selector"
+       android:focusable="false"
+       android:focusableInTouchMode="false"
+       android:gravity="center_vertical"
+       android:lineSpacingExtra="8dp"
+       android:padding="5dp"
+       android:textAlignment="center"
+       android:textAppearance="?android:attr/textAppearanceLarge"
+       android:textDirection="inherit"
+       android:textIsSelectable="false" />
+
+     <ImageView
+         android:id="@+id/edit_btn"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignBottom="@+id/show"
+         android:layout_alignParentRight="true"
+         android:layout_alignTop="@+id/show"
+         android:background="@drawable/selector"
+         android:clickable="false"
+         android:focusable="false"
+         android:focusableInTouchMode="false"
+         android:src="@drawable/ic_action_overflow"
+         android:textIsSelectable="false" />
+
+</RelativeLayout>
+

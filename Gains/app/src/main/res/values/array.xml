@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+     
+    <string-array name="feebackTypes">
+        <item> Bug </item>
+        <item> Question </item>
+        <item> Opinion </item>
+    </string-array>
+    
+    
+    <string-array name="unitSystem">
+        <item name="metric">Metric</item>
+        <item name="imperial">Imperial</item>
+    </string-array>
+    
+        
+    <string-array name="unitSystemValues">
+        <item name="metric">metric</item>
+        <item name="imperial">imperial</item>
+    </string-array>
+
+    <string-array name="weightIncrement">
+        <item name="0.5">0.5</item>
+        <item name="1">1</item>
+        <item name="2">2</item>
+        <item name="2.5">2.5</item>
+        <item name="5">5</item>
+    </string-array>
+    
+    <string-array name="weightIncrementValues">
+        <item name="0.5">0.5</item>
+        <item name="1">1</item>
+        <item name="2">2</item>
+        <item name="2.5">2.5</item>
+        <item name="5">5</item>
+    </string-array>
+    
+
+    
+    
+     
+</resources>

@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+   
+    <item
+        
+        android:id="@+id/popup_show"
+         android:orderInCategory="100"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="Show Last Workout"
+        android:showAsAction="always"/>
+    
+    
+    <item
+        android:id="@+id/popup_copy"
+         android:orderInCategory="200"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Copy Last Workout"
+        android:showAsAction="always"/>
+    
+</menu>

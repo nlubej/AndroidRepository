@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lighter_gray"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/zacScreenNext2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_selector"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:src="@drawable/ic_action_forward" />
+
+    <ImageView
+        android:id="@+id/zacScreenPrev2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/zacScreenNext2"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/button_selector"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:src="@drawable/ic_action_back" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/zacScreenPrev2"
+        android:layout_alignTop="@+id/zacScreenNext2"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@+id/zacScreenNext2"
+        android:layout_toRightOf="@+id/zacScreenPrev2" />
+
+    <View
+        android:id="@+id/zacSeperator2"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/add_routine_name"
+        android:background="@color/light_gray" />
+
+    <View
+        android:id="@+id/zacView01"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/light_gray" />
+
+    <TextView
+        android:id="@+id/add_routine_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/zacScreenPrev2"
+        android:layout_below="@+id/zacScreenPrev2"
+        android:layout_marginTop="35dp"
+        android:text="SELECT ROUTINE:"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/black"
+        android:textSize="12sp" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/add_routine_name"
+        android:layout_below="@+id/zacSeperator2"
+        android:entries="@array/jazz_artist_names" />
+
+</RelativeLayout>

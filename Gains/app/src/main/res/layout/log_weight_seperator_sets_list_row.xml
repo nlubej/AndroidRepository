@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:descendantFocusability="blocksDescendants" >
+
+    <!--  -->
+
+    <TextView
+        android:id="@+id/workoutHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/selector"
+        android:text="sdhghgf"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/themeColor"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/View01"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_alignBottom="@+id/workoutHeader"
+        android:layout_alignParentLeft="true"
+        android:background="@color/light_gray" />
+
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/View01"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:text="6/8/2014"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/menu"
+        android:textStyle="bold" />
+
+</RelativeLayout>

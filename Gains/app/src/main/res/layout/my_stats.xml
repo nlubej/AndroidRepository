@@ -1,0 +1,122 @@
+<ScrollView
+     	xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:fillViewport="true"
+	    android:scrollbars="none" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white" >
+
+        <RelativeLayout
+            android:id="@+id/rlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white" >
+
+            <ImageView
+                android:id="@+id/imageHeight"
+                android:layout_width="68dp"
+                android:layout_height="102dp"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/selector"
+                android:clickable="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="34dp"
+                android:src="@drawable/height" />
+
+            <ImageView
+                android:id="@+id/imageWeightt"
+                android:layout_width="68dp"
+                android:layout_height="102dp"
+                android:background="@drawable/selector"
+                android:layout_alignLeft="@+id/imageHeight"
+                android:clickable="true"
+                android:layout_below="@+id/imageHeight"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/scale" />
+
+            <TextView
+                android:id="@+id/textDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageWeightt"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="40dp"
+                android:scaleX="1.9"
+                android:scaleY="1.9"
+                android:text="BMI"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/custom_black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textHeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textWeightt"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="30dp"
+                android:text="tgtzu"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/custom_black"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textWeightt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageWeightt"
+                android:layout_alignLeft="@+id/textAchievements"
+                android:layout_marginBottom="30dp"
+                android:text="50"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/custom_black"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textAchievements"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/imageAchievements"
+                android:layout_marginLeft="56dp"
+                android:layout_marginTop="28dp"
+                android:layout_toRightOf="@+id/imageAchievements"
+                android:text="0/0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/custom_black"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textBMi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textAchievements"
+                android:layout_alignTop="@+id/textDate"
+                android:layout_marginTop="-8dp"
+                android:text="223,5"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/custom_black"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imageAchievements"
+                android:layout_width="68dp"
+                android:layout_height="102dp"
+                android:layout_alignLeft="@+id/imageWeightt"
+                android:layout_below="@+id/textBMi"
+                android:layout_marginTop="23dp"
+                android:background="@drawable/selector"
+                android:clickable="true"
+                android:src="@drawable/achievement_big_icon" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</ScrollView>
