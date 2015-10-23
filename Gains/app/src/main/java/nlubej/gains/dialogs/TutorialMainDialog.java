@@ -1,15 +1,13 @@
-package nlubej.gains.dialogs;
+package nlubej.gains.Dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -20,7 +18,6 @@ import android.widget.ViewFlipper;
 
 import nlubej.gains.DBAdapter;
 import nlubej.gains.R;
-import nlubej.gains.Start;
 
 public class TutorialMainDialog extends DialogFragment {
 	

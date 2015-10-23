@@ -1,4 +1,4 @@
-package nlubej.gains.dialogs;
+package nlubej.gains.Dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

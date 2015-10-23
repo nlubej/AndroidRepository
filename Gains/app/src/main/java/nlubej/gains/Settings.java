@@ -163,12 +163,12 @@ public class Settings extends PreferenceActivity {
 					                	refreshMenuItem.setVisible(true);
 					                	dbHelper.open();
 					                	getApplicationContext().deleteDatabase("fitTrackerDB.db");
-					                	dbHelper.close();
+					                	dbHelper.Close();
 					                	dbHelper = new DBAdapter(getApplicationContext());
 					                	dbHelper.open();
 					                	dbHelper.insertUser();
 					               		dbHelper.insertAchievements();
-					                	dbHelper.close();
+					                	dbHelper.Close();
 					                	new SyncData().execute("restore");
 				    				}
 				    				else
@@ -233,24 +233,24 @@ public class Settings extends PreferenceActivity {
 		        
 		        else 
 		        {
-		        	int indeks = getIndeks(default_programId);
-		        	Log.i("nlubej","indeks: " +  getIndeks(default_programId));
+		        	int indeks = GetIndex(default_programId);
+		        	Log.i("nlubej","indeks: " +  GetIndex(default_programId));
 		        	programList.setSummary(names[indeks]);
 		        	programList.setValue(ids[indeks]);
-		      //  	Log.i("nlubej","summary name: " +names[getIndeks(Integer.parseInt(default_programId)+"")] + " indeks: " + default_programId + " -1");
-		      //  	programList.setSummary(names[getIndeks(Integer.parseInt(default_programId)+"")]);
+		      //  	Log.i("nlubej","summary name: " +names[GetIndex(Integer.parseInt(default_programId)+"")] + " indeks: " + default_programId + " -1");
+		      //  	programList.setSummary(names[GetIndex(Integer.parseInt(default_programId)+"")]);
 		       // 	programList.setValue(ids[0]);
 		        }
 
 		}
 		else
 			programList.setSelectable(false);
-        dbHelper.close();
-        c.close();
+        dbHelper.Close();
+        c.Close();
 	}
 	
 	
-	public int getIndeks(String id) {
+	public int GetIndex(String id) {
 		for(int i=0; i<ids.length; i++)
 		{
 			if(id.compareTo(ids[i])== 0) 
@@ -320,7 +320,7 @@ public class Settings extends PreferenceActivity {
 			dbHelper.open();
 			dbHelper.updateUser("weight", "0");
 			dbHelper.updateUser("height", "0");
-			dbHelper.close();
+			dbHelper.Close();
 		}
 		 
         // Now, manually update it's value to default/empty
@@ -418,15 +418,15 @@ public class Settings extends PreferenceActivity {
 									}
 									data += "\t\t\t\t</exercise>"+line;
 								}
-								exercises.close();
+								exercises.Close();
 							}
 							data += "\t\t\t</routine>"+line;
 						}
-						routines.close();
+						routines.Close();
 					}
 					data += "\t\t</program>"+line;
 				}
-				programs.close();
+				programs.Close();
 				data += "\t</programs>"+line;
 			}
 			else
@@ -443,7 +443,7 @@ public class Settings extends PreferenceActivity {
 					data += addXml("user", new String[] {"weight", "height", "showStartTutorial", "showMainTutorial"}, new String[] {user.getDouble(0)+"", user.getString(1), user.getInt(2)+"", user.getInt(3)+""}, 1,true);
 				}
 			}
-			user.close();
+			user.Close();
 			
 			Cursor a = dbHelper.getAchievements();
 			if(a.getCount()!= 0) 
@@ -463,7 +463,7 @@ public class Settings extends PreferenceActivity {
 		}
 		finally 
 		{
-			dbHelper.close();
+			dbHelper.Close();
 		}
 		data += "</backup>"+ line;
 
@@ -505,7 +505,7 @@ public class Settings extends PreferenceActivity {
 			if(output != null) 
 			{
 				try{
-					output.close();
+					output.Close();
 					return true;
 				} catch(IOException e) {
 					e.printStackTrace();
@@ -554,7 +554,7 @@ public class Settings extends PreferenceActivity {
 				return 0;
 			} finally {
 				try {
-					fis.close();
+					fis.Close();
 				} catch (IOException e) {
 					e.printStackTrace();
 					return 0;
@@ -667,7 +667,7 @@ public class Settings extends PreferenceActivity {
 			String a3, String a4) {
 		dbHelper.open();
 		Log.i("nlubej",""+ dbHelper.updateUser(a1,a2,a3,a4));
-		dbHelper.close();
+		dbHelper.Close();
 		
 	}
 
@@ -698,7 +698,7 @@ public class Settings extends PreferenceActivity {
 				}
 			}
 		}
-		dbHelper.close();
+		dbHelper.Close();
 		
 	}
 	 

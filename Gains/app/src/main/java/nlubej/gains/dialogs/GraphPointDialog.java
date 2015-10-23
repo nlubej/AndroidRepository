@@ -1,4 +1,4 @@
-package nlubej.gains.dialogs;
+package nlubej.gains.Dialogs;
 
 import nlubej.gains.DBAdapter;
 import nlubej.gains.R;
@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.ListView;
 
 public class GraphPointDialog extends DialogFragment {

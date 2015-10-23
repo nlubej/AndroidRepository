@@ -11,7 +11,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/myTheme"
-            android:name="nlubej.gains.MainActivity">
+            android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

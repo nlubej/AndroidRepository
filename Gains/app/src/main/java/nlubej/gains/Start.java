@@ -37,10 +37,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import nlubej.gains.dialogs.AddExerciseCommentDialog;
-import nlubej.gains.dialogs.AddExerciseDialog;
-import nlubej.gains.dialogs.AddProgramDialog;
-import nlubej.gains.dialogs.ShowPrevWorkoutDialog;
+import nlubej.gains.Dialogs.AddExerciseCommentDialog;
+import nlubej.gains.Dialogs.ShowPrevWorkoutDialog;
 import nlubej.gains.listeners.RepListener;
 import nlubej.gains.listeners.StartEditListener;
 import nlubej.gains.listeners.WeightListener;

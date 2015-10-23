@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import nlubej.gains.Activities.MainActivity;
+
 public class Splash extends Activity {
 
 	

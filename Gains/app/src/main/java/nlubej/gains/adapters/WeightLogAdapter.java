@@ -3,14 +3,12 @@ package nlubej.gains.adapters;
 import java.util.ArrayList;
 
 import nlubej.gains.R;
-import nlubej.gains.interfaces.onSubmit;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 

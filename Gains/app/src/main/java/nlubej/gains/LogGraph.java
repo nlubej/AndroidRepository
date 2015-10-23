@@ -180,14 +180,14 @@ public class LogGraph extends Activity implements OnClickListener {
 							}
 						}
 					}
-					c.close();
+					c.Close();
 				}
 				catch(NullPointerException e)
 				{
 					
 				}
 				finally {
-					dbHelper.close();
+					dbHelper.Close();
 					
 				}
 			

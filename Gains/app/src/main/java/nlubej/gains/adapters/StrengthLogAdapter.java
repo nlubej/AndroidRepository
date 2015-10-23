@@ -4,17 +4,14 @@ import java.util.ArrayList;
 
 import nlubej.gains.DBAdapter;
 import nlubej.gains.Logg;
-import nlubej.gains.Program;
 import nlubej.gains.R;
-import nlubej.gains.dialogs.AddExerciseCommentDialog;
-import nlubej.gains.dialogs.AddProgramDialog;
-import nlubej.gains.interfaces.onSubmit;
+import nlubej.gains.Dialogs.AddExerciseCommentDialog;
+import nlubej.gains.interfaces.onActionSubmit;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,12 +20,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 
@@ -44,7 +39,7 @@ public class StrengthLogAdapter extends BaseAdapter
 	long id = 0	;
 	String unitSystem;
 	Logg fragmentClass;
-	private onSubmit callback;
+	private onActionSubmit callback;
 	DBAdapter dbHelper;
 	FragmentManager fm;
 	
@@ -53,7 +48,7 @@ public class StrengthLogAdapter extends BaseAdapter
 		this.fragmentClass = l;
 		
 		try {
-	        callback = (onSubmit) fragmentClass;
+	        callback = (onActionSubmit) fragmentClass;
 	    } catch (ClassCastException e) {
 	        throw new ClassCastException("Calling Fragment must implement OnAddFriendListener"); 
 	    }
@@ -201,7 +196,7 @@ public class StrengthLogAdapter extends BaseAdapter
 							        	dbHelper.open();
 							        	dbHelper.updateLogNumbers(id,workoutNums[position]);
 							        	dbHelper.close();
-							        	callback.onSumbitSubmit("update");
+							        	callback.OnSubmit("update");
 							        	
 							        }
 							     })

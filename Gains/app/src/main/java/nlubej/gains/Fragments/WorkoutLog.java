@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import nlubej.gains.Activities.StartScreen;
 import nlubej.gains.R;
 
 /**
@@ -14,8 +15,8 @@ import nlubej.gains.R;
  */
 public class WorkoutLog extends Fragment{
 
-    public static StartWorkout newInstance(String text){
-        StartWorkout mFragment = new StartWorkout();
+    public static StartScreen newInstance(String text){
+        StartScreen mFragment = new StartScreen();
         Bundle mBundle = new Bundle();
         mBundle.putString("lubej", text);
         mFragment.setArguments(mBundle);

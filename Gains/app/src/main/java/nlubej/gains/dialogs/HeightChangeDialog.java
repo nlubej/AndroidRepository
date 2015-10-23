@@ -1,38 +1,22 @@
-package nlubej.gains.dialogs;
+package nlubej.gains.Dialogs;
 
 import nlubej.gains.DBAdapter;
 import nlubej.gains.MyStats;
-import nlubej.gains.Program;
 import nlubej.gains.R;
-import nlubej.gains.Settings;
-import nlubej.gains.interfaces.onSubmit;
-import nlubej.gains.listeners.CustomAnimationListenerAlpha;
-import nlubej.gains.listeners.CustomAnimationListenerPause;
+import nlubej.gains.interfaces.onActionSubmit;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnKeyListener;
-import android.view.animation.AlphaAnimation;
-import android.view.inputmethod.InputMethodManager;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 
 public class HeightChangeDialog extends DialogFragment {
 	
@@ -44,7 +28,7 @@ public class HeightChangeDialog extends DialogFragment {
 	int prevLength = 0;
 	boolean con = true;
 	
-	private onSubmit callback;
+	private onActionSubmit callback;
 	
 	
 	
@@ -53,7 +37,7 @@ public class HeightChangeDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         try {
-             callback = (onSubmit) fragmentClass;
+             callback = (onActionSubmit) fragmentClass;
          } catch (ClassCastException e) {
              throw new ClassCastException("Calling Fragment must implement OnAddFriendListener"); 
          }
@@ -197,7 +181,7 @@ public class HeightChangeDialog extends DialogFragment {
 	        	  Log.i("nlubej","height: " + height.getText().toString());
 					dbHelper.updateUser("height",height.getText().toString());
 					dbHelper.close();
-					callback.onSumbitSubmit("Update");
+					callback.OnSubmit("Update");
 	        	  alertDialog.dismiss();
 	          }
 	      });

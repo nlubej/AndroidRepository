@@ -2,7 +2,6 @@ package nlubej.gains;
 
 import java.util.ArrayList;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,14 +21,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import nlubej.gains.Fragments.Program;
 import nlubej.gains.adapters.CardioLogAdapter;
 import nlubej.gains.adapters.MySpinnerAdapter;
 import nlubej.gains.adapters.StrengthLogAdapter;
 import nlubej.gains.adapters.WeightLogAdapter;
-import nlubej.gains.dialogs.AddExerciseCommentDialog;
-import nlubej.gains.interfaces.onSubmit;
+import nlubej.gains.interfaces.onActionSubmit;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -38,7 +36,8 @@ import nlubej.gains.interfaces.onSubmit;
 
 
 
-public class Logg extends Fragment implements OnItemSelectedListener, onSubmit{
+public class Logg extends Fragment implements OnItemSelectedListener, onActionSubmit
+{
 
 	int id;
 	int prevId;
@@ -459,7 +458,7 @@ public class Logg extends Fragment implements OnItemSelectedListener, onSubmit{
 
 
 	@Override
-	public void onSumbitSubmit(String friendEmail) {
+	public void OnSubmit (String friendEmail) {
 		initExercise();
 		
 	}

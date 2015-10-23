@@ -1,35 +1,17 @@
-package nlubej.gains.dialogs;
+package nlubej.gains.Dialogs;
 
 import nlubej.gains.DBAdapter;
 import nlubej.gains.R;
-import nlubej.gains.dialogs.AddRoutineDialog.NoticeDialogListener;
-import nlubej.gains.listeners.*;
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class AddExerciseCommentDialog extends DialogFragment {
 	

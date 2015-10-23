@@ -1,6 +1,5 @@
 package nlubej.gains;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -15,16 +14,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import nlubej.gains.dialogs.HeightChangeDialog;
-import nlubej.gains.dialogs.WeightChangeDialog;
-import nlubej.gains.interfaces.onSubmit;
+import nlubej.gains.Dialogs.HeightChangeDialog;
+import nlubej.gains.Dialogs.WeightChangeDialog;
+import nlubej.gains.interfaces.onActionSubmit;
 
-public class MyStats extends Fragment implements OnClickListener, onSubmit {
+public class MyStats extends Fragment implements OnClickListener, onActionSubmit
+{
 
 	SharedPreferences prefs;
 	View fragment;
@@ -293,7 +292,7 @@ public class MyStats extends Fragment implements OnClickListener, onSubmit {
 
 
 	@Override
-	public void onSumbitSubmit(String friendEmail) {
+	public void OnSubmit (String friendEmail) {
 		Log.i("nlubej","prsl");
 		init();	
 	}

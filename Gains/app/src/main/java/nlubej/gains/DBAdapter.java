@@ -553,14 +553,14 @@ public class DBAdapter {
     			Log.i("nlubej","Routine Id: " + c.getLong(0) + " position: " + c.getString(1) + " name: " + c.getString(2));
     		}
     	}
-    	
-    	
-    	
+
+
+
     /*
     	for(int i=0; i<ids.length; i++) {
     		ContentValues initialValues = new ContentValues();
     	    initialValues.put(KEY_NAME, currentNames[i]);
-    	    eror = db.update(DATABASE_TABLE_ROUTINE, initialValues, KEY_ID+ " =  " + ids[i], null) > 0;	
+    	    eror = db.update(DATABASE_TABLE_ROUTINE, initialValues, KEY_ID+ " =  " + ids[i], null) > 0;
     	    if(eror)
     	    {
     	    	prevNames[i] = currentNames[i];

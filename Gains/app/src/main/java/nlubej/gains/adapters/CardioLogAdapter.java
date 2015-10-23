@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import nlubej.gains.DBAdapter;
 import nlubej.gains.Logg;
 import nlubej.gains.R;
-import nlubej.gains.interfaces.onSubmit;
+import nlubej.gains.interfaces.onActionSubmit;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -32,7 +31,7 @@ public class CardioLogAdapter extends BaseAdapter
 	long id;
 	String[] dates = null;
 	Logg fragmentClass;
-	private onSubmit callback;
+	private onActionSubmit callback;
 	String unitSystem;
 	DBAdapter dbHelper;
 	FragmentManager fm;
@@ -48,7 +47,7 @@ public class CardioLogAdapter extends BaseAdapter
 		this.fm = fm;
 		
 		try {
-	        callback = (onSubmit) fragmentClass;
+	        callback = (onActionSubmit) fragmentClass;
 	    } catch (ClassCastException e) {
 	        throw new ClassCastException("Calling Fragment must implement OnAddFriendListener"); 
 	    }
@@ -178,7 +177,7 @@ public class CardioLogAdapter extends BaseAdapter
 							        	dbHelper.open();
 							        	dbHelper.updateLogNumbers(id,workoutNums[position]);
 							        	dbHelper.close();
-							        	callback.onSumbitSubmit("update");
+							        	callback.OnSubmit("update");
 							        	
 							        }
 							     })
