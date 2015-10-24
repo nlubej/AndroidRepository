@@ -61,10 +61,10 @@ public class DeleteDialog extends DialogFragment
                 R.layout.dialog_add_edit
                 , null);
 
-        if(dialogType == AddDialogType.PROGRAM)
+        if(dialogType == AddDialogType.Program)
             programId = getArguments().getInt("PROGRAM_ID");
 
-        if(dialogType == AddDialogType.PROGRAM)
+        if(dialogType == AddDialogType.Program)
             routineId = getArguments().getInt("ROUTINE_ID");
 
 
@@ -98,7 +98,7 @@ public class DeleteDialog extends DialogFragment
             public void onClick (View v)
             {
                 db.Open();
-                if (dialogType == AddDialogType.PROGRAM)
+                if (dialogType == AddDialogType.Program)
                 {
                     db.DeleteProgram(programId);
                 }

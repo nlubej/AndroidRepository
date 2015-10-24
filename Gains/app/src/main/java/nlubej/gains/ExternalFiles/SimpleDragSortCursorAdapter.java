@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nlubej.gains;
+package nlubej.gains.ExternalFiles;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -22,6 +22,8 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ImageView;
+
+import nlubej.gains.ExternalFiles.ResourceDragSortCursorAdapter;
 
 // taken from sdk/sources/android-16/android/widget/SimpleCursorAdapter.java
 
@@ -49,7 +51,8 @@ import android.widget.ImageView;
  * {@link #convertToString(android.database.Cursor)} and
  * {@link #runQueryOnBackgroundThread(CharSequence)} for more information.
  */
-public class SimpleDragSortCursorAdapter extends ResourceDragSortCursorAdapter {
+public class SimpleDragSortCursorAdapter extends ResourceDragSortCursorAdapter
+{
     /**
      * A list of columns containing the data to bind to the UI.
      * This field should be made private, so it is hidden from the SDK.

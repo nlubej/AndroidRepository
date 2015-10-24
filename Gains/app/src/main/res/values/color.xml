@@ -6,9 +6,9 @@
     <color name="lightest_gray" >#F5F5F5</color> 
     <color name="custom_black">#4E4E4E</color>
 
-    <color name="PrimaryColor">#316EA3</color>
-    <color name="SecondaryColor">#F25252</color>
-    <color name="DarkColor">#303F9F</color>
+    <color name="PrimaryColor">#428DE3</color>
+    <color name="SecondaryColor">#E39842</color>
+    <color name="DarkColor">#404040</color>
     <color name="colorAccent">#FF4081</color>
     
     <color name="menu">#316EA3</color>   

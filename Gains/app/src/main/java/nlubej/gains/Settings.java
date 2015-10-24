@@ -201,7 +201,7 @@ public class Settings extends PreferenceActivity {
 	
 	public void init() 
 	{
-		ListPreference programList = (ListPreference)getPreferenceScreen().findPreference("defaultProgram");
+		ListPreference programList = (ListPreference)getPreferenceScreen().findPreference("DefaultProgram");
         dbHelper.open();
         names = null;
         ids = null;
@@ -223,7 +223,7 @@ public class Settings extends PreferenceActivity {
 			programList.setEntryValues(ids);
 			programList.setSelectable(true);
 		    prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		    String default_programId = prefs.getString("defaultProgram", "1");
+		    String default_programId = prefs.getString("DefaultProgram", "1");
 	        Log.d("nlubej", "default: " + default_programId);
 	        
 		        if(default_programId == null || Integer.parseInt(default_programId) <=0) {

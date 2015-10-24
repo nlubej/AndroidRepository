@@ -1,4 +1,4 @@
-package nlubej.gains;
+package nlubej.gains.ExternalFiles;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+
+import nlubej.gains.ExternalFiles.DragSortListView;
 
 /**
  * Simple implementation of the FloatViewManager class. Uses list

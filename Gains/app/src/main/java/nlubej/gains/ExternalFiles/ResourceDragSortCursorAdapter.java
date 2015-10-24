@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package nlubej.gains;
+package nlubej.gains.ExternalFiles;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+
+import nlubej.gains.ExternalFiles.DragSortCursorAdapter;
 
 // taken from v4 rev. 10 ResourceCursorAdapter.java
 
@@ -31,7 +33,8 @@ import android.view.LayoutInflater;
  * to switch to the framework's implementation.  See the framework SDK
  * documentation for a class overview.
  */
-public abstract class ResourceDragSortCursorAdapter extends DragSortCursorAdapter {
+public abstract class ResourceDragSortCursorAdapter extends DragSortCursorAdapter
+{
     private int mLayout;
 
     private int mDropDownLayout;

@@ -25,6 +25,9 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
+import com.melnykov.fab.FloatingActionButton;
+
+import nlubej.gains.Activities.Routine;
 import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Dialogs.AddDialog;
@@ -34,7 +37,7 @@ import nlubej.gains.Enums.AddDialogType;
 import nlubej.gains.R;
 import nlubej.gains.interfaces.*;
 
-public class Program extends Fragment implements OnItemClickListener, onActionSubmit
+public class Program extends Fragment implements OnItemClickListener, onActionSubmit, OnClickListener
 {
     private View fragment;
     private Context context;
@@ -42,7 +45,8 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
     private QueryFactory db;
     private SharedPreferences prefs;
     private ArrayList<ProgramDto> programDto;
-    private static long defaultProgram = -1;
+    public static long DefaultProgram = -1; //used in other classes
+    FloatingActionButton addButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -64,6 +68,8 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         list = (ListView) fragment.findViewById(R.id.listView);
         db = new QueryFactory(context);
+        addButton = (FloatingActionButton)fragment.findViewById(R.id.addButton);
+        addButton.setOnClickListener(this);
     }
 
     public void SetData()
@@ -78,7 +84,7 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Intent i = new Intent(context, nlubej.gains.Routine.class);
+        Intent i = new Intent(context, Routine.class);
         i.putExtra("PROGRAM_NAME", programDto.get((int) id).Name);
         i.putExtra("PROGRAM_ID", programDto.get((int) id).Id);
 
@@ -108,6 +114,14 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
     public void OnSubmit(String action)
     {
         SetData();
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        AddDialog addDialog = new AddDialog();
+        addDialog.SetData(Program.this, AddDialogType.Program);
+        addDialog.show(Program.this.getActivity().getFragmentManager(), "");
     }
 
     class ProgramRow
@@ -180,7 +194,6 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
             {
                 title = (TextView) v.findViewById(R.id.show);
                 btn = (ImageView) v.findViewById(R.id.edit_btn);
-                //	defaultProgram = (ImageView) v.findViewById(R.id.defaultProgram);
             }
         }
 
@@ -198,7 +211,7 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
                 row.setTag(holder);
                 try
                 {
-                    if (defaultProgram == programDto.get(position).Id)
+                    if (DefaultProgram == programDto.get(position).Id)
                     {
                         holder.title.setTextColor(getResources().getColor(R.color.menu));
                     }
@@ -244,6 +257,8 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
                                 DeleteDialog deleteDialog = new DeleteDialog();
                                 deleteDialog.SetData(Program.this, AddDialogType.Program);
                                 deleteDialog.show(Program.this.getActivity().getFragmentManager(), null);
+
+                                ChangeDefaultProgram(position);
                             }
                             else if (item.getItemId() == R.id.edit)
                             {
@@ -251,26 +266,11 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
                                 editDialog.SetData(Program.this, AddDialogType.Program);
                                 editDialog.show(Program.this.getActivity().getFragmentManager(), null);
 
-                                AddDialog addDialog = new AddDialog();
-                                addDialog.SetData(Program.this, AddDialogType.Program);
-
-                                // AddProgramDialog addProgram = new AddProgramDialog();
-                                // addProgram.SetData(Program.this, 0);
-
-                              /*  Bundle arg = new Bundle();
-                                arg.putString("add", "Update Program");
-                                arg.putLong("programId", programDto.get(position).Id);
-                                arg.putString("programName", programDto.get(position).Name);
-                                arg.putString("mode", "Edit");
-                                Log.d("nlubej", "programName: " + programDto.get(position).Name);
-                                addProgram.setArguments(arg);*/
-                                addDialog.show(Program.this.getActivity().getFragmentManager(), "updateProgram");
-
                             }
                             else if (item.getItemId() == R.id.setDefault)
                             {
-                                defaultProgram = programDto.get(position).Id;
-                                prefs.edit().putString("defaultProgram", programDto.get(position).Id + "").apply();
+                                DefaultProgram = programDto.get(position).Id;
+                                prefs.edit().putString("DEFAULT_PROGRAM", programDto.get(position).Id + "").apply();
                                 SetData();
                             }
                             return false;

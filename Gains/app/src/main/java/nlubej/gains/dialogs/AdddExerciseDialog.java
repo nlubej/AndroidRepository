@@ -18,7 +18,7 @@ import nlubej.gains.interfaces.onActionSubmit;
 /**
  * Created by nlubej on 24.10.2015.
  */
-public class EditExerciseDialog extends DialogFragment
+public class AdddExerciseDialog extends DialogFragment
 {
     private Exercise fragmentClass;
     private QueryFactory db;
@@ -53,10 +53,10 @@ public class EditExerciseDialog extends DialogFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_edit, null);
-        final EditText exercise = (EditText) view.findViewById(R.id.programName);
-        //TODO get ID and name, and fill them
+        final EditText program = (EditText) view.findViewById(R.id.programName);
+
         builder.setView(view);
-        builder.setTitle("Edit");
+        builder.setTitle("Add");
 
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
         {
@@ -86,10 +86,10 @@ public class EditExerciseDialog extends DialogFragment
             {
                 Boolean wantToCloseDialog = true;
 
-                if (exercise.getText().toString().compareTo("") != 0)
+                if (program.getText().toString().compareTo("") != 0)
                 {
                     db.Open();
-                   // db.UpdateExercise(exercise.getText().toString());
+                    db.InsertProgram(program.getText().toString());
                     db.Close();
                 }
                 else

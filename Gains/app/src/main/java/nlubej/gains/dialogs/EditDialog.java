@@ -57,10 +57,10 @@ public class EditDialog extends DialogFragment
         int programId = 0;
         int routineId = 0;
 
-        if(dialogType == AddDialogType.PROGRAM)
+        if(dialogType == AddDialogType.Program)
             programId = getArguments().getInt("PROGRAM_ID");
 
-        if(dialogType == AddDialogType.PROGRAM)
+        if(dialogType == AddDialogType.Program)
             routineId = getArguments().getInt("ROUTINE_ID");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -103,11 +103,11 @@ public class EditDialog extends DialogFragment
                 if (program.getText().toString().compareTo("") != 0)
                 {
                     db.Open();
-                    if (dialogType == AddDialogType.PROGRAM)
+                    if (dialogType == AddDialogType.Program)
                     {
                         db.UpdateProgram(program.getText().toString(), finalProgramId);
                     }
-                    else if (dialogType == AddDialogType.ROUTINE)
+                    else if (dialogType == AddDialogType.Routine)
                     {
                         db.UpdateRoutine(program.getText().toString(), finalRoutineId);
                     }

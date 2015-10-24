@@ -399,14 +399,14 @@ public class Logg extends Fragment implements OnItemSelectedListener, onActionSu
 					showGraph = false;
 			}
 		}
-		Log.e("nlubej", "default program: " + Program.defaultProgram);
+		Log.e("nlubej", "default program: " + Program.DefaultProgram);
 		initExercise();
 	}
 
 	@Override 
 	public void onResume(){
 		super.onResume();
-		programId = Long.parseLong(prefs.getString("defaultProgram", "6"));
+		programId = Long.parseLong(prefs.getString("DefaultProgram", "6"));
 		Log.i("nlubej", "New value of default program: " + programId);
 		init();
 	}
