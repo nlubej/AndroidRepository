@@ -5,11 +5,6 @@
 
     
 <group android:id="@+id/menu_group_main" >
-    <item
-        android:id="@+id/add"
-        android:icon="@drawable/ic_action_new"
-        android:title="@string/app_name"
-        android:showAsAction="always"/>
 
 </group>
 
