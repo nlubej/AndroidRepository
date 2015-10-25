@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:dslv="http://schemas.android.com/apk/res-auto"
 	xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
-    
-	<com.nlubej.fitnessapp.DragSortListView
+
+	<include
+		android:id="@+id/toolbar"
+		layout="@layout/toolbar" />
+
+	<nlubej.gains.ExternalFiles.DragSortListView
 	    xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:listSelector="@android:color/transparent"
-	    xmlns:dslv="http://schemas.android.com/apk/res-auto"
+
 	    android:id="@+id/list"
 	    android:layout_width="fill_parent"
 	    android:divider="@color/themeColor"
@@ -18,6 +22,9 @@
 	    android:layout_margin="8dp"
 	    android:layout_height="fill_parent"
 	    android:padding="8dp"
+		android:textAlignment="textStart"
+		android:gravity="start"
+
 	    dslv:drag_enabled="true"
 	    dslv:collapsed_height="1px"
 	    dslv:drag_scroll_start="0.33"
@@ -27,7 +34,13 @@
 	    dslv:drag_handle_id="@id/drag_handle"
 	    dslv:remove_enabled="true"
 	    dslv:remove_mode="clickRemove"
-	    dslv:click_remove_id="@id/click_remove" />
+	    dslv:click_remove_id="@id/click_remove"
+		android:layout_below="@id/toolbar"/>
+
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
 
 	<com.melnykov.fab.FloatingActionButton
 		android:id="@+id/addButton"
@@ -40,5 +53,5 @@
 		fab:fab_colorPressed="@color/PrimaryColor"
 		fab:fab_colorRipple="@color/SecondaryColor" />
 
-
-</FrameLayout>
+	</FrameLayout>
+</RelativeLayout>

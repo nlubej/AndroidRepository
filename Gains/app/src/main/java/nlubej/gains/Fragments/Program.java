@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +27,9 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
+import com.malinskiy.materialicons.IconDrawable;
+import com.malinskiy.materialicons.Iconify;
+import com.malinskiy.materialicons.widget.IconTextView;
 import com.melnykov.fab.FloatingActionButton;
 
 import nlubej.gains.Activities.Routine;
@@ -47,6 +52,7 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
     private ArrayList<ProgramDto> programDto;
     public static long DefaultProgram = -1; //used in other classes
     FloatingActionButton addButton;
+    private Toolbar toolbar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -70,6 +76,10 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         db = new QueryFactory(context);
         addButton = (FloatingActionButton)fragment.findViewById(R.id.addButton);
         addButton.setOnClickListener(this);
+        addButton.setImageDrawable(
+                new IconDrawable(context, Iconify.IconValue.zmdi_plus)
+                        .colorRes(R.color.DarkColor)
+                        .actionBarSize());
     }
 
     public void SetData()
@@ -90,7 +100,7 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
 
         startActivity(i);
     }
-
+/*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -98,8 +108,8 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         menu.clear();
         inflater.inflate(R.menu.menu_program, menu);
     }
-
-    @Override
+*/
+  /*  @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id = item.getItemId();
@@ -108,7 +118,7 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         {
         }
         return true;
-    }
+    }*/
 
     @Override
     public void OnSubmit(String action)
@@ -187,13 +197,12 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         class ProgramViewHolder
         {
             private TextView title;
-            private ImageView btn;
-            private ImageView defaultProgram;
+            private IconTextView btn;
 
             public ProgramViewHolder(View v)
             {
                 title = (TextView) v.findViewById(R.id.show);
-                btn = (ImageView) v.findViewById(R.id.edit_btn);
+                btn = (IconTextView) v.findViewById(R.id.edit_btn);
             }
         }
 
@@ -213,11 +222,11 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
                 {
                     if (DefaultProgram == programDto.get(position).Id)
                     {
-                        holder.title.setTextColor(getResources().getColor(R.color.menu));
+                        holder.title.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
                     }
                     else if ((programDto.get(position).Id) == Integer.parseInt(prefs.getString("DEFAULT_PROGRAM", "")))
                     {
-                        holder.title.setTextColor(getResources().getColor(R.color.menu));
+                        holder.title.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
                     }
                 }
                 catch (NumberFormatException e)
@@ -226,7 +235,6 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
                     holder.title.setTextColor(ContextCompat.getColor(context, R.color.menu));
                     prefs.edit().putString("DEFAULT_PROGRAM", programDto.get(0).Id + "").apply();
                 }
-
             }
             else
             {

@@ -169,9 +169,9 @@ public class DBAdapter {
     public long insertExercise(String exercise, long programID, long routineID, String type) 
     {
     	Cursor c = db.rawQuery("SELECT MAX(position) FROM exercise", null);
-    	c.moveToFirst();
-    	long id = c.getLong(0);
-    	id++;
+        c.moveToFirst();
+        long id = c.getLong(0);
+        id++;
     	
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_POSITION, id);

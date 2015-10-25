@@ -32,6 +32,7 @@ public class QueryFactory
     //Database creation sql statement
     final String CREATE_TABLE_PROGRAM = ProgramQueries.CreateTableProgram();
     private static final String CREATE_TABLE_EXERCISE = ExerciseQueries.CreateTableExercise();
+    private static final String CREATE_TABLE_EXERCISE_TYPE = ExerciseQueries.CreateTableExerciseType();
     private static final String CREATE_TABLE_ROUTINE = RoutineQueries.CreateTableRoutine();
     private static final String CREATE_TABLE_LOGGED_WORKOUT = "create table if not exists LOGGED_WORKOUT (LOGGED_WORKOUT_ID integer primary key autoincrement, LOGGED_SET integer not null, LOGGED_WEIGHT double, LOGGED_REP integer,  DATE_CREATED varchar not null, WORKOUT_NUMBER integer not null, EXERCISE_ID integer not null);";
     private static final String CREATE_TABLE_TMP_LOGGED_WORKOUT = "create table if not exists TMP_LOGGED_WORKOUT (TMP_LOGGED_WORKOUT_ID integer primary key autoincrement, TMP_LAST_WORKOUT_NUMBER integer not null, ROUTINE_ID integer not null);";
@@ -70,12 +71,18 @@ public class QueryFactory
         {
             db.execSQL(CREATE_TABLE_PROGRAM);
             db.execSQL(CREATE_TABLE_EXERCISE);
+            db.execSQL(CREATE_TABLE_EXERCISE_TYPE);
             db.execSQL(CREATE_TABLE_ROUTINE);
             db.execSQL(CREATE_TABLE_LOGGED_WORKOUT);
             db.execSQL(CREATE_TABLE_TMP_LOGGED_WORKOUT);
             db.execSQL(CREATE_TABLE_USER);
             db.execSQL(CREATE_TABLE_WORKOUT_NOTE);
             db.execSQL(CREATE_TABLE_TUTORIAL);
+
+
+            db.execSQL(String.format("INSERT INTO EXERCISE_TYPE (EXERCISE_TYPE_ID, DESCRIPTION) VALUES (%s, '%s')",1,"Chest"));
+            db.execSQL(String.format("INSERT INTO EXERCISE_TYPE (EXERCISE_TYPE_ID, DESCRIPTION) VALUES (%s, '%s')",2,"Arms"));
+            db.execSQL(String.format("INSERT INTO EXERCISE_TYPE (EXERCISE_TYPE_ID, DESCRIPTION) VALUES (%s, '%s')",3,"Legs"));
         }
 
 
@@ -108,6 +115,16 @@ public class QueryFactory
         dbHelper.close();
     }
 
+    private int GetMax(String tableName, String column)
+    {
+        Cursor c = db.rawQuery(String.format("SELECT COALESCE((MAX(%s) +1), 1) FROM %s", column, tableName), null);
+        if(c.getCount() < 1)
+            return -1;
+
+        c.moveToFirst();
+        return c.getInt(0);
+    }
+
 
     public ArrayList<ProgramDto> SelectPrograms()
     {
@@ -118,54 +135,83 @@ public class QueryFactory
 
         if (c.getCount() != 0)
         {
-            ProgramDto dto = new ProgramDto();
-            dto.Id = c.getInt(0);
-            dto.Name = c.getString(1);
+            while (c.moveToNext())
+            {
+                ProgramDto dto = new ProgramDto();
+                dto.Id = c.getInt(0);
+                dto.Name = c.getString(1);
 
-            programDto.add(dto);
+                programDto.add(dto);
+            }
+            c.close();
         }
+
         return programDto;
     }
 
-    public ArrayList<RoutineDto> SelectRoutines()
+    public ArrayList<RoutineDto> SelectRoutines(int programId)
     {
         ArrayList<RoutineDto> routineDto = new ArrayList<>();
 
-        String query = RoutineQueries.SelectRoutines();
+        String query = RoutineQueries.SelectRoutines(programId);
         final Cursor c = db.rawQuery(query, null);
 
         if (c.getCount() != 0)
         {
-            RoutineDto dto = new RoutineDto();
-            dto.Id = c.getInt(0);
-            dto.Name = c.getString(1);
-            dto.Position = c.getInt(2);
-            dto.ProgramId = c.getInt(3);
+            while (c.moveToNext())
+            {
+                RoutineDto dto = new RoutineDto();
+                dto.Id = c.getInt(0);
+                dto.Name = c.getString(1);
+                dto.Position = c.getInt(2);
+                dto.ProgramId = c.getInt(3);
 
-            routineDto.add(dto);
+                routineDto.add(dto);
+            }
+            c.close();
         }
         return routineDto;
     }
 
-    public ArrayList<ExerciseDto> SelectExercises()
+    public ArrayList<ExerciseDto> SelectExercises(int routineID)
     {
         ArrayList<ExerciseDto> exerciseDto = new ArrayList<>();
 
-        String query = ExerciseQueries.SelectExercises();
+        String query = ExerciseQueries.SelectExercises(routineID);
         final Cursor c = db.rawQuery(query, null);
-
         if (c.getCount() != 0)
         {
-            ExerciseDto dto = new ExerciseDto();
-            dto.Id = c.getInt(0);
-            dto.Name = c.getString(1);
-            dto.Position = c.getInt(2);
-            dto.Type = ExerciseType.values()[c.getInt(3)];
-            dto.RoutineId = c.getInt(4);
+            while(c.moveToNext())
+            {
+                ExerciseDto dto = new ExerciseDto();
+                dto.Id = c.getInt(0);
+                dto.Name = c.getString(1);
+                dto.Position = c.getInt(2);
+                dto.Type = ExerciseType.values()[c.getInt(3)];
+                dto.RoutineId = c.getInt(4);
 
-            exerciseDto.add(dto);
+                exerciseDto.add(dto);
+            }
         }
         return exerciseDto;
+    }
+
+    public String[] SelecExerciseType()
+    {
+        String query = ExerciseQueries.SelectExerciseTypes();
+        final Cursor c = db.rawQuery(query, null);
+        String[] exeriseTypes = new String[c.getCount()];
+        if (c.getCount() != 0)
+        {
+            int i= 0;
+            while(c.moveToNext())
+            {
+                exeriseTypes[i] = c.getString(1);
+                i++;
+            }
+        }
+        return exeriseTypes;
+
     }
 
     public void UpdateRoutineOrder(int[] newIds, ArrayList<RoutineDto> dto)
@@ -174,7 +220,7 @@ public class QueryFactory
         for (int i = 0; i < dto.size(); i++)
         {
             initialValues.put("ROUTINE_POS", i + 1);
-            db.update("ROUTINE", initialValues, String.format("ROUTINE_ID = %d", dto.get(newIds[i] - 1).Id), null);
+            db.update("ROUTINE", initialValues, String.format("ROUTINE_ID = %d", dto.get(newIds[i] -1).Id), null);
             initialValues.clear();
         }
     }
@@ -190,7 +236,6 @@ public class QueryFactory
         }
     }
 
-
     public long InsertProgram(String programName)
     {
         ContentValues initialValues = new ContentValues();
@@ -199,12 +244,25 @@ public class QueryFactory
         return db.insert("PROGRAM", null, initialValues);
     }
 
-    public long InsertRoutine(String routineName)
+    public boolean InsertRoutine(String routineName, int programId)
     {
         ContentValues initialValues = new ContentValues();
         initialValues.put("ROUTINE_NAME", routineName);
+        initialValues.put("ROUTINE_POS", GetMax("ROUTINE","ROUTINE_POS"));
+        initialValues.put("PROGRAM_ID", programId);
 
-        return db.insert("ROUTINE", null, initialValues);
+        return db.insert("ROUTINE", null, initialValues) > 0;
+    }
+
+    public boolean InsertExercise(String exerciseName, int exerciseType, int routineId)
+    {
+        ContentValues initialValues = new ContentValues();
+        initialValues.put("EXERCISE_NAME", exerciseName);
+        initialValues.put("EXERCISE_POS", GetMax("EXERCISE","EXERCISE_POS"));
+        initialValues.put("EXERCISE_TYPE", exerciseType);
+        initialValues.put("ROUTINE_ID", routineId);
+
+        return db.insert("EXERCISE", null, initialValues) > 0;
     }
 
     public boolean DeleteProgram(int programId)

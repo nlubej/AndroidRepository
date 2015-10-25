@@ -21,28 +21,24 @@
        android:lineSpacingMultiplier="1"
        android:padding="5dp"
        android:layout_marginTop="5dp"
-       android:textAlignment="center"
+       android:textAlignment="textStart"
+       android:gravity="start"
        android:textAppearance="?android:attr/textAppearanceLarge"
        android:textIsSelectable="false" />
-     <ImageView
-         android:id="@+id/edit_btn"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignBottom="@+id/show"
-         android:layout_alignParentRight="true"
-         android:layout_alignTop="@+id/show"
-         android:background="@drawable/selector"
-         android:focusableInTouchMode="false"
-         android:src="@drawable/ic_action_overflow"
-         android:textIsSelectable="false" />
 
-     <View
-         android:id="@+id/space"
-         android:layout_width="fill_parent"
-         android:layout_height="7dp"
-         android:layout_alignParentLeft="true"
-         android:layout_below="@+id/show"
-         android:background="@android:color/transparent" />
+    <com.malinskiy.materialicons.widget.IconTextView
+        android:id="@+id/edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/show"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/show"
+        android:focusableInTouchMode="false"
+        android:text="{zmdi-more-vert}"
+        android:background="@drawable/selector"
+        android:padding = "8dp"
+        android:textSize="30dp"
+        android:textIsSelectable="false" />
 
 </RelativeLayout>
 

@@ -1,0 +1,48 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/exerciseName"
+        android:layout_marginLeft="17dp"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="15dp"
+        android:textCursorDrawable="@null"
+        android:layout_width="match_parent"
+        app:met_baseColor="@color/DarkColor"
+        app:met_primaryColor="@color/PrimaryColor"
+        app:met_floatingLabel="highlight"
+        android:layout_height="wrap_content"
+        android:hint="Program name"
+        android:longClickable="false"
+        android:inputType="textCapSentences"/>
+
+
+    <nlubej.gains.ExternalFiles.MaterialSpinner
+        android:id="@+id/exerciseType"
+        android:layout_width="fill_parent"
+        android:layout_marginLeft="17dp"
+        android:layout_marginRight="17dp"
+        android:layout_height="wrap_content"
+        app:ms_multiline="false"
+        app:ms_hint="Select exercise type"
+        app:ms_floatingLabelText="Exercise Type"
+        app:ms_baseColor="@color/PrimaryColor"
+        app:ms_highlightColor="@color/DarkColor"
+        app:ms_errorColor="@color/red"
+        app:ms_thickness="1dp"
+        app:ms_arrowColor="@color/PrimaryColor"
+        app:ms_arrowSize="10dp"
+        app:ms_alignLabels="false"
+        app:ms_floatingLabelColor="@color/PrimaryColor"
+        android:layout_below="@id/exerciseName"/>
+
+    <include layout="@layout/button_yes_no"
+             android:layout_marginTop="15dp"
+             android:layout_below="@id/exerciseType"
+             android:layout_height="wrap_content"
+             android:layout_width="fill_parent"/>
+
+</RelativeLayout>

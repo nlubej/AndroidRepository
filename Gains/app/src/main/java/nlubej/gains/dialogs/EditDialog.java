@@ -51,7 +51,7 @@ public class EditDialog extends DialogFragment
     @Override
     public Dialog onCreateDialog (Bundle savedInstanceState)
     {
-        context = getActivity().getApplicationContext();
+        context = getActivity();
         db = new QueryFactory(context);
 
         int programId = 0;

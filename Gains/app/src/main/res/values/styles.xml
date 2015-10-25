@@ -2,16 +2,16 @@
 
     <style name="myTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/nliveo_blue_colorPrimary</item>
-        <item name="colorPrimaryDark">@color/nliveo_blue_colorPrimaryDark</item>
-        <item name="colorAccent">@color/nliveo_blue_colorPrimaryDark</item>
+
+        <item name="colorPrimary">@color/PrimaryColor</item>
+        <item name="colorPrimaryDark">@color/DarkColor</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="nLiveoDrawer" parent="Theme.nLiveo">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/nliveo_blue_colorPrimary</item>
-        <item name="colorPrimaryDark">@color/nliveo_blue_alpha_colorPrimaryDark</item>
-        <item name="colorAccent">@color/nliveo_blue_colorPrimaryDark</item>
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
     </style>
     
 </resources>

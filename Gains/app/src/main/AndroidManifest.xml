@@ -19,6 +19,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".Activities.Routine">
+        </activity>
+
+        <activity
+            android:name=".Activities.Exercise">
+        </activity>
+
+
     </application>
 
 </manifest>

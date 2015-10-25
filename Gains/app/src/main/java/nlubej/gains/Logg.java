@@ -203,8 +203,7 @@ public class Logg extends Fragment implements OnItemSelectedListener, onActionSu
 		//init spinner
 
 
-		spinner.setAdapter(new  MySpinnerAdapter(fragment.getContext(), R.layout.custom_spinner, exerciseName, routineName));
-		spinner.setOnItemSelectedListener(this);
+
 
 	}
 

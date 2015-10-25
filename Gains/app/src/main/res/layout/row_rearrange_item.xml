@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:background="@drawable/custom_shape"
-  android:descendantFocusability="blocksDescendants"
-    android:gravity="top">
 
-    <ImageView
-        android:id="@+id/drag_handle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/text"
-        android:layout_alignBottom="@+id/text"
-        android:src="@drawable/gray_arrow" />
-    
-    
-      <TextView
-       android:id="@+id/text"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_alignParentLeft="true"
-       android:layout_alignParentTop="true"
-       android:layout_toLeftOf="@+id/drag_handle"
-       android:background="@drawable/exercise_selector"
-       android:lineSpacingExtra="2dp"
-       android:lineSpacingMultiplier="1"
-       android:padding="5dp"
-       android:layout_marginTop="5dp"
-       android:textAlignment="center"
-       android:textAppearance="?android:attr/textAppearanceLarge"
-       android:textIsSelectable="false" />
-      
-    <View
-         android:id="@+id/space"
-         android:layout_width="fill_parent"
-         android:layout_height="7dp"
-         android:layout_alignParentLeft="true"
-         android:layout_below="@+id/text"
-         android:background="@android:color/transparent" />
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:descendantFocusability="blocksDescendants">
+
+<TextView
+    android:id="@+id/text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+
+    android:layout_alignParentTop="true"
+    android:layout_toLeftOf="@+id/drag_handle"
+    android:layout_toStartOf="@+id/drag_handle"
+    android:background="@drawable/selector"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:gravity="start"
+    android:lineSpacingExtra="8dp"
+    android:padding="5dp"
+    android:textAlignment="textStart"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:textDirection="inherit"
+    android:textIsSelectable="false"/>
+
+<com.malinskiy.materialicons.widget.IconTextView
+    android:id="@+id/drag_handle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignBottom="@+id/text"
+    android:layout_alignParentRight="true"
+    android:layout_alignTop="@+id/text"
+    android:background="@drawable/selector"
+    android:focusableInTouchMode="false"
+    android:padding="8dp"
+    android:text="{zmdi_swap_vertical}"
+    android:textIsSelectable="false"
+    android:textSize="30dp"/>
 
 </RelativeLayout>
+

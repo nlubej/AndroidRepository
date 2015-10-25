@@ -3,14 +3,14 @@ package nlubej.gains.Activities;
 
 import java.util.ArrayList;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.view.LayoutInflater;
@@ -22,9 +22,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.malinskiy.materialicons.IconDrawable;
+import com.malinskiy.materialicons.Iconify;
+import com.malinskiy.materialicons.widget.IconTextView;
 import com.melnykov.fab.FloatingActionButton;
 
 import nlubej.gains.DataTransferObjects.RoutineDto;
@@ -37,7 +39,7 @@ import nlubej.gains.R;
 import nlubej.gains.ExternalFiles.SimpleDragSortCursorAdapter;
 import nlubej.gains.interfaces.onActionSubmit;
 
-public class Routine extends Activity implements OnItemClickListener, onActionSubmit, OnClickListener
+public class Routine extends AppCompatActivity implements OnItemClickListener, onActionSubmit, OnClickListener
 {
     private QueryFactory db;
     private ArrayList<RoutineDto> routineDto;
@@ -48,9 +50,8 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
     private FloatingActionButton addButton;
     private MatrixCursor cursor;
     private boolean canSwitch = false;
-    private int programID = 0;
-
-
+    private int programId = 0;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,15 +59,15 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_routine_exercise);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setLogo(null);
+       // ActionBar actionBar = getActionBar();
+       //actionBar.setDisplayHomeAsUpEnabled(true);
+        //actionBar.setLogo(null);
 
         Intent intent = getIntent();
         String routineName = intent.getStringExtra("PROGRAM_NAME");
-        setTitle(routineName);
-        programID = intent.getIntExtra("PROGRAM_ID", 1);
+        programId = intent.getIntExtra("PROGRAM_ID", 1);
 
+        setTitle(routineName);
         InitComponents();
         SetData();
     }
@@ -74,18 +75,25 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
     private void InitComponents()
     {
         context = getApplicationContext();
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         db = new QueryFactory(context);
         dslv = (DragSortListView) findViewById(R.id.list);
         dslv.setOnItemClickListener(this);
         sortAdapter = new SortAdapter(this, R.layout.row_rearrange_item);
         addButton = (FloatingActionButton) findViewById(R.id.addButton);
         addButton.setOnClickListener(this);
+        addButton.setImageDrawable(
+                new IconDrawable(context, Iconify.IconValue.zmdi_plus)
+                .colorRes(R.color.DarkColor)
+                .actionBarSize());
     }
 
     public void SetData()
     {
         db.Open();
-        routineDto = db.SelectRoutines();
+        routineDto = db.SelectRoutines(programId);
         db.Close();
 
         routineAdapter = new RoutineAdapter(this, routineDto);
@@ -107,6 +115,7 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.menu_exercise, menu);
+        menu.findItem(R.id.edit).setIcon(new IconDrawable(this, Iconify.IconValue.zmdi_swap_vertical).colorRes(R.color.white).actionBarSize());
         return true;
     }
 
@@ -114,15 +123,7 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id = item.getItemId();
-        if (id == R.id.add)
-        {
-            if (canSwitch)
-            {
-                AddDialog addDialog = new AddDialog();
-                addDialog.SetData(Routine.this, AddDialogType.Routine);
-                addDialog.show(getFragmentManager(), "");
-            }
-        }
+
         if (id == android.R.id.home)
         {
             onBackPressed();
@@ -164,14 +165,14 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
     {
         if (canSwitch)
         {
-            menu.getItem(1).setIcon(null);
-            menu.getItem(1).setTitle("Save");
+            menu.findItem(R.id.edit).setIcon(null);
+            menu.findItem(R.id.edit).setTitle("Save");
             canSwitch = false;
         }
         else
         {
-            menu.getItem(1).setIcon(R.drawable.white_arrow);
-            menu.getItem(1).setTitle("");
+            menu.findItem(R.id.edit).setIcon(new IconDrawable(this, Iconify.IconValue.zmdi_swap_vertical).colorRes(R.color.white).actionBarSize());
+            menu.findItem(R.id.edit).setTitle("");
             canSwitch = true;
         }
 
@@ -201,9 +202,9 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
     public void onClick(View v)
     {
         AddDialog addDialog = new AddDialog();
-        addDialog.SetData(Routine.this, AddDialogType.Program);
+        addDialog.SetData(Routine.this, AddDialogType.Routine);
         Bundle b = new Bundle();
-        b.putInt("PROGRAM_ID",programID);
+        b.putInt("PROGRAM_ID", programId);
         addDialog.setArguments(b);
         addDialog.show(Routine.this.getFragmentManager(), "");
     }
@@ -212,7 +213,7 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
     {
         public SortAdapter(Context ctxt, int rmid)
         {
-            super(ctxt, rmid, null, new String[]{"NAME"}, new int[] {1}, 0);
+            super(ctxt, rmid, null, new String[]{"name"}, new int[] {R.id.text}, 0);
             mContext = ctxt;
         }
 
@@ -277,12 +278,12 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
         class RoutineHolder
         {
             TextView routineName;
-            ImageView btn;
+            IconTextView btn;
 
             public RoutineHolder(View v)
             {
                 routineName = (TextView) v.findViewById(R.id.show);
-                btn = (ImageView) v.findViewById(R.id.edit_btn);
+                btn = (IconTextView) v.findViewById(R.id.edit_btn);
             }
         }
 
@@ -295,7 +296,7 @@ public class Routine extends Activity implements OnItemClickListener, onActionSu
             if (row == null)
             {
                 LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                row = inflater.inflate(R.layout.row_routine, parent, false);
+                row = inflater.inflate(R.layout.row_program, parent, false);
                 routineHolder = new RoutineHolder(row);
                 row.setTag(routineHolder);
 

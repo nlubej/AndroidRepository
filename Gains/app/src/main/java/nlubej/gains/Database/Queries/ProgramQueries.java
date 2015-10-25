@@ -15,7 +15,7 @@ public class ProgramQueries
 {
     public static String SelectPrograms ()
     {
-        return "SELECT ID, NAME FROM PROGRAM";
+        return "SELECT PROGRAM_ID, PROGRAM_NAME FROM PROGRAM";
     }
 
     public static String DeleteWorkoutLogsByProgramId (int programId)

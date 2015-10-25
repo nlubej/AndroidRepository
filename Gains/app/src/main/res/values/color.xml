@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <color name="light_gray" >#E0E0E0</color>
+    <color name="light_gray" >#4A8DC7</color>
     <color name="lighter_gray" >#EAEAEA</color> 
     <color name="lightest_gray" >#F5F5F5</color> 
     <color name="custom_black">#4E4E4E</color>
 
-    <color name="PrimaryColor">#428DE3</color>
-    <color name="SecondaryColor">#E39842</color>
+    <color name="PrimaryColor">#4A8DC7</color>
+    <color name="SecondaryColor">#E6A467</color>
+
+    <color name="PrimaryColorr">#4A8DC7</color>
+    <color name="SecondaryColorr">#CC9662</color>
+    <color name="SecondaryColor2">#4A8DC7</color>
+    <color name="SecondaryColor_gorazd">#E6A467</color>
     <color name="DarkColor">#404040</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#D48D50</color>
     
     <color name="menu">#316EA3</color>   
     <color name="tab_indikator">#316EA3</color>   

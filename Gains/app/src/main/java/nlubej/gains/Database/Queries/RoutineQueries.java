@@ -25,8 +25,13 @@ public class RoutineQueries
         return String.format("DELETE FROM EXERCISE WHERE EXERCISE_ID IN (" + "SELECT EXERCISE_ID FROM EXERCISE WHERE ROUTINE_ID = %d)", routineId);
     }
 
-    public static String SelectRoutines()
+    public static String SelectRoutines(int programId)
     {
-        return "SELECT ROUTINE_ID, ROUTINE_NAME, ROUTINE_POS, PROGRAM_ID FROM ROUTINE";
+        return String.format("SELECT ROUTINE_ID, ROUTINE_NAME, ROUTINE_POS, PROGRAM_ID FROM ROUTINE WHERE PROGRAM_ID = %s ORDER BY ROUTINE_POS ASC" ,programId);
+    }
+
+    public static String InsertRoutine(String routineName, int programId)
+    {
+        return String.format("INSERT INTO ROUTINE (ROUTINE_NAME, ROUTINE_POS, PROGRAM_ID) VALUES (%s,COALESCE((SELECT MAX(ROUTINE_POS)+1 FROM ROUTINE),1), %s)",routineName,programId);
     }
 }
