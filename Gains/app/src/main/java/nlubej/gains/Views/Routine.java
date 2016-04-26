@@ -1,30 +1,27 @@
-package nlubej.gains.Activities;
+package nlubej.gains.Views;
 
 
 import java.util.ArrayList;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
 import com.malinskiy.materialicons.IconDrawable;
@@ -32,29 +29,28 @@ import com.malinskiy.materialicons.Iconify;
 import com.malinskiy.materialicons.widget.IconTextView;
 import com.melnykov.fab.FloatingActionButton;
 
-import nlubej.gains.DataTransferObjects.ExerciseDto;
+import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
-import nlubej.gains.Dialogs.AddExerciseDialog;
-import nlubej.gains.Dialogs.EditExerciseDialog;
+import nlubej.gains.Dialogs.AddDialog;
+import nlubej.gains.Dialogs.EditDialog;
 import nlubej.gains.ExternalFiles.DragSortListView;
-import nlubej.gains.ExternalFiles.MaterialSpinner;
+import nlubej.gains.Enums.AddDialogType;
 import nlubej.gains.R;
 import nlubej.gains.ExternalFiles.SimpleDragSortCursorAdapter;
 import nlubej.gains.interfaces.onActionSubmit;
 
-
-public class Exercise extends AppCompatActivity implements onActionSubmit, OnClickListener
+public class Routine extends AppCompatActivity implements OnItemClickListener, onActionSubmit, OnClickListener
 {
     private QueryFactory db;
-    private ArrayList<ExerciseDto> exerciseDto;
+    private ArrayList<RoutineDto> routineDto;
     private Context context;
     private DragSortListView dslv;
     private SimpleDragSortCursorAdapter sortAdapter;
-    private ExerciseAdapter exerciseAdapter;
-    boolean canSwitch = false;
-    private int routineID = 0;
-    private MatrixCursor cursor;
+    private RoutineAdapter routineAdapter;
     private FloatingActionButton addButton;
+    private MatrixCursor cursor;
+    private boolean canSwitch = false;
+    private int programId = 0;
     private Toolbar toolbar;
 
     @Override
@@ -63,19 +59,17 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_routine_exercise);
 
-        //ActionBar actionBar = getActionBar();
-        //actionBar.setDisplayHomeAsUpEnabled(true);
+       // ActionBar actionBar = getActionBar();
+       //actionBar.setDisplayHomeAsUpEnabled(true);
         //actionBar.setLogo(null);
 
         Intent intent = getIntent();
-        String routineName = intent.getStringExtra("ROUTINE_NAME");
-        routineID = intent.getIntExtra("ROUTINE_ID", 1);
+        String routineName = intent.getStringExtra("PROGRAM_NAME");
+        programId = intent.getIntExtra("PROGRAM_ID", 1);
 
         setTitle(routineName);
         InitComponents();
         SetData();
-
-        dslv = (DragSortListView) findViewById(R.id.list);
     }
 
     private void InitComponents()
@@ -86,28 +80,31 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
 
         db = new QueryFactory(context);
         dslv = (DragSortListView) findViewById(R.id.list);
+        dslv.setOnItemClickListener(this);
         sortAdapter = new SortAdapter(this, R.layout.row_rearrange_item);
         addButton = (FloatingActionButton) findViewById(R.id.addButton);
         addButton.setOnClickListener(this);
-        addButton.setImageDrawable(new IconDrawable(context, Iconify.IconValue.zmdi_plus).colorRes(R.color.DarkColor).actionBarSize());
-
+        addButton.setImageDrawable(
+                new IconDrawable(context, Iconify.IconValue.zmdi_plus)
+                .colorRes(R.color.DarkColor)
+                .actionBarSize());
     }
 
     public void SetData()
     {
         db.Open();
-        exerciseDto = db.SelectExercises(routineID);
+        routineDto = db.SelectRoutines(programId);
         db.Close();
 
-        exerciseAdapter = new ExerciseAdapter(this, exerciseDto);
-        dslv.setAdapter(exerciseAdapter);
+        routineAdapter = new RoutineAdapter(this, routineDto);
+        dslv.setAdapter(routineAdapter);
 
-        cursor = new MatrixCursor(new String[]{"_id", "name"});
-        if (exerciseDto != null)
+        cursor = new MatrixCursor(new String[]{"_id", "name", "subName"});
+        if (routineDto != null)
         {
-            for (int i = 0; i < exerciseDto.size(); i++)
+            for (int i = 0; i < routineDto.size(); i++)
             {
-                cursor.addRow(new Object[] {i, exerciseDto.get(i).Name});
+                cursor.addRow(new Object[] {i, routineDto.get(i).Name, String.format("%d exercises",routineDto.get(i).ExerciseCount)});
             }
         }
 
@@ -133,6 +130,7 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
         }
         if (id == R.id.edit)
         {
+
             if (canSwitch)
             {
                 dslv.setAdapter(sortAdapter);
@@ -145,19 +143,19 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
                     int[] newIds = new int[cursor.getCount()];
                     for (int i = 0; i < sortAdapter.getCount(); i++)
                     {
-                        newIds[i] = ((int)sortAdapter.getItemId(i)) + 1;
+                        newIds[i] = ((int) sortAdapter.getItemId(i)) + 1;
                         cursor.moveToNext();
                     }
 
                     db.Open();
-                    db.UpdateExerciseOrder(newIds, exerciseDto);
+                    db.UpdateRoutineOrder(newIds, routineDto);
                     db.Close();
                 }
+
                 SetData();
             }
             invalidateOptionsMenu();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -165,7 +163,6 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-
         if (canSwitch)
         {
             menu.findItem(R.id.edit).setIcon(null);
@@ -183,6 +180,19 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
     }
 
     @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        if (canSwitch)
+        {
+            Intent i = new Intent(this, Exercise.class);
+            i.putExtra("ROUTINE_NAME", routineDto.get((int) id).Name);
+            i.putExtra("ROUTINE_ID", routineDto.get((int) id).Id);
+
+            startActivity(i);
+        }
+    }
+
+    @Override
     public void OnSubmit(String action)
     {
         SetData();
@@ -191,19 +201,19 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
     @Override
     public void onClick(View v)
     {
-        AddExerciseDialog addDialog = new AddExerciseDialog();
-        addDialog.SetData(Exercise.this);
+        AddDialog addDialog = new AddDialog();
+        addDialog.SetData(Routine.this, AddDialogType.Routine);
         Bundle b = new Bundle();
-        b.putInt("ROUTINE_ID", routineID);
+        b.putInt("PROGRAM_ID", programId);
         addDialog.setArguments(b);
-        addDialog.show(Exercise.this. getFragmentManager(), "");
+        addDialog.show(Routine.this.getFragmentManager(), "");
     }
 
     private class SortAdapter extends SimpleDragSortCursorAdapter
     {
         public SortAdapter(Context ctxt, int rmid)
         {
-            super(ctxt, rmid, null, new String[]{"name"}, new int[] {R.id.text}, 0);
+            super(ctxt, rmid, null, new String[]{"name", "subName"}, new int[] {R.id.text, R.id.show2}, 0);
             mContext = ctxt;
         }
 
@@ -216,34 +226,34 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
         }
     }
 
-
-    class ExerciseRow
+    class RoutineRow
     {
-        String exerciseName;
+        public String routineName;
+        public int exerciseCount;
 
-        public ExerciseRow(String exerciseName)
+        public RoutineRow(String routineName, int exerciseCount)
         {
-            this.exerciseName = exerciseName;
+            this.routineName = routineName;
+            this.exerciseCount = exerciseCount;
         }
     }
 
-
-    class ExerciseAdapter extends BaseAdapter
-
+    class RoutineAdapter extends BaseAdapter
     {
-        ArrayList<ExerciseRow> exerciseRows;
+        ArrayList<RoutineRow> routineRows;
         Context c;
 
-        public ExerciseAdapter(Context c, ArrayList<ExerciseDto> routineDto)
+
+        public RoutineAdapter(Context c, ArrayList<RoutineDto> routineDto)
         {
             this.c = c;
-            exerciseRows = new ArrayList<>();
+            routineRows = new ArrayList<>();
 
             if (routineDto != null)
             {
-                for (ExerciseDto dto : routineDto)
+                for (RoutineDto dto : routineDto)
                 {
-                    exerciseRows.add(new ExerciseRow(dto.Name));
+                    routineRows.add(new RoutineRow(dto.Name, dto.ExerciseCount));
                 }
             }
         }
@@ -252,13 +262,13 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
         @Override
         public int getCount()
         {
-            return exerciseRows.size();
+            return routineRows.size();
         }
 
         @Override
         public Object getItem(int position)
         {
-            return exerciseRows.get(position);
+            return routineRows.get(position);
         }
 
         @Override
@@ -267,14 +277,16 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
             return position;
         }
 
-        class ExerciseHolder
+        class RoutineHolder
         {
-            TextView exerciseName;
+            TextView title;
+            TextView subTitle;
             IconTextView btn;
 
-            public ExerciseHolder(View v)
+            public RoutineHolder(View v)
             {
-                exerciseName = (TextView) v.findViewById(R.id.show);
+                title = (TextView) v.findViewById(R.id.show);
+                subTitle = (TextView) v.findViewById(R.id.show2);
                 btn = (IconTextView) v.findViewById(R.id.edit_btn);
             }
         }
@@ -283,32 +295,33 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
         public View getView(final int position, View convertView, ViewGroup parent)
         {
             View row = convertView;
-            ExerciseHolder ExerciseHolder = null;
+            RoutineHolder routineHolder = null;
 
             if (row == null)
             {
                 LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 row = inflater.inflate(R.layout.row_program, parent, false);
-                ExerciseHolder = new ExerciseHolder(row);
-                row.setTag(ExerciseHolder);
+                routineHolder = new RoutineHolder(row);
+                row.setTag(routineHolder);
 
             }
             else
             {
-                ExerciseHolder = (ExerciseHolder) row.getTag();
+                routineHolder = (RoutineHolder) row.getTag();
             }
 
 
-            ExerciseRow temp = exerciseRows.get(position);
+            RoutineRow temp = routineRows.get(position);
 
-            ExerciseHolder.exerciseName.setText(temp.exerciseName);
-            ExerciseHolder.btn.setTag(position);
+            routineHolder.title.setText(temp.routineName);
+            routineHolder.subTitle.setText(String.format("%d exercises",temp.exerciseCount));
+            routineHolder.btn.setTag(position);
 
-            ExerciseHolder.btn.setOnClickListener(new OnClickListener()
+            routineHolder.btn.setOnClickListener(new OnClickListener()
             {
 
                 @Override
-                public void onClick(final View v)
+                public void onClick(View v)
                 {
                     PopupMenu popup = new PopupMenu(c, v);
                     popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
@@ -325,7 +338,7 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
                                     public void onClick(DialogInterface dialog, int which)
                                     {
                                         db.Open();
-                                        db.DeleteExercise(exerciseDto.get(position).Id);
+                                        db.DeleteRoutine(routineDto.get(position).Id);
                                         db.Close();
 
                                         SetData();
@@ -336,17 +349,15 @@ public class Exercise extends AppCompatActivity implements onActionSubmit, OnCli
                                     {
                                     }
                                 }).show();
-
-
                             }
                             else if (item.getItemId() == R.id.edit)
                             {
-                                EditExerciseDialog editDialog = new EditExerciseDialog();
+                                EditDialog editDialog = new EditDialog();
                                 Bundle arg = new Bundle();
-                                arg.putString("EXERCISE_NAME", exerciseDto.get(position).Name);
-                                arg.putInt("EXERCISE_ID", exerciseDto.get(position).Id);
+                                arg.putString("ROUTINE_NAME", routineDto.get(position).Name);
+                                arg.putInt("ROUTINE_ID", routineDto.get(position).Id);
                                 editDialog.setArguments(arg);
-                                editDialog.SetData(Exercise.this);
+                                editDialog.SetData(Routine.this, AddDialogType.Routine);
                                 editDialog.show(getFragmentManager(), "");
 
                             }

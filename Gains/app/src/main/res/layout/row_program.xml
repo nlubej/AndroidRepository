@@ -12,35 +12,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-
         android:layout_alignParentTop="true"
+        android:paddingTop="5dp"
         android:layout_toLeftOf="@+id/edit_btn"
-        android:layout_toStartOf="@+id/edit_btn"
-        android:background="@drawable/selector"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:gravity="start"
-        android:lineSpacingExtra="8dp"
-        android:padding="5dp"
+        android:text="Routine name"
         android:textAlignment="textStart"
+        android:gravity="start"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textDirection="inherit"
-        android:textIsSelectable="false"
-        android:textColor="@color/DarkColor"/>
+        android:textIsSelectable="false" />
+
+    <TextView
+        android:id="@+id/show2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:paddingBottom="8dp"
+        android:layout_below="@id/show"
+        android:text="5 exercises"
+        android:textColor="@color/gray"
+        android:textAlignment="textStart"
+        android:gravity="start"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textIsSelectable="false" />
 
     <com.malinskiy.materialicons.widget.IconTextView
         android:id="@+id/edit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/show"
-        android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/show"
-        android:background="@drawable/selector"
+        android:paddingTop="15dp"
+        android:paddingRight="5dp"
+        android:layout_alignBottom="@+id/show2"
+        android:layout_alignParentRight="true"
         android:focusableInTouchMode="false"
-        android:padding="8dp"
         android:text="{zmdi-more-vert}"
-        android:textIsSelectable="false"
-        android:textSize="30dp"/>
+        android:textSize="30sp"
+        android:textIsSelectable="false" />
 
 </RelativeLayout>
 

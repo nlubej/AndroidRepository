@@ -7,4 +7,5 @@ public class ProgramDto
 {
     public int Id;
     public String Name;
+    public int RoutineCount;
 }

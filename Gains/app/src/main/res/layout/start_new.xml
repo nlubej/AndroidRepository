@@ -1,0 +1,174 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:layout_width="fill_parent">
+
+
+        <RelativeLayout
+            android:id="@+id/rlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+
+            <TextView
+                android:id="@+id/exerciseName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/custom_black"
+                android:textStyle="bold"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="23dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <ImageView
+                android:id="@+id/weightMinus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/editWeight"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/editWeight"
+                android:background="@drawable/button_selector"
+                android:clickable="true"
+                android:scaleX="1.3"
+                android:scaleY="1.3"
+                android:src="@drawable/minus" />
+
+            <ImageView
+                android:id="@+id/weightPlus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/editWeight"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/editWeight"
+                android:background="@drawable/button_selector"
+                android:clickable="true"
+                android:scaleX="1.3"
+                android:scaleY="1.3"
+                android:src="@drawable/plus" />
+
+            <ImageView
+                android:id="@+id/repsPlus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/editReps"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_toRightOf="@+id/editReps"
+                android:background="@drawable/button_selector"
+                android:clickable="true"
+                android:scaleX="1.3"
+                android:scaleY="1.3"
+                android:src="@drawable/plus" />
+
+            <ImageView
+                android:id="@+id/repsMinus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/editReps"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/editReps"
+                android:background="@drawable/button_selector"
+                android:clickable="true"
+                android:scaleX="1.3"
+                android:scaleY="1.3"
+                android:src="@drawable/minus" />
+
+            <TextView
+                android:id="@+id/textReps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="REPS:"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_below="@color/menu"
+                android:textStyle="bold"
+                android:textSize="12sp" />
+
+            <View
+                android:id="@+id/seperator2"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/textReps"
+                android:background="@color/lightest_gray" />
+
+            <EditText
+                android:id="@+id/editReps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seperator2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:ems="4"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="number"
+                android:maxLength="3"
+                android:textColor="@color/custom_black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textWeightt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textReps"
+                android:layout_below="@+id/repsMinus"
+                android:layout_marginTop="17dp"
+                android:text="WEIGHT:"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/menu"
+                android:textStyle="bold"
+                android:textSize="12sp" />
+
+            <View
+                android:id="@+id/seperator"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/textWeightt"
+                android:background="@color/lightest_gray" />
+
+            <EditText
+                android:id="@+id/editWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seperator"
+                android:layout_marginTop="5dp"
+                android:layout_toLeftOf="@+id/repsPlus"
+                android:ems="4"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="numberDecimal"
+                android:maxLength="6"
+                android:textColor="@color/custom_black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:layout_width="fill_parent">
+
+
+        <com.baoyz.swipemenulistview.SwipeMenuListView
+            android:id="@+id/listView"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,25 +1,20 @@
-package nlubej.gains.Activities;
+package nlubej.gains.Views;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
 
 import br.liveo.Model.HelpLiveo;
 import br.liveo.interfaces.OnItemClickListener;
 import br.liveo.interfaces.OnPrepareOptionsMenuLiveo;
 import br.liveo.navigationliveo.NavigationLiveo;
-import nlubej.gains.Activities.StartScreen;
-import nlubej.gains.Fragments.OneRepMaxCalculator;
-import nlubej.gains.Fragments.Program;
-import nlubej.gains.Fragments.WilksCalculator;
-import nlubej.gains.Fragments.WorkoutLog;
 import nlubej.gains.R;
 
 
-public class MainActivity extends NavigationLiveo implements OnItemClickListener {
+public class MainActivity extends NavigationLiveo implements OnItemClickListener, OnPrepareOptionsMenuLiveo
+{
 
 
 private HelpLiveo mHelpLiveo;
@@ -31,11 +26,13 @@ private HelpLiveo mHelpLiveo;
 		this.userEmail.setText("I will make lots of gains");
 		this.userBackground.setImageResource(R.drawable.gaains);
 
+        this.setOnPrepareOptionsMenu(this);
 		// Creating items navigation
 		mHelpLiveo = new HelpLiveo();
 		mHelpLiveo.add("Start workout", R.mipmap.ic_launcher);
-		mHelpLiveo.add("Logged workouts", R.mipmap.ic_launcher);
-		mHelpLiveo.add("Graphs and statistics", R.mipmap.ic_launcher);
+		mHelpLiveo.add("Programs", R.mipmap.ic_launcher);
+		mHelpLiveo.add("Workout logs", R.mipmap.ic_launcher);
+		mHelpLiveo.add("Statistics", R.mipmap.ic_launcher);
 
 		mHelpLiveo.addSubHeader("Tools");
 		mHelpLiveo.add("Wilks calculator", R.mipmap.ic_launcher);
@@ -50,11 +47,17 @@ private HelpLiveo mHelpLiveo;
 		with(this) // default theme is dark
 				.startingPosition(0) //Starting position in the list
 				.addAllHelpItem(mHelpLiveo.getHelp()).setOnPrepareOptionsMenu(onPrepare)
+				//.removeHeader()
+				//.header
 				.build();
 	}
 
+    private void onPostCreate(MainActivity mainActivity)
+    {
+    }
 
-	@Override //The "R.id.container" should be used in "beginTransaction (). Replace"
+
+    @Override //The "R.id.container" should be used in "beginTransaction (). Replace"
 	public void onItemClick(int position) {
 		Fragment mFragment;
 		FragmentManager mFragmentManager = getSupportFragmentManager();
@@ -65,9 +68,11 @@ private HelpLiveo mHelpLiveo;
 				break;
 			case 1:
 				mFragment = new Program();
+				this.userEmail.setText("program");
 				break;
 			case 2:
-				mFragment = new WorkoutLog();
+				mFragment = new NewWorkout();
+				this.userEmail.setText("new workout");
 				break;
 			case 3:
 				mFragment = new OneRepMaxCalculator();
@@ -89,10 +94,16 @@ private HelpLiveo mHelpLiveo;
 
 	}
 
-private OnPrepareOptionsMenuLiveo onPrepare = new OnPrepareOptionsMenuLiveo() {
+    private OnPrepareOptionsMenuLiveo onPrepare = new OnPrepareOptionsMenuLiveo() {
 	@Override
 	public void onPrepareOptionsMenu(Menu menu, int position, boolean visible) {
+
 	}
 };
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu, int position, boolean visible)
+    {
+        this.userEmail.setText("test");
+    }
 }

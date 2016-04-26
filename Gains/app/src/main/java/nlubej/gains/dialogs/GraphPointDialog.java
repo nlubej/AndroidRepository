@@ -2,7 +2,7 @@ package nlubej.gains.Dialogs;
 
 import nlubej.gains.DBAdapter;
 import nlubej.gains.R;
-import nlubej.gains.adapters.StrengthLogAdapter;
+import nlubej.gains.Adapters.StrengthLogAdapter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;

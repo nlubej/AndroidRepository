@@ -1,4 +1,4 @@
-package nlubej.gains.Fragments;
+package nlubej.gains.Views;
 
 import java.util.ArrayList;
 
@@ -9,11 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -32,7 +27,6 @@ import com.malinskiy.materialicons.Iconify;
 import com.malinskiy.materialicons.widget.IconTextView;
 import com.melnykov.fab.FloatingActionButton;
 
-import nlubej.gains.Activities.Routine;
 import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Dialogs.AddDialog;
@@ -44,7 +38,6 @@ import nlubej.gains.interfaces.*;
 
 public class Program extends Fragment implements OnItemClickListener, onActionSubmit, OnClickListener
 {
-    private View fragment;
     private Context context;
     private ListView list;
     private QueryFactory db;
@@ -52,12 +45,12 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
     private ArrayList<ProgramDto> programDto;
     public static long DefaultProgram = -1; //used in other classes
     FloatingActionButton addButton;
-    private Toolbar toolbar;
+    //private Toolbar toolbar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        fragment = inflater.inflate(R.layout.view_program, container, false);
+        View fragment = inflater.inflate(R.layout.view_program, container, false);
 
         InitComponents(fragment);
         SetData();
@@ -137,10 +130,12 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
     class ProgramRow
     {
         private String programName;
+        private int routineCount;
 
-        public ProgramRow(String programName)
+        public ProgramRow(String programName, int routineCount)
         {
             this.programName = programName;
+            this.routineCount = routineCount;
         }
     }
 
@@ -152,17 +147,16 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         public ProgramAdapter(Context context, ArrayList<ProgramDto> programDto)
         {
             this.context = context;
-            programRows = new ArrayList();
+            programRows = new ArrayList<>();
 
             if (programDto != null)
             {
                 for (ProgramDto dto : programDto)
                 {
-                    programRows.add(new ProgramRow(dto.Name));
+                    programRows.add(new ProgramRow(dto.Name, dto.RoutineCount));
                 }
             }
         }
-
 
         @Override
         public int getCount()
@@ -197,11 +191,13 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         class ProgramViewHolder
         {
             private TextView title;
+            private TextView subTitle;
             private IconTextView btn;
 
             public ProgramViewHolder(View v)
             {
                 title = (TextView) v.findViewById(R.id.show);
+                subTitle = (TextView) v.findViewById(R.id.show2);
                 btn = (IconTextView) v.findViewById(R.id.edit_btn);
             }
         }
@@ -210,7 +206,7 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         public View getView(final int position, View convertView, ViewGroup parent)
         {
             View row = convertView;
-            ProgramViewHolder holder = null;
+            ProgramViewHolder holder;
 
             if (row == null)
             {
@@ -223,16 +219,20 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
                     if (DefaultProgram == programDto.get(position).Id)
                     {
                         holder.title.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
+                        holder.subTitle.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
+
                     }
                     else if ((programDto.get(position).Id) == Integer.parseInt(prefs.getString("DEFAULT_PROGRAM", "")))
                     {
                         holder.title.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
+                        holder.subTitle.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
                     }
                 }
                 catch (NumberFormatException e)
                 {
                     e.printStackTrace();
                     holder.title.setTextColor(ContextCompat.getColor(context, R.color.menu));
+                    holder.subTitle.setTextColor(ContextCompat.getColor(context, R.color.menu));
                     prefs.edit().putString("DEFAULT_PROGRAM", programDto.get(0).Id + "").apply();
                 }
             }
@@ -245,6 +245,7 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
             final ProgramRow temp = programRows.get(position);
 
             holder.title.setText(temp.programName);
+            holder.subTitle.setText(String.format("%d routines",temp.routineCount));
 
             holder.btn.setOnClickListener(new OnClickListener()
             {

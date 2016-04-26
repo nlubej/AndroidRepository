@@ -1,4 +1,4 @@
-package nlubej.gains.adapters;
+package nlubej.gains.Adapters;
 
 import android.support.v4.app.Fragment;
 /**

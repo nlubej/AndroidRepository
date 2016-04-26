@@ -1,4 +1,4 @@
-package nlubej.gains.adapters;
+package nlubej.gains.Adapters;
 
 import java.util.ArrayList;
 

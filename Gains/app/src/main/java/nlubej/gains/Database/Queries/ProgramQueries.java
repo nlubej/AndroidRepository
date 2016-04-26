@@ -15,7 +15,9 @@ public class ProgramQueries
 {
     public static String SelectPrograms ()
     {
-        return "SELECT PROGRAM_ID, PROGRAM_NAME FROM PROGRAM";
+        return "SELECT p.PROGRAM_ID, p.PROGRAM_NAME, count(r.ROUTINE_ID) as ROUTINE_COUNT FROM PROGRAM p " +
+                "LEFT JOIN ROUTINE r on p.PROGRAM_ID = r.PROGRAM_ID " +
+                "GROUP BY p.PROGRAM_ID, p.PROGRAM_NAME";
     }
 
     public static String DeleteWorkoutLogsByProgramId (int programId)

@@ -4,13 +4,14 @@
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
               android:layout_alignParentBottom="true">
+
+
     <Button
         android:id="@+id/btn_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_bg"
         android:textAlignment="textEnd"
-        android:layout_gravity="end"
+        android:background="@drawable/btn_bg"
         android:layout_weight="3"
         android:text="Cancel"
         android:clickable="true"
@@ -23,9 +24,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_bg"
+        android:layout_gravity="end"
         android:layout_weight="1"
         android:text="Accept"
         android:textColor="@color/DarkColor"
         android:textStyle="bold">
     </Button>
+
+
 </LinearLayout>

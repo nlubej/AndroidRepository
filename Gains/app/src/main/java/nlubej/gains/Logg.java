@@ -22,11 +22,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import nlubej.gains.Fragments.Program;
-import nlubej.gains.adapters.CardioLogAdapter;
-import nlubej.gains.adapters.MySpinnerAdapter;
-import nlubej.gains.adapters.StrengthLogAdapter;
-import nlubej.gains.adapters.WeightLogAdapter;
+import nlubej.gains.Views.Program;
+import nlubej.gains.Adapters.CardioLogAdapter;
+import nlubej.gains.Adapters.StrengthLogAdapter;
+import nlubej.gains.Adapters.WeightLogAdapter;
 import nlubej.gains.interfaces.onActionSubmit;
 
 /**

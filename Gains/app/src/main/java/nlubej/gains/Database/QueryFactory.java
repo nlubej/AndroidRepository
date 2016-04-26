@@ -140,6 +140,7 @@ public class QueryFactory
                 ProgramDto dto = new ProgramDto();
                 dto.Id = c.getInt(0);
                 dto.Name = c.getString(1);
+                dto.RoutineCount = c.getInt(2);
 
                 programDto.add(dto);
             }
@@ -165,6 +166,7 @@ public class QueryFactory
                 dto.Name = c.getString(1);
                 dto.Position = c.getInt(2);
                 dto.ProgramId = c.getInt(3);
+                dto.ExerciseCount = c.getInt(4);
 
                 routineDto.add(dto);
             }
@@ -187,7 +189,7 @@ public class QueryFactory
                 dto.Id = c.getInt(0);
                 dto.Name = c.getString(1);
                 dto.Position = c.getInt(2);
-                dto.Type = ExerciseType.values()[c.getInt(3)];
+                dto.Type = ExerciseType.values()[c.getInt(3)-1];
                 dto.RoutineId = c.getInt(4);
 
                 exerciseDto.add(dto);

@@ -255,8 +255,8 @@ public class MyStats extends Fragment implements OnClickListener, onActionSubmit
         int id = item.getItemId();
         if (id == R.id.settings) 
         {
-        	Intent i = new Intent(fragment.getContext(), nlubej.gains.Settings.class);
-            startActivity(i);   
+        	//Intent i = new Intent(fragment.getContext(), nlubej.gains.Settings.class);
+           // startActivity(i);
         }	
         if(id == android.R.id.home){
         	
@@ -285,8 +285,8 @@ public class MyStats extends Fragment implements OnClickListener, onActionSubmit
 		}
 		else if(v == achievements) 
 		{
-			Intent i = new Intent(fragment.getContext(), nlubej.gains.Achievements.class);
-	        startActivity(i);
+			//Intent i = new Intent(fragment.getContext(), nlubej.gains.Achievements.class);
+	      //  startActivity(i);
 		}
 	}
 

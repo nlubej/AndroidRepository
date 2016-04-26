@@ -9,4 +9,5 @@ public class RoutineDto
     public String Name;
     public int Position;
     public int ProgramId;
+    public int ExerciseCount;
 }

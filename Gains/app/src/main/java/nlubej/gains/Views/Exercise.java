@@ -1,4 +1,4 @@
-package nlubej.gains.Activities;
+package nlubej.gains.Views;
 
 
 import java.util.ArrayList;
@@ -11,17 +11,15 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
 import com.malinskiy.materialicons.IconDrawable;
@@ -29,28 +27,28 @@ import com.malinskiy.materialicons.Iconify;
 import com.malinskiy.materialicons.widget.IconTextView;
 import com.melnykov.fab.FloatingActionButton;
 
-import nlubej.gains.DataTransferObjects.RoutineDto;
+import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.Database.QueryFactory;
-import nlubej.gains.Dialogs.AddDialog;
-import nlubej.gains.Dialogs.EditDialog;
+import nlubej.gains.Dialogs.AddExerciseDialog;
+import nlubej.gains.Dialogs.EditExerciseDialog;
 import nlubej.gains.ExternalFiles.DragSortListView;
-import nlubej.gains.Enums.AddDialogType;
 import nlubej.gains.R;
 import nlubej.gains.ExternalFiles.SimpleDragSortCursorAdapter;
 import nlubej.gains.interfaces.onActionSubmit;
 
-public class Routine extends AppCompatActivity implements OnItemClickListener, onActionSubmit, OnClickListener
+
+public class Exercise extends AppCompatActivity implements onActionSubmit, OnClickListener
 {
     private QueryFactory db;
-    private ArrayList<RoutineDto> routineDto;
+    private ArrayList<ExerciseDto> exerciseDto;
     private Context context;
     private DragSortListView dslv;
     private SimpleDragSortCursorAdapter sortAdapter;
-    private RoutineAdapter routineAdapter;
-    private FloatingActionButton addButton;
+    private ExerciseAdapter exerciseAdapter;
+    boolean canSwitch = false;
+    private int routineID = 0;
     private MatrixCursor cursor;
-    private boolean canSwitch = false;
-    private int programId = 0;
+    private FloatingActionButton addButton;
     private Toolbar toolbar;
 
     @Override
@@ -59,17 +57,19 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_routine_exercise);
 
-       // ActionBar actionBar = getActionBar();
-       //actionBar.setDisplayHomeAsUpEnabled(true);
+        //ActionBar actionBar = getActionBar();
+        //actionBar.setDisplayHomeAsUpEnabled(true);
         //actionBar.setLogo(null);
 
         Intent intent = getIntent();
-        String routineName = intent.getStringExtra("PROGRAM_NAME");
-        programId = intent.getIntExtra("PROGRAM_ID", 1);
+        String routineName = intent.getStringExtra("ROUTINE_NAME");
+        routineID = intent.getIntExtra("ROUTINE_ID", 1);
 
         setTitle(routineName);
         InitComponents();
         SetData();
+
+        dslv = (DragSortListView) findViewById(R.id.list);
     }
 
     private void InitComponents()
@@ -80,31 +80,28 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
 
         db = new QueryFactory(context);
         dslv = (DragSortListView) findViewById(R.id.list);
-        dslv.setOnItemClickListener(this);
-        sortAdapter = new SortAdapter(this, R.layout.row_rearrange_item);
+        sortAdapter = new SortAdapter(this, R.layout.row_rearrange_item_exercise);
         addButton = (FloatingActionButton) findViewById(R.id.addButton);
         addButton.setOnClickListener(this);
-        addButton.setImageDrawable(
-                new IconDrawable(context, Iconify.IconValue.zmdi_plus)
-                .colorRes(R.color.DarkColor)
-                .actionBarSize());
+        addButton.setImageDrawable(new IconDrawable(context, Iconify.IconValue.zmdi_plus).colorRes(R.color.DarkColor).actionBarSize());
+
     }
 
     public void SetData()
     {
         db.Open();
-        routineDto = db.SelectRoutines(programId);
+        exerciseDto = db.SelectExercises(routineID);
         db.Close();
 
-        routineAdapter = new RoutineAdapter(this, routineDto);
-        dslv.setAdapter(routineAdapter);
+        exerciseAdapter = new ExerciseAdapter(this, exerciseDto);
+        dslv.setAdapter(exerciseAdapter);
 
         cursor = new MatrixCursor(new String[]{"_id", "name"});
-        if (routineDto != null)
+        if (exerciseDto != null)
         {
-            for (int i = 0; i < routineDto.size(); i++)
+            for (int i = 0; i < exerciseDto.size(); i++)
             {
-                cursor.addRow(new Object[] {i, routineDto.get(i).Name});
+                cursor.addRow(new Object[] {i, exerciseDto.get(i).Name});
             }
         }
 
@@ -130,7 +127,6 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
         }
         if (id == R.id.edit)
         {
-
             if (canSwitch)
             {
                 dslv.setAdapter(sortAdapter);
@@ -143,19 +139,19 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
                     int[] newIds = new int[cursor.getCount()];
                     for (int i = 0; i < sortAdapter.getCount(); i++)
                     {
-                        newIds[i] = ((int) sortAdapter.getItemId(i)) + 1;
+                        newIds[i] = ((int)sortAdapter.getItemId(i)) + 1;
                         cursor.moveToNext();
                     }
 
                     db.Open();
-                    db.UpdateRoutineOrder(newIds, routineDto);
+                    db.UpdateExerciseOrder(newIds, exerciseDto);
                     db.Close();
                 }
-
                 SetData();
             }
             invalidateOptionsMenu();
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -163,6 +159,7 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
+
         if (canSwitch)
         {
             menu.findItem(R.id.edit).setIcon(null);
@@ -180,19 +177,6 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        if (canSwitch)
-        {
-            Intent i = new Intent(this, Exercise.class);
-            i.putExtra("ROUTINE_NAME", routineDto.get((int) id).Name);
-            i.putExtra("ROUTINE_ID", routineDto.get((int) id).Id);
-
-            startActivity(i);
-        }
-    }
-
-    @Override
     public void OnSubmit(String action)
     {
         SetData();
@@ -201,12 +185,12 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
     @Override
     public void onClick(View v)
     {
-        AddDialog addDialog = new AddDialog();
-        addDialog.SetData(Routine.this, AddDialogType.Routine);
+        AddExerciseDialog addDialog = new AddExerciseDialog();
+        addDialog.SetData(Exercise.this);
         Bundle b = new Bundle();
-        b.putInt("PROGRAM_ID", programId);
+        b.putInt("ROUTINE_ID", routineID);
         addDialog.setArguments(b);
-        addDialog.show(Routine.this.getFragmentManager(), "");
+        addDialog.show(Exercise.this. getFragmentManager(), "");
     }
 
     private class SortAdapter extends SimpleDragSortCursorAdapter
@@ -226,32 +210,34 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
         }
     }
 
-    class RoutineRow
-    {
-        public String routineName;
 
-        public RoutineRow(String routineName)
+    class ExerciseRow
+    {
+        String exerciseName;
+
+        public ExerciseRow(String exerciseName)
         {
-            this.routineName = routineName;
+            this.exerciseName = exerciseName;
         }
     }
 
-    class RoutineAdapter extends BaseAdapter
+
+    class ExerciseAdapter extends BaseAdapter
+
     {
-        ArrayList<RoutineRow> routineRows;
+        ArrayList<ExerciseRow> exerciseRows;
         Context c;
 
-
-        public RoutineAdapter(Context c, ArrayList<RoutineDto> routineDto)
+        public ExerciseAdapter(Context c, ArrayList<ExerciseDto> routineDto)
         {
             this.c = c;
-            routineRows = new ArrayList<>();
+            exerciseRows = new ArrayList<>();
 
             if (routineDto != null)
             {
-                for (RoutineDto dto : routineDto)
+                for (ExerciseDto dto : routineDto)
                 {
-                    routineRows.add(new RoutineRow(dto.Name));
+                    exerciseRows.add(new ExerciseRow(dto.Name));
                 }
             }
         }
@@ -260,13 +246,13 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
         @Override
         public int getCount()
         {
-            return routineRows.size();
+            return exerciseRows.size();
         }
 
         @Override
         public Object getItem(int position)
         {
-            return routineRows.get(position);
+            return exerciseRows.get(position);
         }
 
         @Override
@@ -275,14 +261,14 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
             return position;
         }
 
-        class RoutineHolder
+        class ExerciseHolder
         {
-            TextView routineName;
+            TextView exerciseName;
             IconTextView btn;
 
-            public RoutineHolder(View v)
+            public ExerciseHolder(View v)
             {
-                routineName = (TextView) v.findViewById(R.id.show);
+                exerciseName = (TextView) v.findViewById(R.id.show);
                 btn = (IconTextView) v.findViewById(R.id.edit_btn);
             }
         }
@@ -291,32 +277,32 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
         public View getView(final int position, View convertView, ViewGroup parent)
         {
             View row = convertView;
-            RoutineHolder routineHolder = null;
+            ExerciseHolder ExerciseHolder = null;
 
             if (row == null)
             {
                 LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                row = inflater.inflate(R.layout.row_program, parent, false);
-                routineHolder = new RoutineHolder(row);
-                row.setTag(routineHolder);
+                row = inflater.inflate(R.layout.row_exercise, parent, false);
+                ExerciseHolder = new ExerciseHolder(row);
+                row.setTag(ExerciseHolder);
 
             }
             else
             {
-                routineHolder = (RoutineHolder) row.getTag();
+                ExerciseHolder = (ExerciseHolder) row.getTag();
             }
 
 
-            RoutineRow temp = routineRows.get(position);
+            ExerciseRow temp = exerciseRows.get(position);
 
-            routineHolder.routineName.setText(temp.routineName);
-            routineHolder.btn.setTag(position);
+            ExerciseHolder.exerciseName.setText(temp.exerciseName);
+            ExerciseHolder.btn.setTag(position);
 
-            routineHolder.btn.setOnClickListener(new OnClickListener()
+            ExerciseHolder.btn.setOnClickListener(new OnClickListener()
             {
 
                 @Override
-                public void onClick(View v)
+                public void onClick(final View v)
                 {
                     PopupMenu popup = new PopupMenu(c, v);
                     popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
@@ -333,7 +319,7 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
                                     public void onClick(DialogInterface dialog, int which)
                                     {
                                         db.Open();
-                                        db.DeleteRoutine(routineDto.get(position).Id);
+                                        db.DeleteExercise(exerciseDto.get(position).Id);
                                         db.Close();
 
                                         SetData();
@@ -344,15 +330,17 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, o
                                     {
                                     }
                                 }).show();
+
+
                             }
                             else if (item.getItemId() == R.id.edit)
                             {
-                                EditDialog editDialog = new EditDialog();
+                                EditExerciseDialog editDialog = new EditExerciseDialog();
                                 Bundle arg = new Bundle();
-                                arg.putString("ROUTINE_NAME", routineDto.get(position).Name);
-                                arg.putInt("ROUTINE_ID", routineDto.get(position).Id);
+                                arg.putString("EXERCISE_NAME", exerciseDto.get(position).Name);
+                                arg.putInt("EXERCISE_ID", exerciseDto.get(position).Id);
                                 editDialog.setArguments(arg);
-                                editDialog.SetData(Routine.this, AddDialogType.Routine);
+                                editDialog.SetData(Exercise.this);
                                 editDialog.show(getFragmentManager(), "");
 
                             }

@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import nlubej.gains.Database.QueryFactory;
-import nlubej.gains.Activities.Exercise;
+import nlubej.gains.Views.Exercise;
 import nlubej.gains.R;
 import nlubej.gains.interfaces.onActionSubmit;
 

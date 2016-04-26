@@ -27,7 +27,11 @@ public class RoutineQueries
 
     public static String SelectRoutines(int programId)
     {
-        return String.format("SELECT ROUTINE_ID, ROUTINE_NAME, ROUTINE_POS, PROGRAM_ID FROM ROUTINE WHERE PROGRAM_ID = %s ORDER BY ROUTINE_POS ASC" ,programId);
+        return String.format("SELECT r.ROUTINE_ID, r.ROUTINE_NAME, r.ROUTINE_POS, r.PROGRAM_ID, count(e.EXERCISE_ID) as EXERCISE_COUNT  FROM ROUTINE r " +
+                "LEFT JOIN EXERCISE e on e.ROUTINE_ID = r.ROUTINE_ID " +
+                "WHERE PROGRAM_ID = %s " +
+                "GROUP BY r.ROUTINE_ID, r.ROUTINE_NAME, r.ROUTINE_POS, r.PROGRAM_ID  " +
+                "ORDER BY ROUTINE_POS ASC " ,programId);
     }
 
     public static String InsertRoutine(String routineName, int programId)

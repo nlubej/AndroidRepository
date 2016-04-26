@@ -2,8 +2,8 @@ package nlubej.gains.Dialogs;
 
 import nlubej.gains.DBAdapter;
 import nlubej.gains.R;
-import nlubej.gains.adapters.CardioLogAdapter;
-import nlubej.gains.adapters.StrengthLogAdapter;
+import nlubej.gains.Adapters.CardioLogAdapter;
+import nlubej.gains.Adapters.StrengthLogAdapter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

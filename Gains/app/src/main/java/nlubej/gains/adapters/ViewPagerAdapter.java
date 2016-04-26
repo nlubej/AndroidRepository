@@ -1,4 +1,4 @@
-package nlubej.gains.adapters;
+package nlubej.gains.Adapters;
 
 /**
  * Created by nlubej on 19.10.2015.

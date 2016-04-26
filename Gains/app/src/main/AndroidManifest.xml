@@ -11,7 +11,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/myTheme"
-            android:name=".Activities.MainActivity">
+            android:name=".Views.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,11 +20,11 @@
         </activity>
 
         <activity
-            android:name=".Activities.Routine">
+            android:name=".Views.Routine">
         </activity>
 
         <activity
-            android:name=".Activities.Exercise">
+            android:name=".Views.Exercise">
         </activity>
 
 

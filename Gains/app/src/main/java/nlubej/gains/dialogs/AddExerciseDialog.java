@@ -14,9 +14,9 @@ import android.widget.Button;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import nlubej.gains.Database.QueryFactory;
-import nlubej.gains.Activities.Exercise;
+import nlubej.gains.Views.Exercise;
 import nlubej.gains.R;
-import nlubej.gains.adapters.ExerciseTypeAdapter;
+import nlubej.gains.Adapters.ExerciseTypeAdapter;
 import nlubej.gains.interfaces.onActionSubmit;
 
 /**
