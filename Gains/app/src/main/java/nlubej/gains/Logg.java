@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import nlubej.gains.Adapters.ProgramAdapter;
 import nlubej.gains.Views.Program;
 import nlubej.gains.Adapters.CardioLogAdapter;
 import nlubej.gains.Adapters.StrengthLogAdapter;
@@ -397,7 +398,7 @@ public class Logg extends Fragment implements OnItemSelectedListener, onActionSu
 					showGraph = false;
 			}
 		}
-		Log.e("nlubej", "default program: " + Program.DefaultProgram);
+		Log.e("nlubej", "default program: " + Integer.parseInt(prefs.getString("DEFAULT_PROGRAM", "-99")));
 		initExercise();
 	}
 

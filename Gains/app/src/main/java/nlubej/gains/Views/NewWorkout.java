@@ -27,7 +27,10 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.malinskiy.materialicons.IconDrawable;
+import com.malinskiy.materialicons.Iconify;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nlubej.gains.R;
@@ -40,15 +43,7 @@ public class NewWorkout extends Fragment{
     private List<ApplicationInfo> mAppList;
     private AppAdapter mAdapter;
     private SwipeMenuListView mListView;
-    private SwipeMenuListView listView;
 
-    public static StartScreen newInstance(String text){
-        StartScreen mFragment = new StartScreen();
-        Bundle mBundle = new Bundle();
-        mBundle.putString("lubej", text);
-        mFragment.setArguments(mBundle);
-        return mFragment;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,47 +51,51 @@ public class NewWorkout extends Fragment{
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mAppList = getActivity().getPackageManager().getInstalledApplications(0);
+        mAppList = getActivity().getPackageManager().getInstalledApplications(0).subList(0,10);
 
         mListView = (SwipeMenuListView) rootView.findViewById(R.id.listView);
 
         mAdapter = new AppAdapter();
         mListView.setAdapter(mAdapter);
-
         // step 1. create a MenuCreator
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
             @Override
-            public void create(SwipeMenu menu) {
-                // create "open" item
-                SwipeMenuItem openItem = new SwipeMenuItem(
-                        getActivity());
-                // set item background
-                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
-                // set item width
-                openItem.setWidth(dp2px(90));
-                // set item title
-                openItem.setTitle("Open");
-                // set item title fontsize
-                openItem.setTitleSize(18);
-                // set item title font color
-                openItem.setTitleColor(Color.WHITE);
-                // add to menu
-                menu.addMenuItem(openItem);
+            public void create(SwipeMenu menu)
+            {
 
-                // create "delete" item
-                SwipeMenuItem deleteItem = new SwipeMenuItem(
-                        getActivity());
-                // set item background
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                        0x3F, 0x25)));
-                // set item width
-                deleteItem.setWidth(dp2px(90));
-                // set a icon
-                deleteItem.setIcon(R.drawable.chart_icon);
-                // add to menu
-                menu.addMenuItem(deleteItem);
+                switch (menu.getViewType())
+                {
+
+                    case 1:
+                        // create "open" item
+                        SwipeMenuItem openItem = new SwipeMenuItem(getActivity());
+                        // set item background
+                        openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9, 0xCE)));
+                        // set item width
+                        openItem.setWidth(dp2px(90));
+                        openItem.setTitle("Open");
+                        // set item title fontsize
+                        openItem.setTitleSize(18);
+                        // set item title font color
+                        openItem.setTitleColor(Color.WHITE);
+                        // add to menu
+                        menu.addMenuItem(openItem);
+
+                        // create "delete" item
+                        SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity());
+                        // set item background
+                        // set item width
+                        deleteItem.setWidth(dp2px(90));
+                        // set a icon
+                        deleteItem.setIcon(new IconDrawable(getActivity(), Iconify.IconValue.zmdi_delete).colorRes(R.color.red).actionBarSize());
+                        // add to menu
+                        menu.addMenuItem(deleteItem);
+                        break;
+                    case 0:
+                        break;
+
+                }
             }
         };
         // set creator
@@ -110,12 +109,11 @@ public class NewWorkout extends Fragment{
                 switch (index) {
                     case 0:
                         // open
-                        open(item);
                         break;
                     case 1:
                         // delete
-                        //					delete(item);
-                        mAppList.remove(position);
+
+                        mAppList.remove(item);
                         mAdapter.notifyDataSetChanged();
                         break;
                 }
@@ -165,38 +163,6 @@ public class NewWorkout extends Fragment{
         return rootView;
     }
 
-    private void delete(ApplicationInfo item) {
-        // delete app
-        try {
-            Intent intent = new Intent(Intent.ACTION_DELETE);
-            intent.setData(Uri.fromParts("package", item.packageName, null));
-            startActivity(intent);
-        } catch (Exception e) {
-        }
-    }
-
-    private void open(ApplicationInfo item) {
-        // open app
-        Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
-        resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        resolveIntent.setPackage(item.packageName);
-        List<ResolveInfo> resolveInfoList = getActivity().getPackageManager()
-                .queryIntentActivities(resolveIntent, 0);
-        if (resolveInfoList != null && resolveInfoList.size() > 0) {
-            ResolveInfo resolveInfo = resolveInfoList.get(0);
-            String activityPackageName = resolveInfo.activityInfo.packageName;
-            String className = resolveInfo.activityInfo.name;
-
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            ComponentName componentName = new ComponentName(
-                    activityPackageName, className);
-
-            intent.setComponent(componentName);
-            startActivity(intent);
-        }
-    }
-
     class AppAdapter extends BaseAdapter {
 
         @Override
@@ -208,6 +174,7 @@ public class NewWorkout extends Fragment{
         public ApplicationInfo getItem(int position) {
             return mAppList.get(position);
         }
+
 
         @Override
         public long getItemId(int position) {
@@ -223,9 +190,24 @@ public class NewWorkout extends Fragment{
             }
             ViewHolder holder = (ViewHolder) convertView.getTag();
             ApplicationInfo item = getItem(position);
-           // holder.iv_icon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable. gray_arrow));
-           // holder.tv_name.setText("nejc");
+
+            holder.tv_name.setText(mAppList.get(position).flags);
             return convertView;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            // menu type count
+            return 2;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            // current menu type
+            if(position == 2)
+                return 0;
+
+            return 1;
         }
 
         class ViewHolder {
@@ -234,7 +216,7 @@ public class NewWorkout extends Fragment{
 
             public ViewHolder(View view) {
                // iv_icon = (ImageView) view.findViewById(R.id.iv_icon);
-                //tv_name = (TextView) view.findViewById(R.id.tv_name);
+                tv_name = (TextView) view.findViewById(R.id.tv_name1);
                 view.setTag(this);
             }
         }

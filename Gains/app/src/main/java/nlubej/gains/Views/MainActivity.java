@@ -47,14 +47,10 @@ private HelpLiveo mHelpLiveo;
 		with(this) // default theme is dark
 				.startingPosition(0) //Starting position in the list
 				.addAllHelpItem(mHelpLiveo.getHelp()).setOnPrepareOptionsMenu(onPrepare)
-				//.removeHeader()
+				.removeHeader()
 				//.header
 				.build();
 	}
-
-    private void onPostCreate(MainActivity mainActivity)
-    {
-    }
 
 
     @Override //The "R.id.container" should be used in "beginTransaction (). Replace"
@@ -64,7 +60,7 @@ private HelpLiveo mHelpLiveo;
 		Log.i("nlubej",position+"");
 		switch (position){
 			case 0:
-				mFragment = new StartScreen();
+				mFragment = new Program();
 				break;
 			case 1:
 				mFragment = new Program();

@@ -13,10 +13,14 @@ import android.widget.Button;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
+import nlubej.gains.DataTransferObjects.ExerciseDto;
+import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Views.Exercise;
 import nlubej.gains.R;
 import nlubej.gains.Adapters.ExerciseTypeAdapter;
+import nlubej.gains.interfaces.OnItemAdded;
 import nlubej.gains.interfaces.onActionSubmit;
 
 /**
@@ -26,11 +30,11 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
 {
     private Exercise fragmentClass;
     private QueryFactory db;
-    private onActionSubmit callback;
+    private OnItemAdded callback;
     private Context context;
     private int routineId;
     private MaterialEditText exerciseName;
-    private nlubej.gains.ExternalFiles.MaterialSpinner exerciseType;
+    private MaterialSpinner exerciseType;
     private int exerciseTypeId;
     private AlertDialog alertDialog;
     private String[] exerciseTypes;
@@ -42,7 +46,7 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
         super.onCreate(savedInstanceState);
         try
         {
-            callback = (onActionSubmit) fragmentClass;
+            callback = (OnItemAdded<ExerciseDto>) fragmentClass;
         }
         catch (ClassCastException e)
         {
@@ -65,10 +69,9 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_edit_exercise, null);
         exerciseName = (MaterialEditText) view.findViewById(R.id.exerciseName);
-        exerciseType = (nlubej.gains.ExternalFiles.MaterialSpinner) view.findViewById(R.id.exerciseType);
+        exerciseType = (MaterialSpinner) view.findViewById(R.id.exerciseType);
         Button yes = (Button)view.findViewById(R.id.btn_yes);
         Button no = (Button)view.findViewById(R.id.btn_no);
-        exerciseType = (nlubej.gains.ExternalFiles.MaterialSpinner) view.findViewById(R.id.exerciseType);
         Init();
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
@@ -78,43 +81,6 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
         builder.setView(view);
         alertDialog = builder.create();
         alertDialog.show();
-
-
-        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Boolean wantToCloseDialog = true;
-
-                if (exerciseName.getText().toString().compareTo("") != 0)
-                {
-                    db.Open();
-                    db.InsertExercise(exerciseName.getText().toString(), exerciseTypeId, routineId);
-                    db.Close();
-                }
-                else
-                {
-                    wantToCloseDialog = false;
-                }
-
-
-                if (wantToCloseDialog)
-                {
-                    callback.OnSubmit("");
-                    alertDialog.dismiss();
-                }
-            }
-        });
-
-        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                alertDialog.dismiss();
-            }
-        });
 
         return alertDialog;
     }
@@ -132,6 +98,7 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
     @Override
     public void onClick(View v)
     {
+        int exerciseId = 0;
         Boolean wantToCloseDialog = true;
         switch (v.getId())
         {
@@ -140,7 +107,7 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
                 if (exerciseName.getText().toString().compareTo("") != 0)
                 {
                     db.Open();
-                    db.InsertExercise(exerciseName.getText().toString(), exerciseType.getSelectedItemPosition()+1, routineId);
+                    exerciseId = db.InsertExercise(exerciseName.getText().toString(), exerciseType.getSelectedItemPosition()+1, routineId);
                     db.Close();
                 }
                 else
@@ -151,7 +118,7 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
 
                 if (wantToCloseDialog)
                 {
-                    callback.OnSubmit("");
+                    callback.OnAdded(new ExerciseDto(exerciseId, exerciseName.getText().toString(),(int)exerciseType.getSelectedItemId(),routineId));
                     alertDialog.dismiss();
                 }
                 break;

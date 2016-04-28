@@ -189,7 +189,7 @@ public class QueryFactory
                 dto.Id = c.getInt(0);
                 dto.Name = c.getString(1);
                 dto.Position = c.getInt(2);
-                dto.Type = ExerciseType.values()[c.getInt(3)-1];
+                dto.Type = ExerciseType.FromInteger(c.getInt(3));
                 dto.RoutineId = c.getInt(4);
 
                 exerciseDto.add(dto);
@@ -216,13 +216,13 @@ public class QueryFactory
 
     }
 
-    public void UpdateRoutineOrder(int[] newIds, ArrayList<RoutineDto> dto)
+    public void UpdateRoutineOrder(int[] newIds, List<RoutineDto> dto)
     {
         ContentValues initialValues = new ContentValues();
         for (int i = 0; i < dto.size(); i++)
         {
             initialValues.put("ROUTINE_POS", i + 1);
-            db.update("ROUTINE", initialValues, String.format("ROUTINE_ID = %d", dto.get(newIds[i] -1).Id), null);
+            db.update("ROUTINE", initialValues, String.format("ROUTINE_ID = %d", dto.get(newIds[i] -1 ).Position), null);
             initialValues.clear();
         }
     }
@@ -233,30 +233,30 @@ public class QueryFactory
         for (int i = 0; i < dto.size(); i++)
         {
             initialValues.put("EXERCISE_POS", i + 1);
-            db.update("EXERCISE", initialValues, String.format("EXERCISE_ID = %d", dto.get(newIds[i] - 1).Id), null);
+            db.update("EXERCISE", initialValues, String.format("EXERCISE_ID = %d", dto.get(newIds[i] - 1).Position), null);
             initialValues.clear();
         }
     }
 
-    public long InsertProgram(String programName)
+    public int InsertProgram(String programName)
     {
         ContentValues initialValues = new ContentValues();
         initialValues.put("PROGRAM_NAME", programName);
 
-        return db.insert("PROGRAM", null, initialValues);
+        return (int) db.insert("PROGRAM", null, initialValues);
     }
 
-    public boolean InsertRoutine(String routineName, int programId)
+    public int InsertRoutine(String routineName, int programId)
     {
         ContentValues initialValues = new ContentValues();
         initialValues.put("ROUTINE_NAME", routineName);
         initialValues.put("ROUTINE_POS", GetMax("ROUTINE","ROUTINE_POS"));
         initialValues.put("PROGRAM_ID", programId);
 
-        return db.insert("ROUTINE", null, initialValues) > 0;
+        return (int) db.insert("ROUTINE", null, initialValues);
     }
 
-    public boolean InsertExercise(String exerciseName, int exerciseType, int routineId)
+    public int InsertExercise(String exerciseName, int exerciseType, int routineId)
     {
         ContentValues initialValues = new ContentValues();
         initialValues.put("EXERCISE_NAME", exerciseName);
@@ -264,7 +264,7 @@ public class QueryFactory
         initialValues.put("EXERCISE_TYPE", exerciseType);
         initialValues.put("ROUTINE_ID", routineId);
 
-        return db.insert("EXERCISE", null, initialValues) > 0;
+        return (int) db.insert("EXERCISE", null, initialValues);
     }
 
     public boolean DeleteProgram(int programId)

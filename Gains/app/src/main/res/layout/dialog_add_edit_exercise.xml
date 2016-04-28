@@ -11,22 +11,23 @@
         android:layout_marginTop="15dp"
         android:textCursorDrawable="@null"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:met_baseColor="@color/DarkColor"
         app:met_primaryColor="@color/PrimaryColor"
         app:met_floatingLabel="highlight"
-        android:layout_height="wrap_content"
         android:hint="Program name"
         android:longClickable="false"
         android:inputType="textCapSentences"/>
 
 
-    <nlubej.gains.ExternalFiles.MaterialSpinner
+    <fr.ganfra.materialspinner.MaterialSpinner
         android:id="@+id/exerciseType"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_marginLeft="17dp"
         android:layout_marginRight="17dp"
         android:layout_height="wrap_content"
         app:ms_multiline="false"
+        app="false"
         app:ms_hint="Select exercise type"
         app:ms_floatingLabelText="Exercise Type"
         app:ms_baseColor="@color/PrimaryColor"
@@ -35,7 +36,6 @@
         app:ms_thickness="1dp"
         app:ms_arrowColor="@color/PrimaryColor"
         app:ms_arrowSize="10dp"
-        app:ms_alignLabels="false"
         app:ms_floatingLabelColor="@color/PrimaryColor"
         android:layout_below="@id/exerciseName"/>
 

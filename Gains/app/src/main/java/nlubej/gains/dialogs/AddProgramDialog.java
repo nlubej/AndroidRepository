@@ -15,22 +15,25 @@ import android.widget.EditText;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.text.BreakIterator;
+import java.util.ArrayList;
 
+import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Enums.AddDialogType;
 import nlubej.gains.R;
+import nlubej.gains.Views.Program;
+import nlubej.gains.Views.Routine;
 import nlubej.gains.interfaces.OnItemAdded;
 import nlubej.gains.interfaces.onActionSubmit;
 
 /**
  * Created by nlubej on 22.10.2015.
  */
-public class AddDialog extends DialogFragment implements View.OnClickListener
+public class AddProgramDialog extends DialogFragment implements View.OnClickListener
 {
 
     private Object fragmentClass;
-    private AddDialogType dialogType;
     private QueryFactory db;
     private OnItemAdded callback;
     private Context context;
@@ -44,7 +47,7 @@ public class AddDialog extends DialogFragment implements View.OnClickListener
         super.onCreate(savedInstanceState);
         try
         {
-            callback = (OnItemAdded<RoutineDto>) fragmentClass;
+            callback = (OnItemAdded<ProgramDto>) fragmentClass;
         }
         catch (ClassCastException e)
         {
@@ -52,10 +55,10 @@ public class AddDialog extends DialogFragment implements View.OnClickListener
         }
     }
 
-    public void SetData(Object fragment, AddDialogType type)
+    public void SetData(Program fragment, QueryFactory database)
     {
         this.fragmentClass = fragment;
-        this.dialogType = type;
+        db = database;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class AddDialog extends DialogFragment implements View.OnClickListener
     {
         context = getActivity();
 
-        db = new QueryFactory(context);
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -76,65 +79,20 @@ public class AddDialog extends DialogFragment implements View.OnClickListener
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
 
-        if (dialogType == AddDialogType.Routine)
-        {
-            programId = getArguments().getInt("PROGRAM_ID");
-        }
-        builder.setView(view);
 
+        builder.setView(view);
         alertDialog = builder.create();
         alertDialog.show();
 
-
-       /* alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Boolean wantToCloseDialog = true;
-
-                if (program.getText().toString().compareTo("") != 0)
-                {
-                    db.Open();
-                    if (dialogType == AddDialogType.Program)
-                    {
-                        db.InsertProgram(program.getText().toString());
-                    }
-                    else
-                    {
-                        db.InsertRoutine(program.getText().toString(), programId);
-                    }
-                    db.Close();
-                }
-                else
-                {
-                    wantToCloseDialog = false;
-                }
-
-
-                if (wantToCloseDialog)
-                {
-                    callback.OnAdded("Add");
-                    alertDialog.dismiss();
-                }
-            }
-        });*/
-
-       /* alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                alertDialog.dismiss();
-            }
-        });
-*/
         return alertDialog;
     }
+
 
     @Override
     public void onClick(View v)
     {
+        int programId = 0;
+
         Boolean wantToCloseDialog = true;
         switch (v.getId())
         {
@@ -143,14 +101,7 @@ public class AddDialog extends DialogFragment implements View.OnClickListener
                 if (program.getText().toString().compareTo("") != 0)
                 {
                     db.Open();
-                    if (dialogType == AddDialogType.Program)
-                    {
-                        Log.d("nlubej", "INSERTED: " + db.InsertProgram(program.getText().toString()));
-                    }
-                    else
-                    {
-                        Log.d("nlubej", "INSERTED: " + db.InsertRoutine(program.getText().toString(), programId));
-                    }
+                    programId = db.InsertProgram(program.getText().toString());
                     db.Close();
                 }
                 else
@@ -161,13 +112,13 @@ public class AddDialog extends DialogFragment implements View.OnClickListener
 
                 if (wantToCloseDialog)
                 {
-                    //callback.OnAdded(new RoutineDto(program.getText().toString(),programId));
+                    callback.OnAdded(new ProgramDto(programId, program.getText().toString()));
                     alertDialog.dismiss();
                 }
                 break;
             case R.id.btn_no:
                 alertDialog.dismiss();
-            break;
+                break;
         }
     }
 }

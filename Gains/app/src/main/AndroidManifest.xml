@@ -23,6 +23,7 @@
             android:name=".Views.Routine">
         </activity>
 
+
         <activity
             android:name=".Views.Exercise">
         </activity>

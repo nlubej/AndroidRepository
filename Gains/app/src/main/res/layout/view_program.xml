@@ -6,18 +6,17 @@
     android:layout_height="match_parent"
     android:background="@color/white" >
 
-    <ListView
+    <com.baoyz.swipemenulistview.SwipeMenuListView
+        android:id="@+id/swipeListView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/listView"
         android:divider="@color/silver"
-	    android:dividerHeight="1.0dp"
-        android:tag="fragment2"
+        android:dividerHeight="1.0dp"
         android:layout_margin="15dp"
-        android:listSelector="@android:color/transparent"
-        android:layout_below="@id/toolbar"
-        android:choiceMode="singleChoice"
-  		/>
+        android:padding="8dp"
+        android:textAlignment="textStart"
+        android:gravity="start" />
+
 
 
     <FrameLayout
