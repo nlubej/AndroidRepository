@@ -22,30 +22,34 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
 import com.malinskiy.materialicons.widget.IconTextView;
 import com.melnykov.fab.FloatingActionButton;
 
+import nlubej.gains.Adapters.ProgramAdapter;
 import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Dialogs.AddDialog;
+import nlubej.gains.Dialogs.AddProgramDialog;
 import nlubej.gains.Dialogs.DeleteDialog;
 import nlubej.gains.Dialogs.EditDialog;
 import nlubej.gains.Enums.AddDialogType;
 import nlubej.gains.R;
 import nlubej.gains.interfaces.*;
 
-public class Program extends Fragment implements OnItemClickListener, onActionSubmit, OnClickListener
+public class Program extends Fragment implements OnItemClickListener, OnItemAdded<ProgramDto>, OnClickListener
 {
     private Context context;
-    private ListView list;
     private QueryFactory db;
-    private SharedPreferences prefs;
     private ArrayList<ProgramDto> programDto;
-    public static long DefaultProgram = -1; //used in other classes
     FloatingActionButton addButton;
-    //private Toolbar toolbar;
+    ProgramAdapter programAdapter;
+    SwipeMenuListView swipeListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -55,24 +59,50 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         InitComponents(fragment);
         SetData();
 
-        list.setOnItemClickListener(this);
         this.setHasOptionsMenu(true);
 
         return fragment;
     }
 
-    private void InitComponents(View fragment)
+    private void InitComponents(final View fragment)
     {
         context = fragment.getContext();
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        list = (ListView) fragment.findViewById(R.id.listView);
-        db = new QueryFactory(context);
+        swipeListView = (SwipeMenuListView) fragment.findViewById(R.id.swipeListView);
         addButton = (FloatingActionButton)fragment.findViewById(R.id.addButton);
+        programAdapter = new ProgramAdapter(this, db);
+        db = new QueryFactory(context);
+
         addButton.setOnClickListener(this);
+        swipeListView.setOnItemClickListener(this);
         addButton.setImageDrawable(
                 new IconDrawable(context, Iconify.IconValue.zmdi_plus)
                         .colorRes(R.color.DarkColor)
                         .actionBarSize());
+
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu)
+            {
+                SwipeMenuItem defaultProgram = new SwipeMenuItem(fragment.getContext());
+                defaultProgram.setWidth(100);
+                defaultProgram.setIcon(new IconDrawable(fragment.getContext(), Iconify.IconValue.zmdi_star).actionBarSize().colorRes(R.color.PrimaryColor).actionBarSize());
+                menu.addMenuItem(defaultProgram);
+
+                SwipeMenuItem editProgram = new SwipeMenuItem(fragment.getContext());
+                editProgram.setWidth(100);
+                editProgram.setIcon(new IconDrawable(fragment.getContext(), Iconify.IconValue.zmdi_edit).actionBarSize().colorRes(R.color.gray).actionBarSize());
+                menu.addMenuItem(editProgram);
+
+                SwipeMenuItem deleteItem = new SwipeMenuItem(fragment.getContext());
+                deleteItem.setWidth(100);
+                deleteItem.setIcon(new IconDrawable(fragment.getContext(), Iconify.IconValue.zmdi_delete).actionBarSize().colorRes(R.color.red).actionBarSize());
+                menu.addMenuItem(deleteItem);
+            }
+        };
+
+        swipeListView.setAdapter(programAdapter);
+        swipeListView.setMenuCreator(creator);
     }
 
     public void SetData()
@@ -81,7 +111,8 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         programDto = db.SelectPrograms();
         db.Close();
 
-        list.setAdapter(new ProgramAdapter(context, programDto));
+        programAdapter.AddAll(programDto);
+        programAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -113,203 +144,20 @@ public class Program extends Fragment implements OnItemClickListener, onActionSu
         return true;
     }*/
 
-    @Override
-    public void OnSubmit(String action)
-    {
-        SetData();
-    }
 
     @Override
     public void onClick(View v)
     {
-        AddDialog addDialog = new AddDialog();
-        addDialog.SetData(Program.this, AddDialogType.Program);
+        AddProgramDialog addDialog = new AddProgramDialog();
+        addDialog.SetData(Program.this, db);
         addDialog.show(Program.this.getActivity().getFragmentManager(), "");
     }
 
-    class ProgramRow
+
+    @Override
+    public void OnAdded(ProgramDto row)
     {
-        private String programName;
-        private int routineCount;
-
-        public ProgramRow(String programName, int routineCount)
-        {
-            this.programName = programName;
-            this.routineCount = routineCount;
-        }
-    }
-
-    class ProgramAdapter extends BaseAdapter
-    {
-        private ArrayList<ProgramRow> programRows;
-        Context context;
-
-        public ProgramAdapter(Context context, ArrayList<ProgramDto> programDto)
-        {
-            this.context = context;
-            programRows = new ArrayList<>();
-
-            if (programDto != null)
-            {
-                for (ProgramDto dto : programDto)
-                {
-                    programRows.add(new ProgramRow(dto.Name, dto.RoutineCount));
-                }
-            }
-        }
-
-        @Override
-        public int getCount()
-        {
-            return programRows.size();
-        }
-
-        public int GetIndex(String id)
-        {
-            for (int i = 0; i < programDto.size(); i++)
-            {
-                if (id.compareTo(programDto.get(i).Id + "") == 0)
-                {
-                    return i;
-                }
-            }
-            return 0;
-        }
-
-        @Override
-        public Object getItem(int position)
-        {
-            return programRows.get(position);
-        }
-
-        @Override
-        public long getItemId(int position)
-        {
-            return position;
-        }
-
-        class ProgramViewHolder
-        {
-            private TextView title;
-            private TextView subTitle;
-            private IconTextView btn;
-
-            public ProgramViewHolder(View v)
-            {
-                title = (TextView) v.findViewById(R.id.show);
-                subTitle = (TextView) v.findViewById(R.id.show2);
-                btn = (IconTextView) v.findViewById(R.id.edit_btn);
-            }
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent)
-        {
-            View row = convertView;
-            ProgramViewHolder holder;
-
-            if (row == null)
-            {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                row = inflater.inflate(R.layout.row_program, parent, false);
-                holder = new ProgramViewHolder(row);
-                row.setTag(holder);
-                try
-                {
-                    if (DefaultProgram == programDto.get(position).Id)
-                    {
-                        holder.title.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
-                        holder.subTitle.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
-
-                    }
-                    else if ((programDto.get(position).Id) == Integer.parseInt(prefs.getString("DEFAULT_PROGRAM", "")))
-                    {
-                        holder.title.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
-                        holder.subTitle.setTextColor(ContextCompat.getColor(context, R.color.PrimaryColor));
-                    }
-                }
-                catch (NumberFormatException e)
-                {
-                    e.printStackTrace();
-                    holder.title.setTextColor(ContextCompat.getColor(context, R.color.menu));
-                    holder.subTitle.setTextColor(ContextCompat.getColor(context, R.color.menu));
-                    prefs.edit().putString("DEFAULT_PROGRAM", programDto.get(0).Id + "").apply();
-                }
-            }
-            else
-            {
-                holder = (ProgramViewHolder) row.getTag();
-            }
-
-
-            final ProgramRow temp = programRows.get(position);
-
-            holder.title.setText(temp.programName);
-            holder.subTitle.setText(String.format("%d routines",temp.routineCount));
-
-            holder.btn.setOnClickListener(new OnClickListener()
-            {
-
-                @Override
-                public void onClick(View v)
-                {
-                    PopupMenu popup = new PopupMenu(context, v);
-                    popup.getMenuInflater().inflate(R.menu.popup_program, popup.getMenu());
-                    popup.show();
-                    popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
-                    {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item)
-                        {
-                            if (item.getItemId() == R.id.delete)
-                            {
-                                DeleteDialog deleteDialog = new DeleteDialog();
-                                deleteDialog.SetData(Program.this, AddDialogType.Program);
-                                deleteDialog.show(Program.this.getActivity().getFragmentManager(), null);
-
-                                ChangeDefaultProgram(position);
-                            }
-                            else if (item.getItemId() == R.id.edit)
-                            {
-                                EditDialog editDialog = new EditDialog();
-                                editDialog.SetData(Program.this, AddDialogType.Program);
-                                editDialog.show(Program.this.getActivity().getFragmentManager(), null);
-
-                            }
-                            else if (item.getItemId() == R.id.setDefault)
-                            {
-                                DefaultProgram = programDto.get(position).Id;
-                                prefs.edit().putString("DEFAULT_PROGRAM", programDto.get(position).Id + "").apply();
-                                SetData();
-                            }
-                            return false;
-                        }
-                    });
-                }
-            });
-
-            return row;
-        }
-
-        private void ChangeDefaultProgram(int position)
-        {
-            if (programDto.size() == 1)
-            {
-                prefs.edit().putString("DEFAULT_PROGRAM", null).apply();
-            }
-            else if (position + 1 == Integer.parseInt(prefs.getString("DEFAULT_PROGRAM", "")) && programDto.size() > 1)
-            {
-                prefs.edit().putString("DEFAULT_PROGRAM", programDto.get(0).Id + "").apply();
-            }
-            else if (programDto.size() == 2)
-            {
-                prefs.edit().putString("DEFAULT_PROGRAM", programDto.get(1).Id + "").apply();
-            }
-            else if (position + 1 < Integer.parseInt(prefs.getString("DEFAULT_PROGRAM", "")))
-            {
-                int prefIndeks = GetIndex(prefs.getString("DEFAULT_PROGRAM", ""));
-                prefs.edit().putString("DEFAULT_PROGRAM", programDto.get(prefIndeks - 1).Id + "").apply();
-            }
-        }
+        programAdapter.Add(row);
+        programAdapter.notifyDataSetChanged();
     }
 }

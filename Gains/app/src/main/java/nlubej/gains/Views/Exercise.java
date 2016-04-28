@@ -177,6 +177,7 @@ public class Exercise extends AppCompatActivity implements OnItemAdded<ExerciseD
                     int[] newIds = new int[cursor.getCount()];
                     for (int i = 0; i < dragSortAdapter.getCount(); i++)
                     {
+                        newIds[i] = ((int) dragSortAdapter.getItemId(i));
                         dto.add(ExerciseDto.ToDto(cursor));
                         cursor.moveToNext();
                     }
