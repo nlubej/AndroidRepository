@@ -167,8 +167,6 @@ public abstract class DragSortCursorAdapter extends CursorAdapter implements Dra
 
         cleanMapping();
         notifyDataSetChanged();
-        
-        Log.d("Nlubej", which+"");
     }
 
     /**

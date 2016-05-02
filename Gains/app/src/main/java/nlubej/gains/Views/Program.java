@@ -4,23 +4,14 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnMenuItemClickListener;
-import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -28,21 +19,16 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
-import com.malinskiy.materialicons.widget.IconTextView;
 import com.melnykov.fab.FloatingActionButton;
 
 import nlubej.gains.Adapters.ProgramAdapter;
 import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.Database.QueryFactory;
-import nlubej.gains.Dialogs.AddDialog;
 import nlubej.gains.Dialogs.AddProgramDialog;
-import nlubej.gains.Dialogs.DeleteDialog;
-import nlubej.gains.Dialogs.EditDialog;
-import nlubej.gains.Enums.AddDialogType;
 import nlubej.gains.R;
 import nlubej.gains.interfaces.*;
 
-public class Program extends Fragment implements OnItemClickListener, OnItemAdded<ProgramDto>, OnClickListener
+public class Program extends Fragment implements OnItemClickListener, OnItemChanged<ProgramDto>, OnClickListener
 {
     private Context context;
     private QueryFactory db;
@@ -158,6 +144,12 @@ public class Program extends Fragment implements OnItemClickListener, OnItemAdde
     public void OnAdded(ProgramDto row)
     {
         programAdapter.Add(row);
+        programAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void OnUpdated(ProgramDto row)
+    {
         programAdapter.notifyDataSetChanged();
     }
 }

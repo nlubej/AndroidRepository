@@ -15,19 +15,34 @@ public class ExerciseQueries
         return  "create table if not exists EXERCISE_TYPE (EXERCISE_TYPE_ID integer primary key, DESCRIPTION integer not null);";
     }
 
-    public static String DeleteWorkoutLogsByExerciseId (int exercise)
+    public static String CreateTableLoggedWorkout()
     {
-        return String.format("DELETE FROM WORKOUT_LOG WHERE EXERCISE_ID  = %d)", exercise);
+        return "create table if not exists LOGGED_WORKOUT (LOGGED_WORKOUT_ID integer primary key autoincrement, LOGGED_SET integer not null, LOGGED_WEIGHT double, LOGGED_REP integer,  DATE_CREATED varchar not null, WORKOUT_NUMBER integer not null, EXERCISE_ID integer not null);";
+    }
+
+    public static String CreateTableWorkoutNote()
+    {
+        return "create table if not exists WORKOUT_NOTE (WORKOUT_NOTE_ID integer primary key autoincrement, NOTE text, WORKOUT_NUM integer not null, EXERCISE_ID integer not null);";
+    }
+
+    public static String CreateTableTmpLoggedWorkout()
+    {
+        return "create table if not exists TMP_LOGGED_WORKOUT (TMP_LOGGED_WORKOUT_ID integer primary key autoincrement, TMP_LAST_WORKOUT_NUMBER integer not null, ROUTINE_ID integer not null);";
+    }
+
+    public static String DeleteLogedWorkoutByExerciseId(int exercise)
+    {
+        return String.format("DELETE FROM LOGGED_WORKOUT WHERE EXERCISE_ID  = %d", exercise);
     }
 
     public static String DeleteNotesByExerciseId (int exercise)
     {
-        return String.format("DELETE FROM WORKOUT_LOG WHERE EXERCISE_ID = %d)", exercise);
+        return String.format("DELETE FROM WORKOUT_NOTE WHERE EXERCISE_ID = %d", exercise);
     }
 
-    public static String DeleteExerciesByExerciseId (int exercise)
+    public static String DeleteExercieByExerciseId(int exercise)
     {
-        return String.format("DELETE FROM WORKOUT_LOG WHERE EXERCISE_ID = %d)", exercise);
+        return String.format("DELETE FROM EXERCISE WHERE EXERCISE_ID = %d", exercise);
     }
 
     public static String SelectExercises(int routineId)

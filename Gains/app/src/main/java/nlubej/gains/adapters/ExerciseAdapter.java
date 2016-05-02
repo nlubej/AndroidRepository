@@ -41,7 +41,7 @@ public class ExerciseAdapter extends BaseAdapter
     }
 
     @Override
-    public Object getItem(int position)
+    public ExerciseDto getItem(int position)
     {
         return exerciseDto.get(position);
     }
@@ -63,6 +63,11 @@ public class ExerciseAdapter extends BaseAdapter
         row.Position = exerciseDto.size()+1;
 
         exerciseDto.add(row);
+    }
+
+    public void Remove(ExerciseDto item)
+    {
+        exerciseDto.remove(item);
     }
 
     class ExerciseHolder

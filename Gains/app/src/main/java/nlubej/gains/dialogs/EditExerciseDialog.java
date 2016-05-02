@@ -8,88 +8,93 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import fr.ganfra.materialspinner.MaterialSpinner;
+import nlubej.gains.Adapters.ExerciseTypeAdapter;
+import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Views.Exercise;
 import nlubej.gains.R;
+import nlubej.gains.interfaces.OnItemChanged;
 import nlubej.gains.interfaces.onActionSubmit;
 
 /**
  * Created by nlubej on 24.10.2015.
  */
-public class EditExerciseDialog extends DialogFragment
+public class EditExerciseDialog extends DialogFragment implements View.OnClickListener
 {
     private Exercise fragmentClass;
     private QueryFactory db;
-    private onActionSubmit callback;
+    private OnItemChanged<ExerciseDto> parent;
     private Context context;
+    private MaterialEditText exerciseName;
+    private MaterialSpinner exerciseType;
+    private AlertDialog alertDialog;
+    private String[] exerciseTypes;
+    private ExerciseTypeAdapter exerciseTypeAdapter;
 
-    @Override
-    public void onCreate (Bundle savedInstanceState)
+    public void SetData(Exercise exercise, QueryFactory database)
     {
-        super.onCreate(savedInstanceState);
-        try
-        {
-            callback = (onActionSubmit) fragmentClass;
-        }
-        catch (ClassCastException e)
-        {
-            throw new ClassCastException("Calling Fragment must implement OnSubmit");
-        }
-    }
-
-    public void SetData(Exercise exercise)
-    {
-        fragmentClass = exercise;
+        parent = exercise;
+        context = exercise;
+        db = database;
     }
 
     @Override
     public Dialog onCreateDialog (Bundle savedInstanceState)
     {
-        context = getActivity().getApplicationContext();
         db = new QueryFactory(context);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_add_edit, null);
-        final EditText exercise = (EditText) view.findViewById(R.id.programName);
-        //TODO get ID and name, and fill them
+        View view = inflater.inflate(R.layout.dialog_add_edit_exercise, null);
+
+        exerciseName = (MaterialEditText) view.findViewById(R.id.exerciseName);
+        exerciseType = (MaterialSpinner) view.findViewById(R.id.exerciseType);
+        Button yes = (Button)view.findViewById(R.id.btn_yes);
+        Button no = (Button)view.findViewById(R.id.btn_no);
+
+        yes.setOnClickListener(this);
+        no.setOnClickListener(this);
+
+        Init();
+
         builder.setView(view);
         builder.setTitle("Edit");
 
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-
-            }
-        });
-
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-            }
-        });
-
-        final AlertDialog alertDialog = builder.create();
+        alertDialog = builder.create();
         alertDialog.show();
 
+        return alertDialog;
+    }
 
-        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+    private void Init()
+    {
+        db.Open();
+        exerciseTypes = db.SelecExerciseType();
+        db.Close();
+
+        exerciseTypeAdapter = new ExerciseTypeAdapter(context, R.layout.row_spinner,exerciseTypes);
+        exerciseType.setAdapter(exerciseTypeAdapter);
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        int exerciseId = 0;
+        Boolean wantToCloseDialog = true;
+        switch (v.getId())
         {
-            @Override
-            public void onClick(View v)
-            {
-                Boolean wantToCloseDialog = true;
 
-                if (exercise.getText().toString().compareTo("") != 0)
+            case R.id.btn_yes:
+                if (exerciseName.getText().toString().compareTo("") != 0)
                 {
                     db.Open();
-                   // db.UpdateExercise(exercise.getText().toString());
+                    //db.UpdateExercise(exercise.getText().toString());
                     db.Close();
                 }
                 else
@@ -100,21 +105,13 @@ public class EditExerciseDialog extends DialogFragment
 
                 if (wantToCloseDialog)
                 {
-                    callback.OnSubmit("");
+                    parent.OnUpdated(new ExerciseDto());
                     alertDialog.dismiss();
                 }
-            }
-        });
-
-        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
+                break;
+            case R.id.btn_no:
                 alertDialog.dismiss();
-            }
-        });
-
-        return alertDialog;
+                break;
+        }
     }
 }

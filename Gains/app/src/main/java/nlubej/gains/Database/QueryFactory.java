@@ -1,9 +1,6 @@
 package nlubej.gains.Database;
 
-import java.io.EOFException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -18,7 +15,6 @@ import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.Queries.ExerciseQueries;
-import nlubej.gains.Database.Queries.LogQueries;
 import nlubej.gains.Database.Queries.ProgramQueries;
 import nlubej.gains.Database.Queries.RoutineQueries;
 import nlubej.gains.Enums.ExerciseType;
@@ -34,10 +30,10 @@ public class QueryFactory
     private static final String CREATE_TABLE_EXERCISE = ExerciseQueries.CreateTableExercise();
     private static final String CREATE_TABLE_EXERCISE_TYPE = ExerciseQueries.CreateTableExerciseType();
     private static final String CREATE_TABLE_ROUTINE = RoutineQueries.CreateTableRoutine();
-    private static final String CREATE_TABLE_LOGGED_WORKOUT = "create table if not exists LOGGED_WORKOUT (LOGGED_WORKOUT_ID integer primary key autoincrement, LOGGED_SET integer not null, LOGGED_WEIGHT double, LOGGED_REP integer,  DATE_CREATED varchar not null, WORKOUT_NUMBER integer not null, EXERCISE_ID integer not null);";
-    private static final String CREATE_TABLE_TMP_LOGGED_WORKOUT = "create table if not exists TMP_LOGGED_WORKOUT (TMP_LOGGED_WORKOUT_ID integer primary key autoincrement, TMP_LAST_WORKOUT_NUMBER integer not null, ROUTINE_ID integer not null);";
+    private static final String CREATE_TABLE_LOGGED_WORKOUT = ExerciseQueries.CreateTableLoggedWorkout();
+    private static final String CREATE_TABLE_TMP_LOGGED_WORKOUT = ExerciseQueries.CreateTableTmpLoggedWorkout();
     private static final String CREATE_TABLE_USER = "create table if not exists USER (USER_ID integer primary key autoincrement, USER_WEIGHT double, USER_HEIGHT double);";
-    private static final String CREATE_TABLE_WORKOUT_NOTE = "create table if not exists WORKOUT_NOTE (WORKOUT_NOTE_ID integer primary key autoincrement, NOTE text, WORKOUT_NUM integer not null, EXERCISE_ID integer not null);";
+    private static final String CREATE_TABLE_WORKOUT_NOTE = ExerciseQueries.CreateTableWorkoutNote();
     private static final String CREATE_TABLE_TUTORIAL = "create table if not exists USER (TUTORIAL_ID integer primary key autoincrement, NAME varchar not null, TUTORIAL_SEEN integer not null default 0 );";
 
     //private static final String CREATE_TABLE_ACHIEVEMENT_LOG = "create table if not exists achievementLog (id integer primary key autoincrement,  name VARCHAR not null, value integer not null);";
@@ -233,7 +229,7 @@ public class QueryFactory
         for (int i = 0; i < dto.size(); i++)
         {
             initialValues.put("EXERCISE_POS", i + 1);
-            db.update("EXERCISE", initialValues, String.format("EXERCISE_ID = %d", dto.get(newIds[i] - 1).Position), null);
+            db.update("EXERCISE", initialValues, String.format("EXERCISE_ID = %d", newIds[i]), null);
             initialValues.clear();
         }
     }
@@ -309,20 +305,13 @@ public class QueryFactory
     public void DeleteExercise(int exercise)
     {
         //delete workout logs program
-        String deleteLogsQuery = ExerciseQueries.DeleteWorkoutLogsByExerciseId(exercise);
-        db.rawQuery(deleteLogsQuery, null);
+        db.delete("LOGGED_WORKOUT", "EXERCISE_ID =?", new String[]{String.valueOf(exercise)});
 
         //delete notes for program
-        String query = ExerciseQueries.DeleteNotesByExerciseId(exercise);
-        db.rawQuery(query, null);
+        db.delete("WORKOUT_NOTE", "EXERCISE_ID =?", new String[]{String.valueOf(exercise)});
 
         //delete exercises on program
-        query = ExerciseQueries.DeleteExerciesByExerciseId(exercise);
-        db.rawQuery(query, null);
-
-        //delete routine
-        db.delete("ROUTINE", "ROUTINE_ID = ?s", new String[]{String.valueOf(exercise)});
-
+        db.delete("EXERCISE", "EXERCISE_ID =?", new String[]{String.valueOf(exercise)});
     }
 
     public boolean UpdateRoutine(String routineName, int routineId)

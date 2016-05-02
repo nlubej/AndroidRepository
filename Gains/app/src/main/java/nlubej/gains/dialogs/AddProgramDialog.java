@@ -4,28 +4,18 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import java.text.BreakIterator;
-import java.util.ArrayList;
-
 import nlubej.gains.DataTransferObjects.ProgramDto;
-import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
-import nlubej.gains.Enums.AddDialogType;
 import nlubej.gains.R;
 import nlubej.gains.Views.Program;
-import nlubej.gains.Views.Routine;
-import nlubej.gains.interfaces.OnItemAdded;
-import nlubej.gains.interfaces.onActionSubmit;
+import nlubej.gains.interfaces.OnItemChanged;
 
 /**
  * Created by nlubej on 22.10.2015.
@@ -35,7 +25,7 @@ public class AddProgramDialog extends DialogFragment implements View.OnClickList
 
     private Object fragmentClass;
     private QueryFactory db;
-    private OnItemAdded callback;
+    private OnItemChanged callback;
     private Context context;
     private int programId;
     private MaterialEditText program;
@@ -47,7 +37,7 @@ public class AddProgramDialog extends DialogFragment implements View.OnClickList
         super.onCreate(savedInstanceState);
         try
         {
-            callback = (OnItemAdded<ProgramDto>) fragmentClass;
+            callback = (OnItemChanged<ProgramDto>) fragmentClass;
         }
         catch (ClassCastException e)
         {

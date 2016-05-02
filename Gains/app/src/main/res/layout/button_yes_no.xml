@@ -12,11 +12,10 @@
         android:layout_height="wrap_content"
         android:textAlignment="textEnd"
         android:background="@drawable/btn_bg"
-        android:layout_weight="3"
+        android:layout_weight="100"
         android:text="Cancel"
         android:clickable="true"
-        android:textColor="@color/DarkColor"
-        android:textStyle="bold">
+        android:textColor="@color/DarkColor">
     </Button>
 
     <Button
@@ -25,10 +24,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_bg"
         android:layout_gravity="end"
-        android:layout_weight="1"
-        android:text="Accept"
-        android:textColor="@color/DarkColor"
-        android:textStyle="bold">
+        android:layout_weight="0"
+        android:text="OK"
+        android:textColor="@color/DarkColor">
     </Button>
 
 

@@ -3,25 +3,16 @@ package nlubej.gains.Views;
 
 import java.util.ArrayList;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnMenuItemClickListener;
-import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -29,25 +20,20 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
-import com.malinskiy.materialicons.widget.IconTextView;
 import com.melnykov.fab.FloatingActionButton;
 
 import nlubej.gains.Adapters.ExerciseAdapter;
-import nlubej.gains.Adapters.RoutineAdapter;
 import nlubej.gains.DataTransferObjects.ExerciseDto;
-import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Dialogs.AddExerciseDialog;
 import nlubej.gains.Dialogs.EditExerciseDialog;
-import nlubej.gains.Enums.ExerciseType;
 import nlubej.gains.ExternalFiles.DragSortListView;
 import nlubej.gains.R;
 import nlubej.gains.ExternalFiles.SimpleDragSortCursorAdapter;
-import nlubej.gains.interfaces.OnItemAdded;
-import nlubej.gains.interfaces.onActionSubmit;
+import nlubej.gains.interfaces.OnItemChanged;
 
 
-public class Exercise extends AppCompatActivity implements OnItemAdded<ExerciseDto>, OnClickListener
+public class Exercise extends AppCompatActivity implements OnItemChanged<ExerciseDto>,  OnClickListener, SwipeMenuListView.OnMenuItemClickListener
 {
     private QueryFactory db;
     private ArrayList<ExerciseDto> exerciseDto;
@@ -87,6 +73,7 @@ public class Exercise extends AppCompatActivity implements OnItemAdded<ExerciseD
         swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
         addButton = (FloatingActionButton) findViewById(R.id.addButton);
 
+        swipeListView.setOnMenuItemClickListener(this);
         addButton.setOnClickListener(this);
         addButton.setImageDrawable(
                 new IconDrawable(context, Iconify.IconValue.zmdi_plus)
@@ -112,7 +99,6 @@ public class Exercise extends AppCompatActivity implements OnItemAdded<ExerciseD
         };
 
         swipeListView.setMenuCreator(creator);
-
         dragSortAdapter = new SimpleDragSortCursorAdapter(getApplicationContext(), R.layout.row_rearrange_item, null, new String[]{"Name", "ExerciseTypeDescription"}, new int[] {R.id.name, R.id.subName}, 0);
         exerciseAdapter = new ExerciseAdapter(this, db);
 
@@ -138,6 +124,21 @@ public class Exercise extends AppCompatActivity implements OnItemAdded<ExerciseD
             for (int i = 0; i < exerciseDto.size(); i++)
             {
                 cursor.addRow(new Object[] {exerciseDto.get(i).Id, exerciseDto.get(i).Name, exerciseDto.get(i).Position, exerciseDto.get(i).Type.Id, exerciseDto.get(i).RoutineId, exerciseDto.get(i).Type.Description });
+            }
+        }
+
+        dragSortAdapter.changeCursor(cursor);
+    }
+
+    private void UpdateCursor()
+    {
+        cursor = new MatrixCursor(new String[]{"_id", "Name", "Position", "Type", "RoutineId", "ExerciseTypeDescription"});
+        if (exerciseAdapter.getCount() != 0)
+        {
+            for (int i = 0; i < exerciseAdapter.getCount(); i++)
+            {
+                ExerciseDto exerciseDto = exerciseAdapter.getItem(i);
+                cursor.addRow(new Object[] {exerciseDto.Id, exerciseDto.Name, exerciseDto.Position, exerciseDto.Type.Id, exerciseDto.RoutineId, exerciseDto.Type.Description });
             }
         }
 
@@ -183,7 +184,7 @@ public class Exercise extends AppCompatActivity implements OnItemAdded<ExerciseD
                     }
 
                     db.Open();
-                    db.UpdateExerciseOrder(newIds, exerciseDto);
+                    db.UpdateExerciseOrder(newIds, dto);
                     db.Close();
 
                     exerciseAdapter.AddAll(dto);
@@ -236,5 +237,45 @@ public class Exercise extends AppCompatActivity implements OnItemAdded<ExerciseD
     {
         exerciseAdapter.Add(row);
         exerciseAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void OnUpdated(ExerciseDto row)
+    {
+        exerciseAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onMenuItemClick(int position, SwipeMenu menu, int index)
+    {
+        ExerciseDto item = exerciseAdapter.getItem(position);
+        switch (index) {
+            case 0: //edit
+                EditExerciseDialog editExercise = new EditExerciseDialog();
+                editExercise.SetData(Exercise.this, db);
+                Bundle b = new Bundle();
+                b.putInt("EXERCISE_ID", routineID);
+                b.putInt("EXERCISE_NAME", routineID);
+                b.putInt("EXERCISE_TYPE", routineID);
+                editExercise.setArguments(b);
+
+                editExercise.show(Exercise.this.getFragmentManager(), "");
+                break;
+            case 1: //delete
+
+                db.Open();
+                db.DeleteExercise(item.Id);
+                db.Close();
+
+                exerciseAdapter.Remove(item);
+                dragSortAdapter.remove(position);
+
+                exerciseAdapter.notifyDataSetChanged();
+                dragSortAdapter.notifyDataSetChanged();
+                UpdateCursor();
+                swipeListView.setAdapter(exerciseAdapter);
+                break;
+        }
+        return false;
     }
 }

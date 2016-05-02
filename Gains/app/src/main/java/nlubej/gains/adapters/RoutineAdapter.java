@@ -41,7 +41,7 @@ public class RoutineAdapter extends BaseAdapter
     }
 
     @Override
-    public Object getItem(int position)
+    public RoutineDto getItem(int position)
     {
         return routineDto.get(position);
     }
@@ -64,6 +64,11 @@ public class RoutineAdapter extends BaseAdapter
         row.ExerciseCount = 0;
 
         routineDto.add(row);
+    }
+
+    public void Remove(RoutineDto item)
+    {
+        routineDto.remove(item);
     }
 
     class RoutineHolder

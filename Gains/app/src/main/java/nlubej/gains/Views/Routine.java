@@ -3,7 +3,6 @@ package nlubej.gains.Views;
 
 import java.util.ArrayList;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.database.MatrixCursor;
@@ -29,15 +28,14 @@ import com.melnykov.fab.FloatingActionButton;
 import nlubej.gains.Adapters.RoutineAdapter;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
-import nlubej.gains.Dialogs.AddDialog;
 import nlubej.gains.Dialogs.AddRoutineDialog;
+import nlubej.gains.Dialogs.EditExerciseDialog;
 import nlubej.gains.ExternalFiles.DragSortListView;
-import nlubej.gains.Enums.AddDialogType;
 import nlubej.gains.R;
 import nlubej.gains.ExternalFiles.SimpleDragSortCursorAdapter;
-import nlubej.gains.interfaces.OnItemAdded;
+import nlubej.gains.interfaces.OnItemChanged;
 
-public class Routine extends AppCompatActivity implements OnItemClickListener, OnItemAdded<RoutineDto>, OnClickListener
+public class Routine extends AppCompatActivity implements OnItemClickListener, OnItemChanged<RoutineDto>, OnClickListener, SwipeMenuListView.OnMenuItemClickListener
 {
     private QueryFactory db;
     private ArrayList<RoutineDto> routineDto;
@@ -79,6 +77,7 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
         addButton = (FloatingActionButton) findViewById(R.id.addButton);
 
         dslv.setOnItemClickListener(this);
+        swipeListView.setOnMenuItemClickListener(this);
         swipeListView.setOnItemClickListener(this);
         addButton.setOnClickListener(this);
         addButton.setImageDrawable(
@@ -181,7 +180,7 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
                     }
 
                     db.Open();
-                    db.UpdateRoutineOrder(newIds, routineDto);
+                    db.UpdateRoutineOrder(newIds, dto);
                     db.Close();
 
                     routineAdapter.AddAll(dto);
@@ -221,9 +220,8 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
         if (canSwitch)
         {
             Intent i = new Intent(this, Exercise.class);
-            i.putExtra("ROUTINE_NAME", routineDto.get((int) id).Name);
-            i.putExtra("ROUTINE_ID", routineDto.get((int) id).Id);
-
+            i.putExtra("ROUTINE_NAME", routineAdapter.getItem((int) id).Name);
+            i.putExtra("ROUTINE_ID", routineAdapter.getItem((int) id).Id);
             startActivity(i);
         }
     }
@@ -247,6 +245,34 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
         routineAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void OnUpdated(RoutineDto row)
+    {
+        routineAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onMenuItemClick(int position, SwipeMenu menu, int index)
+    {
+        RoutineDto item = routineAdapter.getItem(position);
+        switch (index) {
+            case 0: //edit
+          //      EditExerciseDialog addDialog = new EditExerciseDialog();
+               // addDialog.SetData(Program.this, db);
+              //  addDialog.show(Program.this.getActivity().getFragmentManager(), "");
+                break;
+            case 1: //delete
+                routineAdapter.Remove(item);
+                break;
+        }
+
+        swipeListView.invalidate();
+        routineAdapter.notifyDataSetChanged();
+        swipeListView.setAdapter(routineAdapter);
+
+        return false;
+    }
+
     private class SortAdapter extends SimpleDragSortCursorAdapter
     {
         public SortAdapter(Context ctxt, int rmid)
@@ -263,7 +289,6 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
             return v;
         }
     }
-
 }
 
 
