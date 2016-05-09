@@ -29,10 +29,10 @@
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
             android:layout_alignBottom="@+id/listView"
-            android:src="@drawable/plus"
-            fab:fab_colorNormal="@color/SecondaryColor"
-            fab:fab_colorPressed="@color/PrimaryColor"
-            fab:fab_colorRipple="@color/SecondaryColor" />
+            android:src="@drawable/fab_add"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorAccentPressed"
+            fab:fab_colorRipple="@color/colorAccentPressed" />
     </FrameLayout>
 
 </RelativeLayout>

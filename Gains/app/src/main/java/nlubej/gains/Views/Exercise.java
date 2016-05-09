@@ -18,15 +18,18 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
-import com.melnykov.fab.FloatingActionButton;
 
 import nlubej.gains.Adapters.ExerciseAdapter;
 import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Dialogs.AddExerciseDialog;
+import nlubej.gains.Dialogs.AddRoutineDialog;
 import nlubej.gains.Dialogs.EditExerciseDialog;
+import nlubej.gains.Dialogs.SearchExerciseDialog;
 import nlubej.gains.ExternalFiles.DragSortListView;
 import nlubej.gains.R;
 import nlubej.gains.ExternalFiles.SimpleDragSortCursorAdapter;
@@ -38,7 +41,7 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
     private QueryFactory db;
     private ArrayList<ExerciseDto> exerciseDto;
     private Context context;
-    private DragSortListView dslv;
+    private DragSortListView dragSortListView;
     private SwipeMenuListView swipeListView;
     private ExerciseAdapter exerciseAdapter;
     private SimpleDragSortCursorAdapter dragSortAdapter;
@@ -47,6 +50,10 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
     private MatrixCursor cursor;
     private FloatingActionButton addButton;
     private Toolbar toolbar;
+
+    FloatingActionButton addExistingButton;
+    FloatingActionButton addNewButton;
+    private FloatingActionMenu menuRed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,16 +76,30 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         db = new QueryFactory(context);
-        dslv = (DragSortListView) findViewById(R.id.dragListView);
+        dragSortListView = (DragSortListView) findViewById(R.id.dragListView);
         swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
-        addButton = (FloatingActionButton) findViewById(R.id.addButton);
+
+        menuRed = (FloatingActionMenu) findViewById(R.id.addButton);
+        addExistingButton = (FloatingActionButton) findViewById(R.id.addExistingButton);
+        addNewButton = (FloatingActionButton) findViewById(R.id.addNewButton);
+
+        addExistingButton.setImageResource(R.drawable.ic_search_white_24dp);
+        addNewButton.setImageResource(R.drawable.fab_add);
+        menuRed.setClosedOnTouchOutside(true);
+        //addButton = (FloatingActionButton) findViewById(R.id.addButton);
+
+        //addButton.attachToListView(swipeListView);
+        //addButton.attachToListView(dragSortListView);
 
         swipeListView.setOnMenuItemClickListener(this);
-        addButton.setOnClickListener(this);
+        addExistingButton.setOnClickListener(this);
+        addNewButton.setOnClickListener(this);
+
+      /*  addButton.setOnClickListener(this);
         addButton.setImageDrawable(
                 new IconDrawable(context, Iconify.IconValue.zmdi_plus)
                         .colorRes(R.color.DarkColor)
-                        .actionBarSize());
+                        .actionBarSize());*/
 
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -100,13 +121,13 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
 
         swipeListView.setMenuCreator(creator);
         dragSortAdapter = new SimpleDragSortCursorAdapter(getApplicationContext(), R.layout.row_rearrange_item, null, new String[]{"Name", "ExerciseTypeDescription"}, new int[] {R.id.name, R.id.subName}, 0);
-        exerciseAdapter = new ExerciseAdapter(this, db);
+        exerciseAdapter = new ExerciseAdapter(this);
 
-        dslv.setAdapter(dragSortAdapter);
+        dragSortListView.setAdapter(dragSortAdapter);
         swipeListView.setAdapter(exerciseAdapter);
 
         swipeListView.setVisibility(View.VISIBLE);
-        dslv.setVisibility(View.INVISIBLE);
+        dragSortListView.setVisibility(View.INVISIBLE);
     }
 
     public void SetData()
@@ -118,12 +139,12 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
         exerciseAdapter.AddAll(exerciseDto);
         exerciseAdapter.notifyDataSetChanged();
 
-        cursor = new MatrixCursor(new String[]{"_id", "Name", "Position", "Type", "RoutineId", "ExerciseTypeDescription"});
+        cursor = new MatrixCursor(new String[]{"_id", "Name", "Position", "Type", "ExerciseTypeDescription"});
         if (exerciseDto != null)
         {
             for (int i = 0; i < exerciseDto.size(); i++)
             {
-                cursor.addRow(new Object[] {exerciseDto.get(i).Id, exerciseDto.get(i).Name, exerciseDto.get(i).Position, exerciseDto.get(i).Type.Id, exerciseDto.get(i).RoutineId, exerciseDto.get(i).Type.Description });
+                cursor.addRow(new Object[] {exerciseDto.get(i).Id, exerciseDto.get(i).Name, exerciseDto.get(i).Position, exerciseDto.get(i).Type.Id, exerciseDto.get(i).Type.Description });
             }
         }
 
@@ -132,17 +153,18 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
 
     private void UpdateCursor()
     {
-        cursor = new MatrixCursor(new String[]{"_id", "Name", "Position", "Type", "RoutineId", "ExerciseTypeDescription"});
+        cursor = new MatrixCursor(new String[]{"_id", "Name", "Position", "Type", "ExerciseTypeDescription"});
         if (exerciseAdapter.getCount() != 0)
         {
             for (int i = 0; i < exerciseAdapter.getCount(); i++)
             {
                 ExerciseDto exerciseDto = exerciseAdapter.getItem(i);
-                cursor.addRow(new Object[] {exerciseDto.Id, exerciseDto.Name, exerciseDto.Position, exerciseDto.Type.Id, exerciseDto.RoutineId, exerciseDto.Type.Description });
+                cursor.addRow(new Object[] {exerciseDto.Id, exerciseDto.Name, exerciseDto.Position, exerciseDto.Type.Id, exerciseDto.Type.Description });
             }
         }
 
         dragSortAdapter.changeCursor(cursor);
+        swipeListView.setAdapter(exerciseAdapter);
     }
 
     @Override
@@ -166,7 +188,7 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
         {
             if (canSwitch)
             {
-                dslv.setVisibility(View.VISIBLE);
+                dragSortListView.setVisibility(View.VISIBLE);
                 swipeListView.setVisibility(View.INVISIBLE);
             }
             else
@@ -184,14 +206,14 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
                     }
 
                     db.Open();
-                    db.UpdateExerciseOrder(newIds, dto);
+                    db.UpdateExerciseOrder(newIds, dto, routineID);
                     db.Close();
 
                     exerciseAdapter.AddAll(dto);
                     exerciseAdapter.notifyDataSetChanged();
                 }
 
-                dslv.setVisibility(View.INVISIBLE);
+                dragSortListView.setVisibility(View.INVISIBLE);
                 swipeListView.setVisibility(View.VISIBLE);
             }
             invalidateOptionsMenu();
@@ -207,14 +229,12 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
 
         if (canSwitch)
         {
-            menu.findItem(R.id.edit).setIcon(null);
-            menu.findItem(R.id.edit).setTitle("Save");
+            menu.findItem(R.id.edit).setIcon(R.drawable.ic_done_white_24dp);
             canSwitch = false;
         }
         else
         {
             menu.findItem(R.id.edit).setIcon(new IconDrawable(this, Iconify.IconValue.zmdi_swap_vertical).colorRes(R.color.white).actionBarSize());
-            menu.findItem(R.id.edit).setTitle("");
             canSwitch = true;
         }
 
@@ -224,12 +244,30 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
     @Override
     public void onClick(View v)
     {
-        AddExerciseDialog addDialog = new AddExerciseDialog();
-        addDialog.SetData(Exercise.this);
-        Bundle b = new Bundle();
-        b.putInt("ROUTINE_ID", routineID);
-        addDialog.setArguments(b);
-        addDialog.show(Exercise.this. getFragmentManager(), "");
+        switch (v.getId()) {
+            case R.id.addExistingButton:
+                SearchExerciseDialog addExisting = new SearchExerciseDialog();
+                addExisting.SetData(this, db, exerciseAdapter.GetAllIds());
+                Bundle b = new Bundle();
+                b.putInt("ROUTINE_ID", routineID);
+                addExisting.setArguments(b);
+                addExisting.show(getFragmentManager(), "");
+
+                break;
+            case R.id.addNewButton:
+
+                AddExerciseDialog addDialog = new AddExerciseDialog();
+                addDialog.SetData(Exercise.this);
+                Bundle bu = new Bundle();
+                bu.putInt("ROUTINE_ID", routineID);
+                addDialog.setArguments(bu);
+                addDialog.show(Exercise.this. getFragmentManager(), "");
+
+
+                break;
+        }
+
+        menuRed.close(false);
     }
 
     @Override
@@ -237,12 +275,26 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
     {
         exerciseAdapter.Add(row);
         exerciseAdapter.notifyDataSetChanged();
+        UpdateCursor();
+
+        SetResult();
     }
 
     @Override
     public void OnUpdated(ExerciseDto row)
     {
+        exerciseAdapter.Update(row);
         exerciseAdapter.notifyDataSetChanged();
+
+        UpdateCursor();
+    }
+
+    private void SetResult()
+    {
+        Intent intent = new Intent();
+        intent.putExtra("ROUTINE_ID", routineID);
+        intent.putExtra("EXERCISE_COUNT", exerciseAdapter.getCount());
+        setResult(Program.RESULT_OK, intent);
     }
 
     @Override
@@ -254,9 +306,9 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
                 EditExerciseDialog editExercise = new EditExerciseDialog();
                 editExercise.SetData(Exercise.this, db);
                 Bundle b = new Bundle();
-                b.putInt("EXERCISE_ID", routineID);
-                b.putInt("EXERCISE_NAME", routineID);
-                b.putInt("EXERCISE_TYPE", routineID);
+                b.putInt("EXERCISE_ID", item.Id);
+                b.putString("EXERCISE_NAME", item.Name);
+                b.putInt("EXERCISE_TYPE", item.Type.Id);
                 editExercise.setArguments(b);
 
                 editExercise.show(Exercise.this.getFragmentManager(), "");
@@ -264,16 +316,14 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
             case 1: //delete
 
                 db.Open();
-                db.DeleteExercise(item.Id);
+                db.DeleteExercise(String.valueOf(item.Id), String.valueOf(routineID));
                 db.Close();
 
                 exerciseAdapter.Remove(item);
-                dragSortAdapter.remove(position);
-
                 exerciseAdapter.notifyDataSetChanged();
-                dragSortAdapter.notifyDataSetChanged();
                 UpdateCursor();
-                swipeListView.setAdapter(exerciseAdapter);
+
+                SetResult();
                 break;
         }
         return false;

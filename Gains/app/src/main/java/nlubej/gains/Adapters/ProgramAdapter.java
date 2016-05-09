@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import nlubej.gains.DataTransferObjects.ProgramDto;
+import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.R;
 import nlubej.gains.Views.Program;
@@ -56,8 +57,14 @@ public class ProgramAdapter extends BaseAdapter
         programDto.add(row);
     }
 
+
+    public void Remove(ProgramDto item)
+    {
+        programDto.remove(item);
+    }
+
     @Override
-    public Object getItem(int position)
+    public ProgramDto getItem(int position)
     {
         return programDto.get(position);
     }
@@ -66,6 +73,30 @@ public class ProgramAdapter extends BaseAdapter
     public long getItemId(int position)
     {
         return position;
+    }
+
+    public void UpdateRoutineCount(int programId, int routineCount)
+    {
+        for(ProgramDto dto : programDto)
+        {
+            if(dto.Id == programId)
+            {
+                dto.RoutineCount = routineCount;
+                return;
+            }
+        }
+    }
+
+    public void Update(ProgramDto row)
+    {
+        for(ProgramDto dto : programDto)
+        {
+            if(dto.Id == row.Id)
+            {
+                dto.Name = row.Name;
+                return;
+            }
+        }
     }
 
     class ProgramViewHolder
@@ -92,26 +123,11 @@ public class ProgramAdapter extends BaseAdapter
             row = inflater.inflate(R.layout.row_program, parent, false);
             holder = new ProgramViewHolder(row);
             row.setTag(holder);
-            try
-            {
-                if (DefaultProgram == programDto.get(position).Id)
-                {
-                    holder.name.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));
-                    holder.subName.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));
 
-                }
-                else if ((programDto.get(position).Id) == Integer.parseInt(prefs.getString("DEFAULT_PROGRAM", "")))
-                {
-                    holder.name.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));
-                    holder.subName.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));
-                }
-            }
-            catch (NumberFormatException e)
+            if ((programDto.get(position).Id) == (prefs.getInt("DEFAULT_PROGRAM", programDto.get(0).Id)))
             {
-                e.printStackTrace();
-                holder.name.setTextColor(ContextCompat.getColor(ctx, R.color.menu));
-                holder.subName.setTextColor(ContextCompat.getColor(ctx, R.color.menu));
-                prefs.edit().putString("DEFAULT_PROGRAM", programDto.get(0).Id + "").apply();
+                holder.name.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));
+                holder.subName.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));
             }
         }
         else
@@ -123,7 +139,7 @@ public class ProgramAdapter extends BaseAdapter
         final ProgramDto temp = programDto.get(position);
 
         holder.name.setText(temp.Name);
-        holder.subName.setText(String.format("%d routines",temp.RoutineCount));
+        holder.subName.setText(String.format("%d %s",temp.RoutineCount, (temp.RoutineCount == 1) ? "routine" : "routines"));
 
             /*holder.btn.setOnClickListener(new OnClickListener()
             {

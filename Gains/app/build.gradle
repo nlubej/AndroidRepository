@@ -36,6 +36,8 @@ dependencies {
     compile 'com.daimajia.androidanimations:library:1.1.3@aar'
     compile 'com.baoyz.swipemenulistview:library:1.3.0'
 
+    compile 'com.github.clans:fab:1.6.3' //floating
+
     compile ('com.github.ganfra:material-spinner:1.1.0'){
         exclude group: 'com.nineoldandroids', module: 'library'
         exclude group: 'com.android.support', module: 'appcompat-v7'

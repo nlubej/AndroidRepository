@@ -61,7 +61,8 @@ public class AddProgramDialog extends DialogFragment implements View.OnClickList
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_edit, null);
-        program = (MaterialEditText) view.findViewById(R.id.programName);
+        program = (MaterialEditText) view.findViewById(R.id.name);
+        program.setHint("Get Big");
 
         Button yes = (Button)view.findViewById(R.id.btn_yes);
         Button no = (Button)view.findViewById(R.id.btn_no);
@@ -96,7 +97,7 @@ public class AddProgramDialog extends DialogFragment implements View.OnClickList
                 }
                 else
                 {
-                    program.setError("Name must not be empty.");
+                    program.setError("Write a name");
                     wantToCloseDialog = false;
                 }
 

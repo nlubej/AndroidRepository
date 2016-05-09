@@ -5,15 +5,23 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.malinskiy.materialicons.IconDrawable;
+import com.malinskiy.materialicons.Iconify;
 import com.rengwuxian.materialedittext.MaterialEditText;
+
+import java.util.ArrayList;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 import nlubej.gains.DataTransferObjects.ExerciseDto;
+import nlubej.gains.DataTransferObjects.ExerciseType;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Views.Exercise;
 import nlubej.gains.R;
@@ -33,7 +41,7 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
     private MaterialSpinner exerciseType;
     private int exerciseTypeId;
     private AlertDialog alertDialog;
-    private String[] exerciseTypes;
+    private ArrayList<ExerciseType> exerciseTypes;
     private ArrayAdapter exerciseTypeAdapter;
 
     public void SetData(Exercise exercise)
@@ -54,10 +62,14 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
         exerciseType = (MaterialSpinner) view.findViewById(R.id.exerciseType);
         Button yes = (Button)view.findViewById(R.id.btn_yes);
         Button no = (Button)view.findViewById(R.id.btn_no);
+
         Init();
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
 
+
+
+        exerciseName.setHint("Squats");
         routineId = getArguments().getInt("ROUTINE_ID");
 
         builder.setView(view);
@@ -86,27 +98,41 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
         {
 
             case R.id.btn_yes:
-                if (exerciseName.getText().toString().compareTo("") != 0)
+
+                if(!Validate())
                 {
-                    db.Open();
-                    exerciseId = db.InsertExercise(exerciseName.getText().toString(), exerciseType.getSelectedItemPosition()+1, routineId);
-                    db.Close();
-                }
-                else
-                {
-                    wantToCloseDialog = false;
+                    return;
                 }
 
+                db.Open();
+                exerciseId = db.InsertExercise(exerciseName.getText().toString(), ((ExerciseType)exerciseType.getSelectedItem()).Id, routineId);
+                exerciseId = db.InsertRoutineExerciseConnection(routineId, exerciseId);
+                db.Close();
 
-                if (wantToCloseDialog)
-                {
-                    parent.OnAdded(new ExerciseDto(exerciseId, exerciseName.getText().toString(),(int)exerciseType.getSelectedItemId(),routineId));
-                    alertDialog.dismiss();
-                }
+                parent.OnAdded(new ExerciseDto(exerciseId, exerciseName.getText().toString(),((ExerciseType)exerciseType.getSelectedItem()).Id));
+                alertDialog.dismiss();
+
                 break;
             case R.id.btn_no:
                 alertDialog.dismiss();
                 break;
         }
+    }
+
+    private boolean Validate()
+    {
+        if (exerciseName.getText().toString().compareTo("") == 0)
+        {
+            exerciseName.setError("Write a name");
+            return false;
+        }
+
+        if (exerciseType.getSelectedItemId() == 0)
+        {
+            exerciseType.setError("Choose a type");
+            return false;
+        }
+
+        return true;
     }
 }

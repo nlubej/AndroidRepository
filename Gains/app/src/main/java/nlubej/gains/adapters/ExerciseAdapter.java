@@ -21,14 +21,9 @@ public class ExerciseAdapter extends BaseAdapter
 {
     private ArrayList<ExerciseDto> exerciseDto;
     Context ctx;
-    Exercise parentClass;
-    private QueryFactory db;
-
-    public ExerciseAdapter(Exercise parent, QueryFactory database)
+    public ExerciseAdapter(Context ctx)
     {
-        this.ctx = parent.getApplicationContext();
-        this.parentClass = parent;
-        db = database;
+        this.ctx = ctx;
 
         exerciseDto = new ArrayList();
     }
@@ -70,6 +65,44 @@ public class ExerciseAdapter extends BaseAdapter
         exerciseDto.remove(item);
     }
 
+    public void Update(ExerciseDto row)
+    {
+        for(ExerciseDto dto : exerciseDto)
+        {
+            if(dto.Id == row.Id)
+            {
+                dto.Type = row.Type;
+                dto.Name = row.Name;
+                return;
+            }
+        }
+    }
+
+    public boolean Exists(ExerciseDto item)
+    {
+        for(ExerciseDto dto : exerciseDto)
+        {
+            if(dto.Id == item.Id)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public ArrayList<Integer> GetAllIds()
+    {
+        ArrayList<Integer> exerciseIds = new ArrayList<>();
+
+        for(ExerciseDto dto : exerciseDto)
+        {
+            exerciseIds.add(dto.Id);
+        }
+
+        return exerciseIds;
+    }
+
     class ExerciseHolder
     {
         TextView name;
@@ -105,54 +138,6 @@ public class ExerciseAdapter extends BaseAdapter
 
         routineHolder.name.setText(temp.Name);
         routineHolder.subName.setText(temp.Type.Description);
-
-        /*routineHolder.btn.setOnClickListener(new View.OnClickListener()
-        {
-
-            @Override
-            public void onClick(View v)
-            {
-                PopupMenu popup = new PopupMenu(ctx, v);
-                popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
-                popup.show();
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
-                {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item)
-                    {
-                        if (item.getItemId() == R.id.delete)
-                        {
-                            new AlertDialog.Builder(ctx).setTitle("Delete entry").setMessage("Are you sure you want to delete this entry?").setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    db.Open();
-                                    db.DeleteRoutine(routineDto.get(position).Id);
-                                    db.Close();
-                                }
-                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener()
-                            {
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                }
-                            }).show();
-                        }
-                        else if (item.getItemId() == R.id.edit)
-                        {
-                            EditDialog editDialog = new EditDialog();
-                            Bundle arg = new Bundle();
-                            arg.putString("ROUTINE_NAME", routineDto.get(position).Name);
-                            arg.putInt("ROUTINE_ID", routineDto.get(position).Id);
-                            editDialog.setArguments(arg);
-                            editDialog.SetData(parentClass, AddDialogType.Routine);
-                            editDialog.show(parentClass.getFragmentManager(), "");
-
-                        }
-                        return false;
-                    }
-                });
-            }
-        });*/
 
         return row;
     }

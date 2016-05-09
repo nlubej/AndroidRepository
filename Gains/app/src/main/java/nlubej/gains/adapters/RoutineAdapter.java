@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.R;
@@ -71,6 +72,30 @@ public class RoutineAdapter extends BaseAdapter
         routineDto.remove(item);
     }
 
+    public void Update(RoutineDto row)
+    {
+        for(RoutineDto dto : routineDto)
+        {
+            if(dto.Id == row.Id)
+            {
+                dto.Name = row.Name;
+                return;
+            }
+        }
+    }
+
+    public void UpdateExerciseCount(int routineId, int exerciseCount)
+    {
+        for(RoutineDto dto : routineDto)
+        {
+            if(dto.Id == routineId)
+            {
+                dto.ExerciseCount = exerciseCount;
+                return;
+            }
+        }
+    }
+
     class RoutineHolder
     {
         TextView name;
@@ -105,7 +130,7 @@ public class RoutineAdapter extends BaseAdapter
         RoutineDto temp = routineDto.get(position);
 
         routineHolder.name.setText(temp.Name);
-        routineHolder.subName.setText(String.format("%d exercises",temp.ExerciseCount));
+        routineHolder.subName.setText(String.format("%d %s",temp.ExerciseCount, (temp.ExerciseCount == 1) ? "exercise" : "exercises"));
         //routineHolder.btn.setTag(position);
 
         /*routineHolder.btn.setOnClickListener(new View.OnClickListener()

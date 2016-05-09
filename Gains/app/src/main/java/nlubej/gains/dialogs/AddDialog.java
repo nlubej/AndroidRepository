@@ -63,7 +63,6 @@ public class AddDialog extends DialogFragment implements View.OnClickListener
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_edit, null);
-        program = (MaterialEditText) view.findViewById(R.id.programName);
 
         Button yes = (Button)view.findViewById(R.id.btn_yes);
         Button no = (Button)view.findViewById(R.id.btn_no);

@@ -21,34 +21,36 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
-import com.melnykov.fab.FloatingActionButton;
 
 import nlubej.gains.Adapters.RoutineAdapter;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Dialogs.AddRoutineDialog;
-import nlubej.gains.Dialogs.EditExerciseDialog;
+import nlubej.gains.Dialogs.EditRoutineDialog;
+import nlubej.gains.Dialogs.SearchExerciseDialog;
 import nlubej.gains.ExternalFiles.DragSortListView;
-import nlubej.gains.R;
 import nlubej.gains.ExternalFiles.SimpleDragSortCursorAdapter;
+import nlubej.gains.R;
 import nlubej.gains.interfaces.OnItemChanged;
 
 public class Routine extends AppCompatActivity implements OnItemClickListener, OnItemChanged<RoutineDto>, OnClickListener, SwipeMenuListView.OnMenuItemClickListener
 {
     private QueryFactory db;
-    private ArrayList<RoutineDto> routineDto;
-    private Context context;
-    private DragSortListView dslv;
+    private DragSortListView dragSortListView;
     private SwipeMenuListView swipeListView;
     private SimpleDragSortCursorAdapter dragSortAdapter;
     private RoutineAdapter routineAdapter;
-    private FloatingActionButton addButton;
     private MatrixCursor cursor;
     private boolean canSwitch = false;
     private int programId = 0;
-    private Toolbar toolbar;
+
+    FloatingActionButton addExistingButton;
+    FloatingActionButton addNewButton;
+    private FloatingActionMenu menuRed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -67,23 +69,30 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
 
     private void InitComponents()
     {
-        context = getApplicationContext();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Context context = getApplicationContext();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         db = new QueryFactory(context);
-        dslv = (DragSortListView) findViewById(R.id.dragListView);
+        dragSortListView = (DragSortListView) findViewById(R.id.dragListView);
         swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
-        addButton = (FloatingActionButton) findViewById(R.id.addButton);
 
-        dslv.setOnItemClickListener(this);
+        menuRed = (FloatingActionMenu) findViewById(R.id.addButton);
+        addExistingButton = (FloatingActionButton) findViewById(R.id.addExistingButton);
+        addNewButton = (FloatingActionButton) findViewById(R.id.addNewButton);
+
+        menuRed.setClosedOnTouchOutside(true);
+        addExistingButton.setVisibility(View.GONE);
+        addNewButton.setVisibility(View.GONE);
+
+        dragSortListView.setOnItemClickListener(this);
         swipeListView.setOnMenuItemClickListener(this);
         swipeListView.setOnItemClickListener(this);
-        addButton.setOnClickListener(this);
-        addButton.setImageDrawable(
+        menuRed.setOnMenuButtonClickListener(this);
+        /*addButton.setImageDrawable(
                 new IconDrawable(context, Iconify.IconValue.zmdi_plus)
                         .colorRes(R.color.DarkColor)
-                        .actionBarSize());
+                        .actionBarSize());*/
 
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -110,17 +119,17 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
         dragSortAdapter = new SortAdapter(getApplicationContext(), R.layout.row_rearrange_item);
         routineAdapter = new RoutineAdapter(this, db);
 
-        dslv.setAdapter(dragSortAdapter);
+        dragSortListView.setAdapter(dragSortAdapter);
         swipeListView.setAdapter(routineAdapter);
 
         swipeListView.setVisibility(View.VISIBLE);
-        dslv.setVisibility(View.INVISIBLE);
+        dragSortListView.setVisibility(View.INVISIBLE);
     }
 
     public void SetData()
     {
         db.Open();
-        routineDto = db.SelectRoutines(programId);
+        ArrayList<RoutineDto> routineDto = db.SelectRoutines(programId);
         db.Close();
 
         routineAdapter.AddAll(routineDto);
@@ -131,12 +140,28 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
         {
             for (int i = 0; i < routineDto.size(); i++)
             {
-                cursor.addRow(new Object[] {routineDto.get(i).Id, routineDto.get(i).Name,routineDto.get(i).Position, routineDto.get(i).ProgramId, routineDto.get(i).ExerciseCount, String.format("%d exercises",routineDto.get(i).ExerciseCount)});
+                cursor.addRow(new Object[] {routineDto.get(i).Id, routineDto.get(i).Name, routineDto.get(i).Position, routineDto.get(i).ProgramId, routineDto.get(i).ExerciseCount, String.format("%d %s", routineDto.get(i).ExerciseCount, routineDto.get(i).ExerciseCount == 1 ? "exercise" : "exercises")});
 
             }
         }
 
         dragSortAdapter.changeCursor(cursor);
+    }
+
+    private void UpdateCursor()
+    {
+        cursor = new MatrixCursor(new String[]{"_id", "Name", "Position", "ProgramId", "ExerciseCount", "ExerciseCountDescription"});
+        if (routineAdapter.getCount() != 0)
+        {
+            for (int i = 0; i < routineAdapter.getCount(); i++)
+            {
+                RoutineDto routineDto = routineAdapter.getItem(i);
+                cursor.addRow(new Object[] {routineDto.Id, routineDto.Name,routineDto.Position, routineDto.ProgramId, routineDto.ExerciseCount, String.format("%d exercises",routineDto.ExerciseCount)});
+            }
+        }
+
+        dragSortAdapter.changeCursor(cursor);
+        swipeListView.setAdapter(routineAdapter);
     }
 
     @Override
@@ -161,7 +186,7 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
 
             if (canSwitch)
             {
-                dslv.setVisibility(View.VISIBLE);
+                dragSortListView.setVisibility(View.VISIBLE);
                 swipeListView.setVisibility(View.INVISIBLE);
             }
             else
@@ -174,7 +199,6 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
                     for (int i = 0; i < dragSortAdapter.getCount(); i++)
                     {
                         newIds[i] = ((int) dragSortAdapter.getItemId(i));
-
                         dto.add(RoutineDto.ToDto(cursor));
                         cursor.moveToNext();
                     }
@@ -187,7 +211,7 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
                     routineAdapter.notifyDataSetChanged();
                 }
 
-                dslv.setVisibility(View.INVISIBLE);
+                dragSortListView.setVisibility(View.INVISIBLE);
                 swipeListView.setVisibility(View.VISIBLE);
             }
             invalidateOptionsMenu();
@@ -200,19 +224,18 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
     {
         if (canSwitch)
         {
-            menu.findItem(R.id.edit).setIcon(null);
-            menu.findItem(R.id.edit).setTitle("Save");
+            menu.findItem(R.id.edit).setIcon(R.drawable.ic_done_white_24dp);
             canSwitch = false;
         }
         else
         {
             menu.findItem(R.id.edit).setIcon(new IconDrawable(this, Iconify.IconValue.zmdi_swap_vertical).colorRes(R.color.white).actionBarSize());
-            menu.findItem(R.id.edit).setTitle("");
             canSwitch = true;
         }
 
         return super.onPrepareOptionsMenu(menu);
     }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -222,20 +245,39 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
             Intent i = new Intent(this, Exercise.class);
             i.putExtra("ROUTINE_NAME", routineAdapter.getItem((int) id).Name);
             i.putExtra("ROUTINE_ID", routineAdapter.getItem((int) id).Id);
-            startActivity(i);
+            startActivityForResult(i, Program.UPDATE_ACTIVITY_RESULT);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == Program.UPDATE_ACTIVITY_RESULT) {
+            // Make sure the request was successful
+            if (resultCode == Program.RESULT_OK) {
+
+                int id = data.getIntExtra("ROUTINE_ID",0);
+                int count = data.getIntExtra("EXERCISE_COUNT",0);
+
+                routineAdapter.UpdateExerciseCount(id, count);
+                routineAdapter.notifyDataSetChanged();
+            }
         }
     }
 
     @Override
     public void onClick(View v)
     {
+
         AddRoutineDialog addDialog = new AddRoutineDialog();
         addDialog.SetData(Routine.this, db);
 
         Bundle b = new Bundle();
         b.putInt("PROGRAM_ID", programId);
         addDialog.setArguments(b);
-        addDialog.show(Routine.this.getFragmentManager(), "");
+        addDialog.show(getFragmentManager(), "");
+
+        menuRed.close(false);
     }
 
     @Override
@@ -243,13 +285,27 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
     {
         routineAdapter.Add(row);
         routineAdapter.notifyDataSetChanged();
+
+        UpdateCursor();
+        SetResult();
     }
 
     @Override
     public void OnUpdated(RoutineDto row)
     {
+        routineAdapter.Update(row);
         routineAdapter.notifyDataSetChanged();
+        UpdateCursor();
     }
+
+    private void SetResult()
+    {
+        Intent intent = new Intent();
+        intent.putExtra("PROGRAM_ID", programId);
+        intent.putExtra("ROUTINE_COUNT", routineAdapter.getCount());
+        setResult(Program.RESULT_OK, intent);
+    }
+
 
     @Override
     public boolean onMenuItemClick(int position, SwipeMenu menu, int index)
@@ -257,36 +313,44 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
         RoutineDto item = routineAdapter.getItem(position);
         switch (index) {
             case 0: //edit
-          //      EditExerciseDialog addDialog = new EditExerciseDialog();
-               // addDialog.SetData(Program.this, db);
-              //  addDialog.show(Program.this.getActivity().getFragmentManager(), "");
+                EditRoutineDialog editExercise = new EditRoutineDialog();
+                editExercise.SetData(Routine.this, db);
+                Bundle b = new Bundle();
+                b.putInt("ROUTINE_ID", item.Id);
+                b.putInt("PROGRAM_ID", item.ProgramId);
+                b.putString("ROUTINE_NAME", item.Name);
+                editExercise.setArguments(b);
+
+                editExercise.show(getFragmentManager(), "");
                 break;
             case 1: //delete
+                db.Open();
+                db.DeleteRoutine(item.Id);
+                db.Close();
+
                 routineAdapter.Remove(item);
+                routineAdapter.notifyDataSetChanged();
+                UpdateCursor();
+
+                SetResult();
                 break;
         }
-
-        swipeListView.invalidate();
-        routineAdapter.notifyDataSetChanged();
-        swipeListView.setAdapter(routineAdapter);
 
         return false;
     }
 
     private class SortAdapter extends SimpleDragSortCursorAdapter
     {
-        public SortAdapter(Context ctxt, int rmid)
+        public SortAdapter(Context ctx, int rid)
         {
-            super(ctxt, rmid, null, new String[]{"Name", "ExerciseCountDescription"}, new int[] {R.id.name, R.id.subName}, 0);
-            mContext = ctxt;
+            super(ctx, rid, null, new String[]{"Name", "ExerciseCountDescription"}, new int[] {R.id.name, R.id.subName}, 0);
+            mContext = ctx;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
         {
-            View v = super.getView(position, convertView, parent);
-
-            return v;
+            return super.getView(position, convertView, parent);
         }
     }
 }

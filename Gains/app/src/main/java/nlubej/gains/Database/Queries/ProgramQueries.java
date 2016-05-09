@@ -17,32 +17,19 @@ public class ProgramQueries
     {
         return "SELECT p.PROGRAM_ID, p.PROGRAM_NAME, count(r.ROUTINE_ID) as ROUTINE_COUNT FROM PROGRAM p " +
                 "LEFT JOIN ROUTINE r on p.PROGRAM_ID = r.PROGRAM_ID " +
-                "GROUP BY p.PROGRAM_ID, p.PROGRAM_NAME";
+                "GROUP BY p.PROGRAM_ID, p.PROGRAM_NAME " +
+                "ORDER BY p.CREATED_ON ASC";
     }
 
-    public static String DeleteWorkoutLogsByProgramId (int programId)
+    public static String SelectRoutineIdsForDeletion(int programId)
     {
-        return String.format("DELETE FROM WORKOUT_LOG WHERE EXERCISE_ID IN (" +
-                "SELECT EXERCISE_ID FROM EXERCISE WHERE ROUTINE_ID IN (" +
-                "SELECT ROUTINE_ID FROM ROUTINE WHERE PROGRAM_ID = %d)", programId);
-    }
-
-    public static String DeleteNotesByProgramId (int programId)
-    {
-        return String.format("DELETE FROM WORKOUT_NOTE WHERE EXERCISE_ID IN (" +
-                "SELECT EXERCISE_ID FROM EXERCISE WHERE ROUTINE_ID IN (" +
-                "SELECT ROUTINE_ID FROM ROUTINE WHERE PROGRAM_ID = %d)", programId);
-    }
-
-    public static String DeleteExerciesByProgramId (int programId)
-    {
-        return String.format("DELETE FROM EXERCISE WHERE EXERCISE_ID IN (" +
-                "SELECT EXERCISE_ID FROM EXERCISE WHERE ROUTINE_ID IN (" +
-                "SELECT ROUTINE_ID FROM ROUTINE WHERE PROGRAM_ID = %d)", programId);
+        return String.format("SELECT r.ROUTINE_ID  FROM PROGRAM p " +
+                "JOIN ROUTINE r ON r.PROGRAM_ID = p.PROGRAM_ID " +
+                "WHERE r.PROGRAM_ID = %d ", programId);
     }
 
     public static String CreateTableProgram()
     {
-        return "create table if not exists PROGRAM (PROGRAM_ID integer primary key autoincrement, PROGRAM_NAME varchar not null);";
+        return "create table if not exists PROGRAM (PROGRAM_ID integer primary key autoincrement, PROGRAM_NAME varchar not null, CREATED_ON TIMESTAMP DEFAULT CURRENT_TIMESTAMP);";
     }
 }

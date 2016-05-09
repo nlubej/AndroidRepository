@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.R;
@@ -18,44 +19,48 @@ import nlubej.gains.Views.Routine;
 import nlubej.gains.interfaces.OnItemChanged;
 
 /**
- * Created by nlubej on 22.10.2015.
+ * Created by nlubej on 24.10.2015.
  */
-public class AddRoutineDialog extends DialogFragment implements View.OnClickListener
+public class EditRoutineDialog extends DialogFragment implements View.OnClickListener
 {
-
     private QueryFactory db;
     private OnItemChanged<RoutineDto> parent;
     private Context context;
+    private MaterialEditText routineName;
+    private int routineId;
     private int programId;
-    private MaterialEditText routine;
     private AlertDialog alertDialog;
 
-    public void SetData(Routine fragment, QueryFactory database)
+    public void SetData(Routine routine, QueryFactory database)
     {
-        this.parent = fragment;
+        parent = routine;
+        context = routine;
         db = database;
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
+    public Dialog onCreateDialog (Bundle savedInstanceState)
     {
-        context = getActivity();
+        db = new QueryFactory(context);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_edit, null);
-        routine = (MaterialEditText) view.findViewById(R.id.name);
-        routine.setHint("Legs/Abs");
 
+        routineName = (MaterialEditText) view.findViewById(R.id.name);
         Button yes = (Button)view.findViewById(R.id.btn_yes);
         Button no = (Button)view.findViewById(R.id.btn_no);
+
+        routineName.setText(getArguments().getString("ROUTINE_NAME"));
+        routineId = getArguments().getInt("ROUTINE_ID");
+        programId = getArguments().getInt("PROGRAM_ID");
 
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
 
-        programId = getArguments().getInt("PROGRAM_ID");
-
         builder.setView(view);
+        builder.setTitle("Edit");
+
         alertDialog = builder.create();
         alertDialog.show();
 
@@ -65,28 +70,25 @@ public class AddRoutineDialog extends DialogFragment implements View.OnClickList
     @Override
     public void onClick(View v)
     {
-        int routineId = 0;
-
         Boolean wantToCloseDialog = true;
         switch (v.getId())
         {
 
             case R.id.btn_yes:
-                if (routine.getText().toString().compareTo("") != 0)
+                if (routineName.getText().toString().compareTo("") != 0)
                 {
                     db.Open();
-                    routineId = db.InsertRoutine(routine.getText().toString(), programId);
+                    db.UpdateRoutine(routineName.getText().toString(), routineId);
                     db.Close();
                 }
                 else
                 {
-                    routine.setError("Write a name");
                     wantToCloseDialog = false;
                 }
 
                 if (wantToCloseDialog)
                 {
-                    parent.OnAdded(new RoutineDto(routineId, routine.getText().toString(), programId));
+                    parent.OnUpdated(new RoutineDto(routineId, routineName.getText().toString(), programId));
                     alertDialog.dismiss();
                 }
                 break;

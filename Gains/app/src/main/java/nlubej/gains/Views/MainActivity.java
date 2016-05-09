@@ -1,8 +1,8 @@
 package nlubej.gains.Views;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
 
@@ -56,7 +56,7 @@ private HelpLiveo mHelpLiveo;
     @Override //The "R.id.container" should be used in "beginTransaction (). Replace"
 	public void onItemClick(int position) {
 		Fragment mFragment;
-		FragmentManager mFragmentManager = getSupportFragmentManager();
+		FragmentManager mFragmentManager = getFragmentManager();
 		Log.i("nlubej",position+"");
 		switch (position){
 			case 0:

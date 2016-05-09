@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,20 +24,27 @@ import com.malinskiy.materialicons.Iconify;
 import com.melnykov.fab.FloatingActionButton;
 
 import nlubej.gains.Adapters.ProgramAdapter;
+import nlubej.gains.Adapters.RoutineAdapter;
 import nlubej.gains.DataTransferObjects.ProgramDto;
+import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Dialogs.AddProgramDialog;
+import nlubej.gains.Dialogs.EditProgramDialog;
+import nlubej.gains.Dialogs.EditRoutineDialog;
 import nlubej.gains.R;
 import nlubej.gains.interfaces.*;
 
-public class Program extends Fragment implements OnItemClickListener, OnItemChanged<ProgramDto>, OnClickListener
+public class Program extends Fragment implements OnItemClickListener, OnItemChanged<ProgramDto>, OnClickListener, SwipeMenuListView.OnMenuItemClickListener
 {
     private Context context;
     private QueryFactory db;
-    private ArrayList<ProgramDto> programDto;
     FloatingActionButton addButton;
     ProgramAdapter programAdapter;
     SwipeMenuListView swipeListView;
+    private SharedPreferences prefs;
+
+    static final int UPDATE_ACTIVITY_RESULT = 1;
+    static final int RESULT_OK = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -53,15 +62,19 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
     private void InitComponents(final View fragment)
     {
         context = fragment.getContext();
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
         swipeListView = (SwipeMenuListView) fragment.findViewById(R.id.swipeListView);
         addButton = (FloatingActionButton)fragment.findViewById(R.id.addButton);
         programAdapter = new ProgramAdapter(this, db);
         db = new QueryFactory(context);
 
         addButton.setOnClickListener(this);
+
+        addButton.attachToListView(swipeListView);
+
         swipeListView.setOnItemClickListener(this);
-        addButton.setImageDrawable(
-                new IconDrawable(context, Iconify.IconValue.zmdi_plus)
+        swipeListView.setOnMenuItemClickListener(this);
+        addButton.setImageDrawable(new IconDrawable(context, Iconify.IconValue.zmdi_plus)
                         .colorRes(R.color.DarkColor)
                         .actionBarSize());
 
@@ -94,7 +107,7 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
     public void SetData()
     {
         db.Open();
-        programDto = db.SelectPrograms();
+        ArrayList<ProgramDto> programDto = db.SelectPrograms();
         db.Close();
 
         programAdapter.AddAll(programDto);
@@ -105,11 +118,28 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Intent i = new Intent(context, Routine.class);
-        i.putExtra("PROGRAM_NAME", programDto.get((int) id).Name);
-        i.putExtra("PROGRAM_ID", programDto.get((int) id).Id);
+        i.putExtra("PROGRAM_NAME", programAdapter.getItem((int) id).Name);
+        i.putExtra("PROGRAM_ID", programAdapter.getItem((int) id).Id);
 
-        startActivity(i);
+        startActivityForResult(i, UPDATE_ACTIVITY_RESULT);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == UPDATE_ACTIVITY_RESULT) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+
+                int id = data.getIntExtra("PROGRAM_ID",0);
+                int count = data.getIntExtra("ROUTINE_COUNT",0);
+
+                programAdapter.UpdateRoutineCount(id, count);
+                programAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
 /*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -139,6 +169,41 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
         addDialog.show(Program.this.getActivity().getFragmentManager(), "");
     }
 
+    @Override
+    public boolean onMenuItemClick(int position, SwipeMenu menu, int index)
+    {
+        ProgramDto item = programAdapter.getItem(position);
+        switch (index) {
+            case 0: //mark
+                ProgramAdapter.DefaultProgram = item.Id;
+                prefs.edit().putInt("DEFAULT_PROGRAM", item.Id).apply();
+                programAdapter.notifyDataSetChanged();
+                swipeListView.setAdapter(programAdapter);
+                break;
+            case 1: //edit
+                EditProgramDialog editExercise = new EditProgramDialog();
+                editExercise.SetData(Program.this, db);
+                Bundle b = new Bundle();
+                b.putInt("PROGRAM_ID", item.Id);
+                b.putString("PROGRAM_NAME", item.Name);
+                editExercise.setArguments(b);
+
+                editExercise.show(getFragmentManager(), "");
+                break;
+            case 2: //delete
+                db.Open();
+                db.DeleteProgram(item.Id);
+                db.Close();
+
+                programAdapter.Remove(item);
+                programAdapter.notifyDataSetChanged();
+                swipeListView.setAdapter(programAdapter);
+
+                break;
+        }
+
+        return false;
+    }
 
     @Override
     public void OnAdded(ProgramDto row)
@@ -150,6 +215,7 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
     @Override
     public void OnUpdated(ProgramDto row)
     {
+        programAdapter.Update(row);
         programAdapter.notifyDataSetChanged();
     }
 }

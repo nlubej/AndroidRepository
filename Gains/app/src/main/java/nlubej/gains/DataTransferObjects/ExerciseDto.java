@@ -2,6 +2,9 @@ package nlubej.gains.DataTransferObjects;
 
 import android.database.MatrixCursor;
 
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import fr.ganfra.materialspinner.MaterialSpinner;
 import nlubej.gains.Enums.ExerciseType;
 
 /**
@@ -13,18 +16,15 @@ public class ExerciseDto
     public String Name;
     public int Position;
     public ExerciseType Type;
-    public int RoutineId;
-
     public ExerciseDto()
     {
     }
 
-    public ExerciseDto(int exerciseId, String name, int typeId, int routineId)
+    public ExerciseDto(int exerciseId, String exerciseName, int exerciseType)
     {
         this.Id = exerciseId;
-        this.Name = name;
-        this.Type = ExerciseType.FromInteger(typeId);
-        this.RoutineId = routineId;
+        this.Name = exerciseName;
+        this.Type = ExerciseType.FromInteger(exerciseType);
     }
 
     public static ExerciseDto ToDto(MatrixCursor cursor)
@@ -34,7 +34,6 @@ public class ExerciseDto
         dto.Name = cursor.getString(1);
         dto.Position = cursor.getInt(2);
         dto.Type = ExerciseType.FromInteger(cursor.getInt(3));
-        dto.RoutineId = cursor.getInt(4);
 
         return dto;
     }
