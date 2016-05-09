@@ -56,16 +56,44 @@
 		android:layout_height="match_parent">
 
 
-		<com.melnykov.fab.FloatingActionButton
+		<com.github.clans.fab.FloatingActionMenu
 			android:id="@+id/addButton"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="bottom|right"
-			android:layout_margin="16dp"
-			android:src="@drawable/plus"
-			fab:fab_colorNormal="@color/SecondaryColor"
-			fab:fab_colorPressed="@color/PrimaryColor"
-			fab:fab_colorRipple="@color/SecondaryColor" />
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentRight="true"
+			android:paddingRight="10dp"
+			android:paddingBottom="10dp"
+			android:paddingLeft="10dp"
+			fab:menu_colorNormal="@color/colorAccent"
+			fab:menu_colorPressed="@color/colorAccentPressed"
+			fab:menu_colorRipple="@color/colorAccentPressed"
+			fab:menu_labels_ellipsize="end"
+			fab:menu_labels_singleLine="true"
+			fab:menu_backgroundColor="#ccffffff">
+
+			<com.github.clans.fab.FloatingActionButton
+				android:id="@+id/addExistingButton"
+				fab:fab_colorNormal="@color/colorAccent"
+				fab:fab_colorPressed="@color/colorAccentPressed"
+				fab:fab_colorRipple="@color/colorAccentPressed"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				fab:fab_size="mini"
+				fab:fab_label="Add existing" />
+
+			<com.github.clans.fab.FloatingActionButton
+				android:id="@+id/addNewButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				fab:fab_size="mini"
+				fab:fab_label="Add new"
+				fab:fab_colorNormal="@color/colorAccent"
+				fab:fab_colorPressed="@color/colorAccentPressed"
+				fab:fab_colorRipple="@color/colorAccentPressed"/>
+
+		</com.github.clans.fab.FloatingActionMenu>
 
 	</FrameLayout>
+
 </RelativeLayout>
