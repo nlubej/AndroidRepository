@@ -219,8 +219,7 @@ public class QueryFactory
                 ExerciseDto dto = new ExerciseDto();
                 dto.Id = c.getInt(0);
                 dto.Name = c.getString(1);
-                dto.Position = c.getInt(2);
-                dto.Type = nlubej.gains.Enums.ExerciseType.FromInteger(c.getInt(3));
+                dto.Type = nlubej.gains.Enums.ExerciseType.FromInteger(c.getInt(2));
 
                 exerciseDto.add(dto);
             }

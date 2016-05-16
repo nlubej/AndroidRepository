@@ -191,7 +191,7 @@ public class NewWorkout extends Fragment{
             ViewHolder holder = (ViewHolder) convertView.getTag();
             ApplicationInfo item = getItem(position);
 
-            holder.tv_name.setText(mAppList.get(position).flags);
+          //  holder.tv_name.setText(mAppList.get(position).flags);
             return convertView;
         }
 

@@ -19,6 +19,7 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.github.clans.fab.FloatingActionMenu;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
 import com.melnykov.fab.FloatingActionButton;
@@ -38,13 +39,13 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
 {
     private Context context;
     private QueryFactory db;
-    FloatingActionButton addButton;
     ProgramAdapter programAdapter;
     SwipeMenuListView swipeListView;
     private SharedPreferences prefs;
 
     static final int UPDATE_ACTIVITY_RESULT = 1;
     static final int RESULT_OK = 1;
+    private FloatingActionMenu menuRed;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -64,19 +65,16 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
         context = fragment.getContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         swipeListView = (SwipeMenuListView) fragment.findViewById(R.id.swipeListView);
-        addButton = (FloatingActionButton)fragment.findViewById(R.id.addButton);
+        menuRed = (FloatingActionMenu) fragment.findViewById(R.id.addButton);
         programAdapter = new ProgramAdapter(this, db);
         db = new QueryFactory(context);
 
-        addButton.setOnClickListener(this);
 
-        addButton.attachToListView(swipeListView);
+        menuRed.setClosedOnTouchOutside(true);
+        menuRed.setOnMenuButtonClickListener(this);
 
         swipeListView.setOnItemClickListener(this);
         swipeListView.setOnMenuItemClickListener(this);
-        addButton.setImageDrawable(new IconDrawable(context, Iconify.IconValue.zmdi_plus)
-                        .colorRes(R.color.DarkColor)
-                        .actionBarSize());
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
@@ -167,6 +165,8 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
         AddProgramDialog addDialog = new AddProgramDialog();
         addDialog.SetData(Program.this, db);
         addDialog.show(Program.this.getActivity().getFragmentManager(), "");
+
+        menuRed.close(false);
     }
 
     @Override

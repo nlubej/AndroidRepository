@@ -8,10 +8,11 @@
 
     <!--<color name="PrimaryColor">#4A8DC7</color>-->
     <color name="PrimaryColor">#57a2e3</color>
+    <color name="PrimaryColorPressed">#6FB6F2</color>
     <color name="colorAccentPressed">#EEC8A4</color>
 
     <color name="PrimaryColorr">#4A8DC7</color>
-    <color name="DarkColor">#404040</color>
+    <color name="DarkColor">#4E4E4E</color>
 
     <color name="colorAccent">#E6A467</color>
     <!--<color name="colorAccent">#D48D50</color>-->

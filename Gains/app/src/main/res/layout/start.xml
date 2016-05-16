@@ -315,7 +315,7 @@
 					        android:layout_alignLeft="@+id/progressBar"
 					        android:layout_below="@+id/weightMinus"
 					        android:layout_marginTop="41dp"
-					        android:background="@drawable/start_clear_selector"
+					        android:background="@drawable/button_bg_selected"
 					        android:minWidth="90dp"
 					        android:width="90dp" />
 					
@@ -592,7 +592,7 @@
 				        android:layout_alignLeft="@+id/ProgressBar2"
 				        android:layout_below="@+id/editDistance"
 				        android:layout_marginTop="41dp"
-				        android:background="@drawable/start_clear_selector"
+				        android:background="@drawable/button_bg_selected"
 				        android:minWidth="80dp"
 				        android:text="Clear"
 				        android:width="90dp">

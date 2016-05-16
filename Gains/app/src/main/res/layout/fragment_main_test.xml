@@ -1,0 +1,183 @@
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rlayout"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:descendantFocusability="blocksDescendants"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+
+        <TextView
+            android:id="@+id/exerciseName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progressBar"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/DarkColor"
+            android:textStyle="bold"
+            android:text="Bench Press"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_marginTop="23dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageView
+            android:id="@+id/weightMinus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/editWeight"
+            android:layout_marginTop="7dp"
+            android:layout_toLeftOf="@+id/editWeight"
+            android:background="@drawable/button_transparent_effect"
+            android:clickable="true"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:src="@drawable/minus" />
+
+        <ImageView
+            android:id="@+id/weightPlus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/editWeight"
+            android:layout_toRightOf="@+id/editWeight"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/button_transparent_effect"
+            android:clickable="true"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:src="@drawable/plus" />
+
+        <ImageView
+            android:id="@+id/repsPlus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/editReps"
+            android:layout_marginTop="7dp"
+            android:layout_toRightOf="@+id/editReps"
+            android:background="@drawable/button_transparent_effect"
+            android:clickable="true"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:src="@drawable/plus" />
+
+        <ImageView
+            android:id="@+id/repsMinus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_alignTop="@+id/editReps"
+            android:layout_toLeftOf="@+id/editReps"
+            android:background="@drawable/button_transparent_effect"
+            android:clickable="true"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:src="@drawable/minus" />
+
+        <TextView
+            android:id="@+id/textReps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/ScreenPrev"
+            android:layout_below="@+id/exerciseName"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="18dp"
+            android:text="REPS:"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/DarkColor"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+
+        <View
+            android:id="@+id/seperator2"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_alignEnd="@+id/screenNext"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@+id/textReps"
+            android:background="@color/lightest_gray" />
+
+        <EditText
+            android:id="@+id/editReps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-4dp"
+            android:layout_marginRight="-4dp"
+            android:layout_below="@+id/seperator2"
+            android:layout_centerHorizontal="true"
+            android:backgroundTint="@color/nliveo_transparent"
+            android:layout_marginTop="5dp"
+            android:ems="4"
+            android:gravity="center_vertical|center_horizontal"
+            android:inputType="number"
+            android:maxLength="3"
+            android:textColor="@color/DarkColor"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="8"/>
+
+        <TextView
+            android:id="@+id/textWeightt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textReps"
+            android:layout_below="@+id/repsMinus"
+            android:layout_marginTop="17dp"
+            android:text="WEIGHT:"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/DarkColor"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+
+        <View
+            android:id="@+id/seperator"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@+id/textWeightt"
+            android:background="@color/lightest_gray" />
+
+        <EditText
+            android:id="@+id/editWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/seperator"
+            android:layout_marginTop="5dp"
+            android:backgroundTint="@color/nliveo_transparent"
+            android:layout_toLeftOf="@+id/repsPlus"
+            android:ems="4"
+            android:layout_marginLeft="-4dp"
+            android:layout_marginRight="-4dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:inputType="numberDecimal"
+            android:maxLength="6"
+            android:textColor="@color/DarkColor"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="52.5"/>
+
+        <Button
+            android:id="@+id/addNew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_effect"
+            android:layout_below="@+id/editWeight"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:clickable="true"
+            android:layout_alignLeft="@id/repsMinus"
+            android:textSize="20sp"
+            android:layout_alignRight="@id/repsPlus"
+            android:layout_centerHorizontal="true"
+            android:minWidth="90dp"
+            android:width="90dp"
+            android:text="ADD"
+            android:textColor="@color/white">
+
+            <requestFocus />
+        </Button>
+
+    </RelativeLayout>

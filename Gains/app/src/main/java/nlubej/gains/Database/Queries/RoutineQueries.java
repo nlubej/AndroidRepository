@@ -12,10 +12,10 @@ public class RoutineQueries
 
     public static String SelectExerciseIdsForDeletion(int routineId)
     {
-        return String.format("SELECT GROUP_CONCAT(e.EXERCISE_ID, ',')  FROM ROUTINE r " +
-                "JOIN EXERCISE e ON r.ROUTINE_ID = e.ROUTINE_ID " +
-                "WHERE e.ROUTINE_ID = %d " +
-                "GROUP BY e.ROUTINE_ID ", routineId);
+        return String.format("SELECT GROUP_CONCAT(re.EXERCISE_ID, ',')  FROM ROUTINE r " +
+                "JOIN ROUTINE_EXERCISE re ON r.ROUTINE_ID = re.ROUTINE_ID " +
+                "WHERE re.ROUTINE_ID = %d " +
+                "GROUP BY re.ROUTINE_ID ", routineId);
     }
 
     public static String DeleteNotesByRoutineId (int routineId)

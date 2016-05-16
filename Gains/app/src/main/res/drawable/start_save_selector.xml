@@ -21,7 +21,7 @@
             android:drawable="@drawable/start_button_shape_pressed"
             />
 <!-- Button Default Image-->
-    <item   android:drawable="@drawable/start_save_button_shape"
+    <item   android:drawable="@drawable/button_bg_pressed"
  />
 
 </selector>

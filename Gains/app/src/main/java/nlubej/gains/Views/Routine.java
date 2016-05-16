@@ -89,11 +89,6 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
         swipeListView.setOnMenuItemClickListener(this);
         swipeListView.setOnItemClickListener(this);
         menuRed.setOnMenuButtonClickListener(this);
-        /*addButton.setImageDrawable(
-                new IconDrawable(context, Iconify.IconValue.zmdi_plus)
-                        .colorRes(R.color.DarkColor)
-                        .actionBarSize());*/
-
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
 
@@ -115,7 +110,6 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
 
         swipeListView.setMenuCreator(creator);
 
-        //dragSortAdapter = new SimpleDragSortCursorAdapter(getApplicationContext(), R.layout.row_rearrange_item, null, new String[]{"Name", "ExerciseCountDescription"}, new int[] {R.id.name, R.id.subName}, 0);
         dragSortAdapter = new SortAdapter(getApplicationContext(), R.layout.row_rearrange_item);
         routineAdapter = new RoutineAdapter(this, db);
 

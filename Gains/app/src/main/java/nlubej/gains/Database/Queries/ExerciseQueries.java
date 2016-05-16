@@ -46,12 +46,12 @@ public class ExerciseQueries
     {
         if(routineId == -1)
         {
-            return String.format("SELECT e.EXERCISE_ID, e.EXERCISE_NAME, re.EXERCISE_POS, e.EXERCISE_TYPE, re.ROUTINE_ID FROM EXERCISE e" +
+            return String.format("SELECT DISTINCT e.EXERCISE_ID, e.EXERCISE_NAME, e.EXERCISE_TYPE FROM EXERCISE e" +
                     " JOIN ROUTINE_EXERCISE re ON re.EXERCISE_ID = e.EXERCISE_ID ORDER BY e.CREATED_ON");
         }
         else
         {
-            return String.format("SELECT e.EXERCISE_ID, e.EXERCISE_NAME, re.EXERCISE_POS, e.EXERCISE_TYPE, re.ROUTINE_ID FROM EXERCISE e" +
+            return String.format("SELECT DISTINCT e.EXERCISE_ID, e.EXERCISE_NAME, e.EXERCISE_TYPE FROM EXERCISE e" +
                     " JOIN ROUTINE_EXERCISE re ON re.EXERCISE_ID = e.EXERCISE_ID" +
                     " WHERE re.ROUTINE_ID != %d " +
                     " ORDER BY e.CREATED_ON", routineId);
@@ -65,7 +65,7 @@ public class ExerciseQueries
 
     public static String SelectRoutineExerciseConnections(String exerciseId)
     {
-        return String.format("SELECT EXERCISE_ID FROM ROUTINE_EXERCISE WHERE EXERCISE_ID = %s", exerciseId);
+        return String.format("SELECT EXERCISE_ID FROM ROUTINE_EXERCISE WHERE EXERCISE_ID IN (%s)", exerciseId);
     }
 
     public static String InsertExercise()

@@ -5,17 +5,19 @@
                 android:padding="8dp" >
 
 
-    <TextView
-        android:id="@+id/pr"
-        android:layout_weight="0.5"
+    <ImageView
+        android:id="@+id/previousExercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/iv_icon"
-        android:text="PR"
-        android:textColor="@android:color/black"
-        android:textSize="12sp" />
+        android:clickable="false"
+        android:src="@drawable/plus" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:src="@drawable/plus"/>
 
     <TextView
         android:id="@+id/tv_name1"
@@ -25,7 +27,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/iv_icon"
-        android:text="1"
+        android:text="1 SET"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 
@@ -38,7 +40,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/iv_icon"
-        android:text="10 rep"
+        android:text="10 REP"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 
@@ -50,7 +52,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/iv_icon"
-        android:text="110 kg"
+        android:text="110 KG"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 

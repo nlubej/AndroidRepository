@@ -29,23 +29,22 @@ private HelpLiveo mHelpLiveo;
         this.setOnPrepareOptionsMenu(this);
 		// Creating items navigation
 		mHelpLiveo = new HelpLiveo();
-		mHelpLiveo.add("Start workout", R.mipmap.ic_launcher);
-		mHelpLiveo.add("Programs", R.mipmap.ic_launcher);
-		mHelpLiveo.add("Workout logs", R.mipmap.ic_launcher);
-		mHelpLiveo.add("Statistics", R.mipmap.ic_launcher);
+		mHelpLiveo.add("Start workout", R.drawable.ic_play_arrow_black_36dp);
+		mHelpLiveo.add("Programs", R.drawable.ic_fitness_center_black_36dp);
+		mHelpLiveo.add("Workout logs", R.drawable.ic_content_paste_black_36dp);
 
 		mHelpLiveo.addSubHeader("Tools");
-		mHelpLiveo.add("Wilks calculator", R.mipmap.ic_launcher);
-		mHelpLiveo.add("Max rep calculator", R.mipmap.ic_launcher);
+		mHelpLiveo.add("Wilks calculator", R.drawable.ic_fiber_manual_record_black_36dp);
+		mHelpLiveo.add("Max rep calculator", R.drawable.ic_fiber_manual_record_black_36dp);
 
 		mHelpLiveo.addSubHeader("Info");
-		mHelpLiveo.add("About", R.mipmap.ic_launcher);
+		mHelpLiveo.add("About", R.drawable.ic_info_outline_black_36dp);
 
 		//with(this, Navigation.THEME_DARK). add theme dark
 		//with(this, Navigation.THEME_LIGHT). add theme light
 
 		with(this) // default theme is dark
-				.startingPosition(0) //Starting position in the list
+				.startingPosition(1) //Starting position in the list
 				.addAllHelpItem(mHelpLiveo.getHelp()).setOnPrepareOptionsMenu(onPrepare)
 				.removeHeader()
 				//.header
@@ -60,7 +59,7 @@ private HelpLiveo mHelpLiveo;
 		Log.i("nlubej",position+"");
 		switch (position){
 			case 0:
-				mFragment = new Program();
+				mFragment = new NewWorkout();
 				break;
 			case 1:
 				mFragment = new Program();
@@ -74,10 +73,10 @@ private HelpLiveo mHelpLiveo;
 				mFragment = new OneRepMaxCalculator();
 				break;
 			case 4:
-				mFragment = new WilksCalculator();
+				mFragment = new ExerciseLogger();
 				break;
 			case 5:
-				mFragment = new WilksCalculator();
+				mFragment = new ExerciseLogger();
 				break;
 			default:
 				mFragment = StartScreen.newInstance(mHelpLiveo.get(position).getName());
