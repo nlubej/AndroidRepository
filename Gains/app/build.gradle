@@ -31,7 +31,7 @@ dependencies {
 
     compile 'com.github.ganfra:material-spinner:1.1.1'//spinner
 
-    compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
+    compile 'com.joanzapata.iconify:android-iconify-material-community:2.2.2' // (v1.4.57) //icons
 
     compile 'jp.wasabeef:recyclerview-animators:2.2.3'
     compile 'com.daimajia.easing:library:1.0.1@aar'

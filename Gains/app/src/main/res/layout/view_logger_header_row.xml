@@ -4,7 +4,6 @@
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:descendantFocusability="blocksDescendants"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
@@ -94,6 +93,8 @@
             android:layout_width="fill_parent"
             android:layout_height="2dp"
             android:layout_alignEnd="@+id/screenNext"
+            android:focusable="true"
+            android:clickable="true"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
             android:layout_below="@+id/textReps"
@@ -108,6 +109,7 @@
             android:layout_below="@+id/seperator2"
             android:layout_centerHorizontal="true"
             android:backgroundTint="@color/nliveo_transparent"
+
             android:layout_marginTop="5dp"
             android:ems="4"
             android:gravity="center_vertical|center_horizontal"
@@ -179,5 +181,14 @@
 
             <requestFocus />
         </Button>
+
+
+        <include
+            android:id="@+id/header2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/addNew"
+            layout="@layout/row_workout_set2" />
+
 
     </RelativeLayout>

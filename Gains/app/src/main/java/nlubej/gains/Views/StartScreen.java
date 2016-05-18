@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import nlubej.gains.R;
 
@@ -27,7 +26,7 @@ public class StartScreen extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.view_start_workout, container, false);
 
        // TextView mTxtTitle = (TextView) rootView.findViewById(R.id//.teeest);
      //   mTxtTitle.setText("nejc");

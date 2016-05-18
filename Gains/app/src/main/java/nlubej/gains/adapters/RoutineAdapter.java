@@ -5,7 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.malinskiy.materialicons.IconDrawable;
+import com.malinskiy.materialicons.Iconify;
 
 import java.util.ArrayList;
 
@@ -22,13 +26,11 @@ public class RoutineAdapter extends BaseAdapter
 {
     private ArrayList<RoutineDto> routineDto;
     Context ctx;
-    Routine parentClass;
     private QueryFactory db;
 
-    public RoutineAdapter(Routine parent, QueryFactory database)
+    public RoutineAdapter(Context c, QueryFactory database)
     {
-        this.ctx = parent.getApplicationContext();
-        this.parentClass = parent;
+        this.ctx = c;
         db = database;
 
         routineDto = new ArrayList();
@@ -96,15 +98,52 @@ public class RoutineAdapter extends BaseAdapter
         }
     }
 
+    public void SetSelected(int position)
+    {
+        for(RoutineDto dto : routineDto)
+        {
+            dto.IsSelected = false;
+        }
+
+        if(routineDto.size() > 0)
+        {
+            routineDto.get(position).IsSelected = true;
+        }
+    }
+
+    public boolean HasValidItems()
+    {
+        for(RoutineDto dto : routineDto)
+        {
+            if(dto.Id == -1)
+                return false;
+        }
+
+        return true;
+    }
+
+    public RoutineDto GetSelectedItem()
+    {
+        for(RoutineDto dto : routineDto)
+        {
+            if(dto.IsSelected)
+                return dto;
+        }
+
+        return null;
+    }
+
     class RoutineHolder
     {
         TextView name;
         TextView subName;
+        ImageView btnSelected;
 
         public RoutineHolder(View v)
         {
             name = (TextView) v.findViewById(R.id.name);
             subName = (TextView) v.findViewById(R.id.subName);
+            btnSelected = (ImageView) v.findViewById(R.id.btnSelected);
         }
     }
 
@@ -131,6 +170,12 @@ public class RoutineAdapter extends BaseAdapter
 
         routineHolder.name.setText(temp.Name);
         routineHolder.subName.setText(String.format("%d %s",temp.ExerciseCount, (temp.ExerciseCount == 1) ? "exercise" : "exercises"));
+        routineHolder.btnSelected.setVisibility(View.GONE);
+        if(temp.IsSelected)
+        {
+            routineHolder.btnSelected.setVisibility(View.VISIBLE);
+            routineHolder.btnSelected.setImageDrawable(new IconDrawable(ctx, Iconify.IconValue.zmdi_check).colorRes(R.color.colorAccent).sizeDp(40));
+        }
         //routineHolder.btn.setTag(position);
 
         /*routineHolder.btn.setOnClickListener(new View.OnClickListener()

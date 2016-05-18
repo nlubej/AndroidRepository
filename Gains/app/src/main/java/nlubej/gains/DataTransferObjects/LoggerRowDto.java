@@ -13,20 +13,15 @@ public class LoggerRowDto
     {
     }
 
-    public LoggerRowDto(int programId, String name)
+    public LoggerRowDto(int set, String rep, String weight)
     {
-        this.Id = programId;
-        this.Name = name;
+        this.Set = set;
+        this.Rep = rep;
+        this.Weight = weight;
     }
 
-    public LoggerRowDto(int programId, String name, int routineCount)
-    {
-        this.Id = programId;
-        this.Name = name;
-        this.RoutineCount = routineCount;
-    }
 
-    public int Id;
-    public String Name;
-    public int RoutineCount;
+    public int Set;
+    public String Rep;
+    public String Weight;
 }

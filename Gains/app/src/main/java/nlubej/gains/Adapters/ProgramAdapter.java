@@ -26,7 +26,7 @@ public class ProgramAdapter extends BaseAdapter
     private final QueryFactory db;
     private ArrayList<ProgramDto> programDto;
     Context ctx;
-    public static long DefaultProgram = -1; //used in other classes
+    public static int DefaultProgram = -1; //used in other classes
 
     private SharedPreferences prefs;
 
@@ -124,7 +124,7 @@ public class ProgramAdapter extends BaseAdapter
             holder = new ProgramViewHolder(row);
             row.setTag(holder);
 
-            if ((programDto.get(position).Id) == (prefs.getInt("DEFAULT_PROGRAM", programDto.get(0).Id)))
+            if ((programDto.get(position).Id) == (prefs.getInt("DEFAULT_PROGRAM", -1)))
             {
                 holder.name.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));
                 holder.subName.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));

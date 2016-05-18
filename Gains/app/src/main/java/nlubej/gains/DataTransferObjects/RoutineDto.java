@@ -12,6 +12,7 @@ public class RoutineDto
     public int Position;
     public int ProgramId;
     public int ExerciseCount;
+    public boolean IsSelected;
 
 /*    public RoutineDto(int id, String name, int position, int programId, int exerciseCount)
     {

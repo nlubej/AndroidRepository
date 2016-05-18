@@ -56,7 +56,6 @@ private HelpLiveo mHelpLiveo;
 	public void onItemClick(int position) {
 		Fragment mFragment;
 		FragmentManager mFragmentManager = getFragmentManager();
-		Log.i("nlubej",position+"");
 		switch (position){
 			case 0:
 				mFragment = new NewWorkout();
@@ -73,10 +72,10 @@ private HelpLiveo mHelpLiveo;
 				mFragment = new OneRepMaxCalculator();
 				break;
 			case 4:
-				mFragment = new ExerciseLogger();
+				mFragment = new OneRepMaxCalculator();
 				break;
 			case 5:
-				mFragment = new ExerciseLogger();
+				mFragment = new OneRepMaxCalculator();
 				break;
 			default:
 				mFragment = StartScreen.newInstance(mHelpLiveo.get(position).getName());

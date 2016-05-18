@@ -4,11 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.malinskiy.materialicons.IconDrawable;
+import com.malinskiy.materialicons.Iconify;
 
 import java.util.ArrayList;
 
@@ -21,18 +26,17 @@ import nlubej.gains.Views.ExerciseLogger;
 /**
  * Created by nlubej on 28.4.2016.
  */
-public class LoggerAdapter extends BaseAdapter
+public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
 {
     private final QueryFactory db;
     private ArrayList<LoggerRowDto> loggerRowDto;
     Context ctx;
-    public static long DefaultProgram = -1; //used in other classes
 
     private SharedPreferences prefs;
 
     public LoggerAdapter(ExerciseLogger parent, QueryFactory database)
     {
-        this.ctx = parent.getActivity().getApplicationContext();
+        this.ctx = parent.getApplication();
         loggerRowDto = new ArrayList<>();
         db = database;
         prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -53,7 +57,6 @@ public class LoggerAdapter extends BaseAdapter
 
     public void Add(LoggerRowDto row)
     {
-        row.RoutineCount = 0;
         loggerRowDto.add(row);
     }
 
@@ -75,39 +78,28 @@ public class LoggerAdapter extends BaseAdapter
         return position;
     }
 
-    public void UpdateRoutineCount(int programId, int routineCount)
+    @Override
+    public void onClick(View v)
     {
-        for(LoggerRowDto dto : loggerRowDto)
-        {
-            if(dto.Id == programId)
-            {
-                dto.RoutineCount = routineCount;
-                return;
-            }
-        }
-    }
+        Log.i("nlubej", "it clicked");
 
-    public void Update(LoggerRowDto row)
-    {
-        for(LoggerRowDto dto : loggerRowDto)
-        {
-            if(dto.Id == row.Id)
-            {
-                dto.Name = row.Name;
-                return;
-            }
-        }
     }
 
     class ProgramViewHolder
     {
-        private TextView name;
-        private TextView subName;
+        private ImageView note;
+        private TextView personalBest;
+        private TextView set;
+        private TextView rep;
+        private TextView weight;
 
         public ProgramViewHolder(View v)
         {
-            name = (TextView) v.findViewById(R.id.name);
-            subName = (TextView) v.findViewById(R.id.subName);
+            note = (ImageView) v.findViewById(R.id.log_note);
+            personalBest = (TextView) v.findViewById(R.id.personal_record);
+            set = (TextView) v.findViewById(R.id.set);
+            rep = (TextView) v.findViewById(R.id.rep);
+            weight = (TextView) v.findViewById(R.id.weight);
         }
     }
 
@@ -116,30 +108,32 @@ public class LoggerAdapter extends BaseAdapter
     {
         View row = convertView;
         ProgramViewHolder holder;
+        boolean isStart;
 
         if (row == null)
         {
             LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.row_program, parent, false);
+            row = inflater.inflate(R.layout.row_workout_set, parent, false);
             holder = new ProgramViewHolder(row);
             row.setTag(holder);
 
-            if ((loggerRowDto.get(position).Id) == (prefs.getInt("DEFAULT_PROGRAM", loggerRowDto.get(0).Id)))
-            {
-                holder.name.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));
-                holder.subName.setTextColor(ContextCompat.getColor(ctx, R.color.PrimaryColor));
-            }
         }
         else
         {
             holder = (ProgramViewHolder) row.getTag();
         }
 
-
         final LoggerRowDto temp = loggerRowDto.get(position);
 
-        holder.name.setText(temp.Name);
-        holder.subName.setText(String.format("%d %s",temp.RoutineCount, (temp.RoutineCount == 1) ? "routine" : "routines"));
+        holder.note.setImageDrawable(new IconDrawable(ctx, Iconify.IconValue.zmdi_comment_text_alt).colorRes(R.color.silver).sizeDp(30));
+        holder.personalBest.setVisibility(View.INVISIBLE);
+
+        holder.set.setText(String.valueOf(temp.Set));
+        holder.rep.setText(temp.Rep);
+        holder.weight.setText(temp.Weight);
+        //holder.name.setText(temp.Name);
+        //holder.subName.setText(String.format("%d %s",temp.RoutineCount, (temp.RoutineCount == 1) ? "routine" : "routines"));
+
 
         return row;
     }

@@ -2,46 +2,46 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
                 android:clickable="false" >
 
 
     <ImageView
-        android:id="@+id/log_note"
+        android:id="@+id/text_log_note"
         android:layout_width="0dp"
         android:background="@drawable/button_primary_effect"
         android:layout_height="wrap_content"
-
+        android:visibility="invisible"
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
         android:clickable="false"
         android:src="@drawable/plus" />
 
-   <!-- <ImageView
-        android:id="@+id/personal_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:clickable="false"
-        android:src="@drawable/plus"/> -->
+    <!-- <ImageView
+         android:id="@+id/personal_record"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_weight="1"
+         android:clickable="false"
+         android:src="@drawable/plus"/> -->
 
     <TextView
-        android:id="@+id/personal_record"
+        android:id="@+id/text_personal_record"
         android:layout_weight="1"
+        android:visibility="invisible"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:text="PR"
-        android:textColor="@color/colorAccent"
+
+        android:textColor="@color/PrimaryColor"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginLeft="10dp"/>
 
 
     <TextView
-        android:id="@+id/set"
+        android:id="@+id/text_set"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -49,37 +49,39 @@
         android:clickable="false"
         android:layout_toRightOf="@+id/iv_icon"
         android:layout_gravity="center_vertical|left"
-        android:text="1"
+        android:text="SET"
         android:textColor="@color/custom_black"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:textStyle="bold"/>
 
 
     <TextView
-        android:id="@+id/rep"
+        android:id="@+id/text_rep"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:clickable="false"
         android:layout_gravity="center_vertical|left"
+        android:textStyle="bold"
         android:layout_toRightOf="@+id/iv_icon"
-        android:text="8"
+        android:text="REP"
         android:textColor="@color/custom_black"
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/weight"
+        android:id="@+id/text_weight"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_weight="1"
         android:clickable="false"
+        android:textStyle="bold"
         android:layout_gravity="center_vertical|left"
         android:layout_toRightOf="@+id/iv_icon"
-        android:text="147.5"
+        android:text="KG"
         android:textColor="@color/custom_black"
         android:textSize="18sp" />
-
 
 
 

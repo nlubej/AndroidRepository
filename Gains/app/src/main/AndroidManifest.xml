@@ -28,6 +28,10 @@
             android:name=".Views.Exercise">
         </activity>
 
+        <activity
+            android:name=".Views.ExerciseLogger">
+        </activity>
+
 
     </application>
 

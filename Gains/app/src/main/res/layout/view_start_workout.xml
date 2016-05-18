@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/white" >
 
-    <com.baoyz.swipemenulistview.SwipeMenuListView
-        android:id="@+id/swipeListView"
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clickable="false"
@@ -24,47 +24,53 @@
     <LinearLayout
         android:orientation="horizontal"
         android:id="@+id/layout"
-        android:background="@color/PrimaryColor"
+        android:background="@color/PrimaryColorPressed"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="45dp">
+        android:layout_height="200dp">
 
         <ImageView
-        android:id="@+id/previousExercise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/editReps"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_weight="1"
-        android:layout_toRightOf="@+id/editReps"
-        android:background="@drawable/button_primary_effect"
-        android:clickable="true"
-        android:scaleX="1.2"
-        android:scaleY="1.2"
-        android:src="@drawable/plus" />
-
-
-        <ImageView
-            android:id="@+id/nextExercise"
-            android:layout_width="wrap_content"
+            android:id="@+id/btn_start_workout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/editReps"
-            android:layout_marginLeft="5dp"
             android:layout_weight="1"
-            android:layout_marginRight="5dp"
+            android:layout_margin="5dp"
             android:layout_toRightOf="@+id/editReps"
             android:background="@drawable/button_primary_effect"
             android:clickable="true"
-            android:scaleX="1.2"
-            android:scaleY="1.2"
             android:src="@drawable/plus" />
 
 
     </LinearLayout>
 
+<!--
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/layout2"
+        android:background="@color/PrimaryColorPressed"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="20dp">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Leg Day"
+            android:textAlignment="center"
+            android:id="@+id/routineName"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:textColor="@color/nliveo_white"
+            android:textStyle="bold"/>
+
+    </LinearLayout>-->
 
 
 </RelativeLayout>

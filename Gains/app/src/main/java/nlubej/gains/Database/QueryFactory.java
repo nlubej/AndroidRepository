@@ -82,6 +82,8 @@ public class QueryFactory
             db.execSQL(String.format("INSERT INTO EXERCISE_TYPE (EXERCISE_TYPE_ID, DESCRIPTION) VALUES (%s, '%s')",1,"Chest"));
             db.execSQL(String.format("INSERT INTO EXERCISE_TYPE (EXERCISE_TYPE_ID, DESCRIPTION) VALUES (%s, '%s')",2,"Arms"));
             db.execSQL(String.format("INSERT INTO EXERCISE_TYPE (EXERCISE_TYPE_ID, DESCRIPTION) VALUES (%s, '%s')",3,"Legs"));
+
+            InsertAll(db);
         }
 
 
@@ -95,6 +97,39 @@ public class QueryFactory
                 return; //.execSQL(CREATE_TABLE_NOTE);
             }
         }
+    }
+
+    private void InsertAll(SQLiteDatabase db)
+    {
+        db.execSQL(String.format("INSERT INTO PROGRAM (PROGRAM_ID, PROGRAM_NAME) VALUES (%s, '%s')", 1, "Gains"));
+
+
+        db.execSQL(String.format("INSERT INTO ROUTINE (ROUTINE_ID, ROUTINE_POS,ROUTINE_NAME,PROGRAM_ID) VALUES (%s, %s, '%s', %s)", 1, 1, "Leg Day", 1));
+        db.execSQL(String.format("INSERT INTO ROUTINE (ROUTINE_ID, ROUTINE_POS,ROUTINE_NAME,PROGRAM_ID) VALUES (%s, %s, '%s', %s)", 2, 2, "Chest/Triceps", 1));
+
+
+        db.execSQL(String.format("INSERT INTO EXERCISE (EXERCISE_ID, EXERCISE_NAME, EXERCISE_TYPE) VALUES (%s, '%s', %s)", 1, "Squats", 3));
+        db.execSQL(String.format("INSERT INTO EXERCISE (EXERCISE_ID, EXERCISE_NAME, EXERCISE_TYPE) VALUES (%s, '%s', %s)", 2, "Lunges", 3));
+        db.execSQL(String.format("INSERT INTO EXERCISE (EXERCISE_ID, EXERCISE_NAME, EXERCISE_TYPE) VALUES (%s, '%s', %s)", 3, "One Leged Leg Press", 3));
+        db.execSQL(String.format("INSERT INTO EXERCISE (EXERCISE_ID, EXERCISE_NAME, EXERCISE_TYPE) VALUES (%s, '%s', %s)", 4, "Leg Extensions", 3));
+
+
+        db.execSQL(String.format("INSERT INTO ROUTINE_EXERCISE (ROUTINE_EXERCISE_ID, ROUTINE_ID, EXERCISE_ID, EXERCISE_POS) VALUES (%s, %s, %s, %s)", 1, 1, 1, 1));
+        db.execSQL(String.format("INSERT INTO ROUTINE_EXERCISE (ROUTINE_EXERCISE_ID, ROUTINE_ID, EXERCISE_ID, EXERCISE_POS) VALUES (%s, %s, %s, %s)", 2, 1, 2, 2));
+        db.execSQL(String.format("INSERT INTO ROUTINE_EXERCISE (ROUTINE_EXERCISE_ID, ROUTINE_ID, EXERCISE_ID, EXERCISE_POS) VALUES (%s, %s, %s, %s)", 3, 1, 3, 3));
+        db.execSQL(String.format("INSERT INTO ROUTINE_EXERCISE (ROUTINE_EXERCISE_ID, ROUTINE_ID, EXERCISE_ID, EXERCISE_POS) VALUES (%s, %s, %s, %s)", 4, 1, 4, 4));
+
+
+        db.execSQL(String.format("INSERT INTO EXERCISE (EXERCISE_ID, EXERCISE_NAME, EXERCISE_TYPE) VALUES (%s, '%s', %s)", 5, "Bench Press", 1));
+        db.execSQL(String.format("INSERT INTO EXERCISE (EXERCISE_ID, EXERCISE_NAME, EXERCISE_TYPE) VALUES (%s, '%s', %s)", 6, "Dumbbell Press", 1));
+        db.execSQL(String.format("INSERT INTO EXERCISE (EXERCISE_ID, EXERCISE_NAME, EXERCISE_TYPE) VALUES (%s, '%s', %s)", 7, "Cable Flies", 1));
+        db.execSQL(String.format("INSERT INTO EXERCISE (EXERCISE_ID, EXERCISE_NAME, EXERCISE_TYPE) VALUES (%s, '%s', %s)", 8, "Machine Press", 1));
+
+
+        db.execSQL(String.format("INSERT INTO ROUTINE_EXERCISE (ROUTINE_EXERCISE_ID, ROUTINE_ID, EXERCISE_ID, EXERCISE_POS) VALUES (%s, %s, %s, %s)", 5, 2, 5, 1));
+        db.execSQL(String.format("INSERT INTO ROUTINE_EXERCISE (ROUTINE_EXERCISE_ID, ROUTINE_ID, EXERCISE_ID, EXERCISE_POS) VALUES (%s, %s, %s, %s)", 6, 2, 6, 2));
+        db.execSQL(String.format("INSERT INTO ROUTINE_EXERCISE (ROUTINE_EXERCISE_ID, ROUTINE_ID, EXERCISE_ID, EXERCISE_POS) VALUES (%s, %s, %s, %s)", 7, 2, 7, 3));
+        db.execSQL(String.format("INSERT INTO ROUTINE_EXERCISE (ROUTINE_EXERCISE_ID, ROUTINE_ID, EXERCISE_ID, EXERCISE_POS) VALUES (%s, %s, %s, %s)", 8, 2, 8, 4));
     }
 
     public QueryFactory(Context ctx)
