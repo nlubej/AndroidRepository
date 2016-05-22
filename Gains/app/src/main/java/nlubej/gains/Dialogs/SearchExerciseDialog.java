@@ -34,7 +34,6 @@ import nlubej.gains.interfaces.OnItemChanged;
 public class SearchExerciseDialog  extends DialogFragment implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener
 {
     private QueryFactory db;
-    private Context context;
     private AlertDialog alertDialog;
     private ArrayList<ExerciseDto> exerciseDto;
     private ArrayList<ExerciseDto> filteredExerciseDto;
@@ -56,9 +55,7 @@ public class SearchExerciseDialog  extends DialogFragment implements SearchView.
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        context = getActivity();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_search_exercise, null);
         SearchView search = (SearchView) view.findViewById(R.id.searchView);

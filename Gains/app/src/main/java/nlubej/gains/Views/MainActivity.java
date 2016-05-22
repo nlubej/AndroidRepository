@@ -44,7 +44,7 @@ private HelpLiveo mHelpLiveo;
 		//with(this, Navigation.THEME_LIGHT). add theme light
 
 		with(this) // default theme is dark
-				.startingPosition(1) //Starting position in the list
+				.startingPosition(2) //Starting position in the list
 				.addAllHelpItem(mHelpLiveo.getHelp()).setOnPrepareOptionsMenu(onPrepare)
 				.removeHeader()
 				//.header
@@ -62,11 +62,9 @@ private HelpLiveo mHelpLiveo;
 				break;
 			case 1:
 				mFragment = new Program();
-				this.userEmail.setText("program");
 				break;
 			case 2:
-				mFragment = new NewWorkout();
-				this.userEmail.setText("new workout");
+				mFragment = new LogViewer();
 				break;
 			case 3:
 				mFragment = new OneRepMaxCalculator();

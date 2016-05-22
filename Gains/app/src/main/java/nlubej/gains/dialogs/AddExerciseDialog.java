@@ -5,16 +5,11 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.malinskiy.materialicons.IconDrawable;
-import com.malinskiy.materialicons.Iconify;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
@@ -82,7 +77,7 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
     private void Init()
     {
         db.Open();
-        exerciseTypes = db.SelecExerciseType();
+        exerciseTypes = db.SelectExerciseType();
         db.Close();
 
         exerciseTypeAdapter = new ExerciseTypeAdapter(context, R.layout.row_spinner,exerciseTypes);

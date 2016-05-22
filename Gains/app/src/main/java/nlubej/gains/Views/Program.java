@@ -32,6 +32,7 @@ import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Dialogs.AddProgramDialog;
 import nlubej.gains.Dialogs.EditProgramDialog;
 import nlubej.gains.Dialogs.EditRoutineDialog;
+import nlubej.gains.Enums.Constants;
 import nlubej.gains.R;
 import nlubej.gains.interfaces.*;
 
@@ -176,7 +177,7 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
         switch (index) {
             case 0: //mark
                 ProgramAdapter.DefaultProgram = item.Id;
-                prefs.edit().putInt("DEFAULT_PROGRAM", item.Id).apply();
+                prefs.edit().putInt(Constants.DEFAULT_PROGRAM_KEY, item.Id).apply();
                 programAdapter.notifyDataSetChanged();
                 swipeListView.setAdapter(programAdapter);
                 break;

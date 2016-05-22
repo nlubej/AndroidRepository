@@ -20,26 +20,20 @@ public class ExerciseQueries
         return  "create table if not exists EXERCISE_TYPE (EXERCISE_TYPE_ID integer primary key, DESCRIPTION integer not null);";
     }
 
-    public static String CreateTableLoggedWorkout()
-    {
-        return "create table if not exists LOGGED_WORKOUT (LOGGED_WORKOUT_ID integer primary key autoincrement, LOGGED_SET integer not null, LOGGED_WEIGHT double, LOGGED_REP integer, LOGGED_NOTE varchar null,  WORKOUT_NUMBER integer not null, EXERCISE_ID integer not null, CREATED_ON TIMESTAMP DEFAULT CURRENT_TIMESTAMP);";
-    }
-
-    public static String CreateTableWorkoutNote()
-    {
-        return "create table if not exists WORKOUT_NOTE (WORKOUT_NOTE_ID integer primary key autoincrement, NOTE text, WORKOUT_NUM integer not null, EXERCISE_ID integer not null);";
-    }
-
-    public static String CreateTableTmpLoggedWorkout()
-    {
-        return "create table if not exists TMP_LOGGED_WORKOUT (TMP_LOGGED_WORKOUT_ID integer primary key autoincrement, TMP_LAST_WORKOUT_NUMBER integer not null, ROUTINE_ID integer not null);";
-    }
-
     public static String SelectExercises(int routineId)
     {
         return String.format("SELECT e.EXERCISE_ID, e.EXERCISE_NAME, re.EXERCISE_POS, e.EXERCISE_TYPE, re.ROUTINE_ID FROM EXERCISE e " +
                 " JOIN ROUTINE_EXERCISE re ON e.EXERCISE_ID = re.EXERCISE_ID" +
                 " WHERE re.ROUTINE_ID = %s ORDER BY re.EXERCISE_POS ASC",routineId);
+    }
+
+    public static String SelectExercisesByProgramId(int programId)
+    {
+        return String.format("SELECT DISTINCT e.EXERCISE_ID, e.EXERCISE_NAME, e.EXERCISE_TYPE FROM EXERCISE e " +
+                " JOIN ROUTINE_EXERCISE re ON e.EXERCISE_ID = re.EXERCISE_ID" +
+                " JOIN ROUTINE ru ON ru.ROUTINE_ID = re.ROUTINE_ID" +
+                " JOIN PROGRAM pr ON pr.PROGRAM_ID = ru.PROGRAM_ID" +
+                " WHERE pr.PROGRAM_ID = %d ",programId);
     }
 
     public static String SelectAllExercises(int routineId)
