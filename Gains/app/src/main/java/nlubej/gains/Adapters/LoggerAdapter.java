@@ -112,6 +112,26 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
         }
     }
 
+    public ArrayList<Integer> GetIdsInAscOrder()
+    {
+        ArrayList<Integer> ids = new ArrayList<>();
+        for(LoggerRowDto dto : loggerRowDto)
+        {
+            ids.add(dto.LogId);
+        }
+
+        return ids;
+    }
+
+    public void UpdateWorkoutSetNumbers()
+    {
+        int i = 0;
+        for(LoggerRowDto dto : loggerRowDto)
+        {
+            dto.Set = ++i;
+        }
+    }
+
     class ProgramViewHolder
     {
         private ImageView note;

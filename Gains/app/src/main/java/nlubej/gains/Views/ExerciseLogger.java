@@ -334,6 +334,7 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
             case 1: ////delete
                 db.Open();
                 boolean isDeleted = db.DeleteRecord("LOGGED_WORKOUT", "LOGGED_WORKOUT_ID = ?", new String[]{ String.valueOf(row.LogId) });
+                db.UpdateWorkoutSetNumbers(loggerAdapter.GetIdsInAscOrder());
                 db.Close();
 
                 if(!isDeleted)
@@ -341,12 +342,12 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
 
                 exerciseLogs.get(currentExerciseLogNumber).remove(position);
                 loggerAdapter.Remove(row);
+                loggerAdapter.UpdateWorkoutSetNumbers();
                 if(loggerAdapter.getCount() == 0)
                 {
                     headerLayout.setVisibility(View.INVISIBLE);
                 }
 
-                //TODO update set number after deleting item
                 swipeListView.setAdapter(loggerAdapter);
                 loggerAdapter.notifyDataSetChanged();
                 break;

@@ -14,9 +14,11 @@ import android.util.Pair;
 
 import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.DataTransferObjects.ExerciseType;
+import nlubej.gains.DataTransferObjects.LoggerViewRowDto;
 import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.Queries.ExerciseQueries;
+import nlubej.gains.Database.Queries.LogQueries;
 import nlubej.gains.Database.Queries.ProgramQueries;
 import nlubej.gains.Database.Queries.RoutineQueries;
 
@@ -32,10 +34,10 @@ public class QueryFactory
     private static final String CREATE_TABLE_ROUTINE_EXERCISE = ExerciseQueries.CreateTableRoutineExercise();
     private static final String CREATE_TABLE_EXERCISE_TYPE = ExerciseQueries.CreateTableExerciseType();
     private static final String CREATE_TABLE_ROUTINE = RoutineQueries.CreateTableRoutine();
-    private static final String CREATE_TABLE_LOGGED_WORKOUT = ExerciseQueries.CreateTableLoggedWorkout();
-    private static final String CREATE_TABLE_TMP_LOGGED_WORKOUT = ExerciseQueries.CreateTableTmpLoggedWorkout();
+    private static final String CREATE_TABLE_LOGGED_WORKOUT = LogQueries.CreateTableLoggedWorkout();
+    private static final String CREATE_TABLE_TMP_LOGGED_WORKOUT = LogQueries.CreateTableTmpLoggedWorkout();
     private static final String CREATE_TABLE_USER = "create table if not exists USER (USER_ID integer primary key autoincrement, USER_WEIGHT double, USER_HEIGHT double);";
-    private static final String CREATE_TABLE_WORKOUT_NOTE = ExerciseQueries.CreateTableWorkoutNote();
+    private static final String CREATE_TABLE_WORKOUT_NOTE = LogQueries.CreateTableWorkoutNote();
     private static final String CREATE_TABLE_TUTORIAL = "create table if not exists USER (TUTORIAL_ID integer primary key autoincrement, NAME varchar not null, TUTORIAL_SEEN integer not null default 0 );";
 
     //private static final String CREATE_TABLE_ACHIEVEMENT_LOG = "create table if not exists achievementLog (id integer primary key autoincrement,  name VARCHAR not null, value integer not null);";
@@ -229,6 +231,31 @@ public class QueryFactory
         return routineDto;
     }
 
+    public ArrayList<LoggerViewRowDto> SelectLoggedWorkouts(int exerciseId)
+    {
+        ArrayList<LoggerViewRowDto> loggerRows = new ArrayList<>();
+
+        String query = LogQueries.SelectLoggedWorkouts(exerciseId);
+        final Cursor c = db.rawQuery(query, null);
+
+        if (c.getCount() != 0)
+        {
+            while (c.moveToNext())
+            {
+                LoggerViewRowDto dto = new LoggerViewRowDto();
+                dto.LogId = c.getInt(0);
+                dto.Set = c.getInt(1);
+                dto.Rep = c.getString(2);
+                dto.Weight = c.getString(3);
+                dto.Note = c.getString(4);
+
+                loggerRows.add(dto);
+            }
+            c.close();
+        }
+        return loggerRows;
+    }
+
     public ArrayList<ExerciseDto> SelectExercises(int routineID)
     {
         ArrayList<ExerciseDto> exerciseDto = new ArrayList<>();
@@ -244,6 +271,27 @@ public class QueryFactory
                 dto.Name = c.getString(1);
                 dto.Position = c.getInt(2);
                 dto.Type = nlubej.gains.Enums.ExerciseType.FromInteger(c.getInt(3));
+
+                exerciseDto.add(dto);
+            }
+        }
+        return exerciseDto;
+    }
+
+    public ArrayList<ExerciseDto> SelectExercisesByProgram(int programId)
+    {
+        ArrayList<ExerciseDto> exerciseDto = new ArrayList<>();
+
+        String query = ExerciseQueries.SelectExercisesByProgramId(programId);
+        final Cursor c = db.rawQuery(query, null);
+        if (c.getCount() != 0)
+        {
+            while(c.moveToNext())
+            {
+                ExerciseDto dto = new ExerciseDto();
+                dto.Id = c.getInt(0);
+                dto.Name = c.getString(1);
+                dto.Type = nlubej.gains.Enums.ExerciseType.FromInteger(c.getInt(2));
 
                 exerciseDto.add(dto);
             }
@@ -272,7 +320,7 @@ public class QueryFactory
         return exerciseDto;
     }
 
-    public ArrayList<ExerciseType> SelecExerciseType()
+    public ArrayList<ExerciseType> SelectExerciseType()
     {
         String query = ExerciseQueries.SelectExerciseTypes();
         final Cursor c = db.rawQuery(query, null);
@@ -310,6 +358,19 @@ public class QueryFactory
             initialValues.clear();
         }
     }
+
+
+    public void UpdateWorkoutSetNumbers(ArrayList<Integer> ids)
+    {
+        ContentValues initialValues = new ContentValues();
+        for (int i = 0; i < ids.size(); i++)
+        {
+            initialValues.put("LOGGED_SET", i + 1);
+            db.update("LOGGED_WORKOUT", initialValues, String.format("LOGGED_WORKOUT_ID = %d", ids.get(i)), null);
+            initialValues.clear();
+        }
+    }
+
 
     public void UpdateTable(String tableName, String where, String... params )
     {
