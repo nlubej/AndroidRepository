@@ -61,7 +61,7 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
     }
 
 
-    public void Remove(ProgramDto item)
+    public void Remove(LoggerRowDto item)
     {
         loggerRowDto.remove(item);
     }
@@ -83,6 +83,33 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
     {
         Log.i("nlubej", "it clicked");
 
+    }
+
+    public void Update(LoggerRowDto row)
+    {
+        for(LoggerRowDto dto : loggerRowDto)
+        {
+            if(row.LogId == dto.LogId)
+            {
+                dto.Rep = row.Rep;
+                dto.Weight = row.Weight;
+            }
+        }
+    }
+
+    public void MarkForEdit(int logId, boolean flag)
+    {
+        for(LoggerRowDto dto : loggerRowDto)
+        {
+            if(dto.LogId == logId)
+            {
+                dto.MarkForEdit = flag;
+            }
+            else
+            {
+                dto.MarkForEdit = false;
+            }
+        }
     }
 
     class ProgramViewHolder
@@ -108,7 +135,6 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
     {
         View row = convertView;
         ProgramViewHolder holder;
-        boolean isStart;
 
         if (row == null)
         {
@@ -131,6 +157,15 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
         holder.set.setText(String.valueOf(temp.Set));
         holder.rep.setText(temp.Rep);
         holder.weight.setText(temp.Weight);
+
+        if(temp.MarkForEdit)
+        {
+            row.setBackgroundColor(ctx.getResources().getColor(R.color.colorAccentPressed));
+        }
+        else
+        {
+            row.setBackgroundColor(ctx.getResources().getColor(android.R.color.transparent));
+        }
         //holder.name.setText(temp.Name);
         //holder.subName.setText(String.format("%d %s",temp.RoutineCount, (temp.RoutineCount == 1) ? "routine" : "routines"));
 

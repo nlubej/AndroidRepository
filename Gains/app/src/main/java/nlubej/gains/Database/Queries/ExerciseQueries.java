@@ -22,7 +22,7 @@ public class ExerciseQueries
 
     public static String CreateTableLoggedWorkout()
     {
-        return "create table if not exists LOGGED_WORKOUT (LOGGED_WORKOUT_ID integer primary key autoincrement, LOGGED_SET integer not null, LOGGED_WEIGHT double, LOGGED_REP integer,  DATE_CREATED varchar not null, WORKOUT_NUMBER integer not null, EXERCISE_ID integer not null);";
+        return "create table if not exists LOGGED_WORKOUT (LOGGED_WORKOUT_ID integer primary key autoincrement, LOGGED_SET integer not null, LOGGED_WEIGHT double, LOGGED_REP integer, LOGGED_NOTE varchar null,  WORKOUT_NUMBER integer not null, EXERCISE_ID integer not null, CREATED_ON TIMESTAMP DEFAULT CURRENT_TIMESTAMP);";
     }
 
     public static String CreateTableWorkoutNote()

@@ -21,7 +21,9 @@ public class LoggerRowDto
     }
 
 
+    public int LogId;
     public int Set;
     public String Rep;
     public String Weight;
+    public boolean MarkForEdit;
 }

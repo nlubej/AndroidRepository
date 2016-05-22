@@ -43,6 +43,7 @@ public class QueryFactory
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
     private final Context context;
+    private String param;
 
     public class DatabaseHelper extends SQLiteOpenHelper
     {
@@ -169,6 +170,15 @@ public class QueryFactory
         return c.getInt(0);
     }
 
+    public int GetNextWorkoutNumber()
+    {
+        Cursor c = db.rawQuery("SELECT COALESCE((MAX(WORKOUT_NUMBER) +1), 1) FROM LOGGED_WORKOUT ", null);
+        if(c.getCount() < 1)
+            return -1;
+
+        c.moveToFirst();
+        return c.getInt(0);
+    }
 
     public ArrayList<ProgramDto> SelectPrograms()
     {
@@ -301,6 +311,17 @@ public class QueryFactory
         }
     }
 
+    public void UpdateTable(String tableName, String where, String... params )
+    {
+        ContentValues initialValues = new ContentValues();
+        for(int i=0; i < params.length; i = i+2)
+        {
+            initialValues.put(params[i], params[i + 1]);
+        }
+
+        db.update(tableName, initialValues, where, null);
+    }
+
     public int InsertProgram(String programName)
     {
         ContentValues initialValues = new ContentValues();
@@ -326,6 +347,18 @@ public class QueryFactory
         initialValues.put("EXERCISE_TYPE", exerciseType);
 
         return (int) db.insert("EXERCISE", null, initialValues);
+    }
+
+    public int InsertExerciseLog(int exerciseId, int currentWorkoutNumber, int set, String rep, String weight)
+    {
+        ContentValues initialValues = new ContentValues();
+        initialValues.put("LOGGED_SET", set);
+        initialValues.put("LOGGED_REP", rep);
+        initialValues.put("LOGGED_WEIGHT", weight);
+        initialValues.put("WORKOUT_NUMBER", currentWorkoutNumber);
+        initialValues.put("EXERCISE_ID", exerciseId);
+
+        return (int) db.insert("LOGGED_WORKOUT", null, initialValues);
     }
 
     public int InsertRoutineExerciseConnection(int routineId, int exerciseId)
@@ -393,6 +426,11 @@ public class QueryFactory
             //delete exercise
             db.delete("EXERCISE", "EXERCISE_ID IN (?)", new String[]{ exerciseIds});
         }
+    }
+
+    public boolean DeleteRecord(String tableName, String where, String[] whereArgs)
+    {
+        return db.delete(tableName, where, whereArgs) > 0;
     }
 
     public boolean UpdateRoutine(String routineName, int routineId)
