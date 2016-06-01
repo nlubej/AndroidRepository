@@ -289,6 +289,11 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
         UpdateCursor();
     }
 
+    @Override
+    public void OnRemoved(ExerciseDto row)
+    {
+    }
+
     private void SetResult()
     {
         Intent intent = new Intent();
@@ -324,6 +329,13 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
                 UpdateCursor();
 
                 SetResult();
+
+                if(exerciseAdapter.getCount() > 0)
+                {
+                    swipeListView.setSelection(exerciseAdapter.getCount() - 1);
+                }
+
+                //TODO DELTE FROM WOKROUT NOTE PRODUCED ERROR
                 break;
         }
         return false;

@@ -7,4 +7,5 @@ public interface OnItemChanged<T>
 {
     void OnAdded(T row);
     void OnUpdated(T row);
+    void OnRemoved(T row);
 }

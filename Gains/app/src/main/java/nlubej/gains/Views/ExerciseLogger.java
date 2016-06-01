@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,11 +27,12 @@ import com.malinskiy.materialicons.Iconify;
 
 import nlubej.gains.Adapters.LoggerAdapter;
 import nlubej.gains.DataTransferObjects.ExerciseDto;
-import nlubej.gains.DataTransferObjects.LoggerRowDto;
+import nlubej.gains.DataTransferObjects.ExerciseLoggerRow;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.R;
+import nlubej.gains.interfaces.OnItemChanged;
 
-public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListView.OnMenuItemClickListener, OnClickListener
+public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListView.OnMenuItemClickListener, OnClickListener, AdapterView.OnItemClickListener, OnItemChanged<ExerciseLoggerRow>
 {
     private Context context;
     private QueryFactory db;
@@ -39,7 +41,7 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
     private SharedPreferences prefs;
     LinearLayout headerLayout;
     private View fragment;
-    ArrayList<ArrayList<LoggerRowDto>> exerciseLogs;
+    ArrayList<ArrayList<ExerciseLoggerRow>> exerciseLogs;
     int currentExerciseLogNumber = 0;
     private ImageView previousExercise;
     private ImageView nextExercise;
@@ -48,7 +50,6 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
     private int routineId;
     private ArrayList<ExerciseDto> exerciseCollection;
     private TextView exerciseName;
-    private int currentWorkoutNumber;
     private Button addNew;
 
 
@@ -79,8 +80,8 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         swipeListView = (SwipeMenuListView) findViewById(R.id.swipeListView);
 
-        loggerAdapter = new LoggerAdapter(this, db);
         db = new QueryFactory(context);
+        loggerAdapter = new LoggerAdapter(this, db);
 
         ImageView repsPlus = (ImageView) fragment.findViewById(R.id.repsPlus);
         ImageView repsMinus = (ImageView) fragment.findViewById(R.id.repsMinus);
@@ -117,7 +118,7 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
         swipeListView.setOnMenuItemClickListener(this);
         previousExercise.setOnClickListener(this);
         nextExercise.setOnClickListener(this);
-
+        swipeListView.setOnItemClickListener(this);
         swipeListView.addHeaderView(fragment);
         SwipeMenuCreator creator = new SwipeMenuCreator()
         {
@@ -127,7 +128,7 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
             {
                 SwipeMenuItem editProgram = new SwipeMenuItem(context);
                 editProgram.setWidth(120);
-                editProgram.setIcon(new IconDrawable(context, Iconify.IconValue.zmdi_edit).actionBarSize().colorRes(R.color.gray).sizeDp(30));
+                editProgram.setIcon(new IconDrawable(context, Iconify.IconValue.zmdi_edit).actionBarSize().colorRes(R.color.PrimaryColor).sizeDp(30));
                 menu.addMenuItem(editProgram);
 
                 SwipeMenuItem deleteItem = new SwipeMenuItem(context);
@@ -145,14 +146,16 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
     {
         db.Open();
         exerciseCollection = db.SelectExercises(routineId);
-        currentWorkoutNumber = db.GetNextWorkoutNumber();
-        db.Close();
+
 
         exerciseLogs = new ArrayList<>();
         for (int i = 0; i < exerciseCollection.size(); i++)
         {
-            exerciseLogs.add(new ArrayList<LoggerRowDto>());
+            exerciseLogs.add(new ArrayList<ExerciseLoggerRow>());
+            exerciseCollection.get(i).WorkoutNumber = db.GetNextWorkoutNumber(exerciseCollection.get(i).Id);
         }
+
+        db.Close();
 
         RefreshAdapter();
     }
@@ -188,18 +191,18 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
             case R.id.addNew:
                 if(GetTagValue(addNew) >= 0) // position is in the tag
                 {
-                    LoggerRowDto row = exerciseLogs.get(currentExerciseLogNumber).get(GetTagValue(addNew));
+                    ExerciseLoggerRow row = exerciseLogs.get(currentExerciseLogNumber).get(GetTagValue(addNew));
 
                     row.Weight = editWeight.getText().toString();
                     row.Rep = editReps.getText().toString();
 
                     db.Open();
-                    db.UpdateTable("LOGGED_WORKOUT", String.format("LOGGED_WORKOUT_ID = %s", row.LogId), new String[]{"LOGGED_WEIGHT", row.Weight, "LOGGED_REP", row.Rep});
+                    db.UpdateTable("LOGGED_WORKOUT", String.format("LOGGED_WORKOUT_ID = %s", row.LoggedWorkoutId), new String[]{"LOGGED_WEIGHT", row.Weight, "LOGGED_REP", row.Rep});
                     db.Close();
 
                     loggerAdapter.Update(row);
 
-                    loggerAdapter.MarkForEdit(row.LogId, false);
+                    loggerAdapter.MarkForEdit(row.LoggedWorkoutId, false);
                     addNew.setTag(-1);
                     addNew.setText("Add");
                 }
@@ -207,9 +210,9 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
                 {
                     headerLayout.setVisibility(View.VISIBLE);
 
-                    LoggerRowDto dto = new LoggerRowDto(loggerAdapter.getCount() + 1, editReps.getText().toString(), editWeight.getText().toString());
+                    ExerciseLoggerRow dto = new ExerciseLoggerRow(loggerAdapter.getCount() + 1, editReps.getText().toString(), editWeight.getText().toString());
                     int logId = AddExercise(dto);
-                    dto.LogId = logId;
+                    dto.LoggedWorkoutId = logId;
 
                     if (logId <= 0)
                         return;
@@ -287,10 +290,10 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
             return (int)addNew.getTag();
     }
 
-    private int AddExercise(LoggerRowDto dto)
+    private int AddExercise(ExerciseLoggerRow dto)
     {
         db.Open();
-        int logId = db.InsertExerciseLog(exerciseCollection.get(currentExerciseLogNumber).Id, currentWorkoutNumber, dto.Set, dto.Rep, dto.Weight);
+        int logId = db.InsertExerciseLog(exerciseCollection.get(currentExerciseLogNumber).RoutineExerciseId, exerciseCollection.get(currentExerciseLogNumber).WorkoutNumber, dto.Set, dto.Rep, dto.Weight);
         db.Close();
 
         return logId;
@@ -318,7 +321,7 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
     @Override
     public boolean onMenuItemClick(int position, SwipeMenu menu, int index)
     {
-        LoggerRowDto row = loggerAdapter.getItem(position);
+        ExerciseLoggerRow row = loggerAdapter.getItem(position);
         switch (index) {
             case 0: //edit
                 addNew.setText("Update");
@@ -326,14 +329,14 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
                 editWeight.setText(row.Weight);
                 editReps.setText(row.Rep);
 
-                loggerAdapter.MarkForEdit(row.LogId, true);
+                loggerAdapter.MarkForEdit(row.LoggedWorkoutId, true);
                 loggerAdapter.notifyDataSetChanged();
                 swipeListView.setAdapter(loggerAdapter);
                 addNew.setTag(position);
                 break;
-            case 1: ////delete
+            case 1: //delete
                 db.Open();
-                boolean isDeleted = db.DeleteRecord("LOGGED_WORKOUT", "LOGGED_WORKOUT_ID = ?", new String[]{ String.valueOf(row.LogId) });
+                boolean isDeleted = db.DeleteRecord("LOGGED_WORKOUT", "LOGGED_WORKOUT_ID = ?", new String[]{ String.valueOf(row.LoggedWorkoutId) });
                 db.UpdateWorkoutSetNumbers(loggerAdapter.GetIdsInAscOrder());
                 db.Close();
 
@@ -350,9 +353,38 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
 
                 swipeListView.setAdapter(loggerAdapter);
                 loggerAdapter.notifyDataSetChanged();
+
+                if(loggerAdapter.getCount() > 0)
+                {
+                    swipeListView.setSelection(loggerAdapter.getCount() - 1);
+                }
                 break;
         }
 
         return false;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+
+    }
+
+    @Override
+    public void OnAdded(ExerciseLoggerRow row)
+    {
+        loggerAdapter.UpdateNote(row);
+    }
+
+    @Override
+    public void OnUpdated(ExerciseLoggerRow row)
+    {
+        loggerAdapter.UpdateNote(row);
+    }
+
+    @Override
+    public void OnRemoved(ExerciseLoggerRow row)
+    {
+        loggerAdapter.RemoveNote(row);
     }
 }

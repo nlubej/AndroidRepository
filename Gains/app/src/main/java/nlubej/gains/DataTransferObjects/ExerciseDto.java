@@ -16,6 +16,10 @@ public class ExerciseDto
     public String Name;
     public int Position;
     public ExerciseType Type;
+    public int WorkoutNumber;
+    public int RoutineExerciseId;
+    public int RoutineId;
+
     public ExerciseDto()
     {
     }

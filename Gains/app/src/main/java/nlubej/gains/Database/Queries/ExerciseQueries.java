@@ -22,7 +22,7 @@ public class ExerciseQueries
 
     public static String SelectExercises(int routineId)
     {
-        return String.format("SELECT e.EXERCISE_ID, e.EXERCISE_NAME, re.EXERCISE_POS, e.EXERCISE_TYPE, re.ROUTINE_ID FROM EXERCISE e " +
+        return String.format("SELECT re.EXERCISE_ID, e.EXERCISE_NAME, re.EXERCISE_POS, e.EXERCISE_TYPE, re.ROUTINE_ID, re.ROUTINE_EXERCISE_ID FROM EXERCISE e " +
                 " JOIN ROUTINE_EXERCISE re ON e.EXERCISE_ID = re.EXERCISE_ID" +
                 " WHERE re.ROUTINE_ID = %s ORDER BY re.EXERCISE_POS ASC",routineId);
     }
@@ -62,8 +62,9 @@ public class ExerciseQueries
         return String.format("SELECT EXERCISE_ID FROM ROUTINE_EXERCISE WHERE EXERCISE_ID IN (%s)", exerciseId);
     }
 
-    public static String InsertExercise()
+    public static String SelectWorkoutNotes(String exerciseIds, String routineId)
     {
-        return "INSERT INTO EXERCISE (EXERCISE_NAME, EXERCISE_POS, EXERCISE_TYPE, ROUTINE_ID) VALUES (?s,COALESCE((SELECT MAX(EXERCISE_POS)+1 FROM EXERCISE),1), ?s,?s)";
+        return String.format("SELECT GROUP_CONCAT(lw.LOGGED_WORKOUT_ID, ',') FROM LOGGED_WORKOUT lw " +
+                " JOIN ROUTINE_EXERCISE re ON lw.ROUTINE_EXERCISE_ID = re.ROUTINE_EXERCISE_ID WHERE re.EXERCISE_ID IN (%s) AND re.ROUTINE_ID = %s", exerciseIds, routineId);
     }
 }

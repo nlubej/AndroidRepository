@@ -200,6 +200,11 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
                 programAdapter.notifyDataSetChanged();
                 swipeListView.setAdapter(programAdapter);
 
+                if(programAdapter.getCount() > 0)
+                {
+                    swipeListView.setSelection(programAdapter.getCount() - 1);
+                }
+
                 break;
         }
 
@@ -218,5 +223,11 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
     {
         programAdapter.Update(row);
         programAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void OnRemoved(ProgramDto row)
+    {
+
     }
 }

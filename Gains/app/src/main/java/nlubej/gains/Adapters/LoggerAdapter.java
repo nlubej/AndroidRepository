@@ -2,9 +2,8 @@ package nlubej.gains.Adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +16,20 @@ import com.malinskiy.materialicons.Iconify;
 
 import java.util.ArrayList;
 
-import nlubej.gains.DataTransferObjects.LoggerRowDto;
-import nlubej.gains.DataTransferObjects.ProgramDto;
+import nlubej.gains.DataTransferObjects.ExerciseLoggerRow;
 import nlubej.gains.Database.QueryFactory;
+import nlubej.gains.Dialogs.AddExerciseNoteDialog;
 import nlubej.gains.R;
 import nlubej.gains.Views.ExerciseLogger;
 
 /**
  * Created by nlubej on 28.4.2016.
  */
-public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
+public class LoggerAdapter extends BaseAdapter
 {
     private final QueryFactory db;
-    private ArrayList<LoggerRowDto> loggerRowDto;
+    private final ExerciseLogger parentClass;
+    private ArrayList<ExerciseLoggerRow> loggerRowDto;
     Context ctx;
 
     private SharedPreferences prefs;
@@ -37,6 +37,7 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
     public LoggerAdapter(ExerciseLogger parent, QueryFactory database)
     {
         this.ctx = parent.getApplication();
+        this.parentClass = parent;
         loggerRowDto = new ArrayList<>();
         db = database;
         prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -49,25 +50,25 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
     }
 
 
-    public void AddAll(ArrayList<LoggerRowDto> programDto)
+    public void AddAll(ArrayList<ExerciseLoggerRow> programDto)
     {
         this.loggerRowDto.clear();
         this.loggerRowDto.addAll(programDto);
     }
 
-    public void Add(LoggerRowDto row)
+    public void Add(ExerciseLoggerRow row)
     {
         loggerRowDto.add(row);
     }
 
 
-    public void Remove(LoggerRowDto item)
+    public void Remove(ExerciseLoggerRow item)
     {
         loggerRowDto.remove(item);
     }
 
     @Override
-    public LoggerRowDto getItem(int position)
+    public ExerciseLoggerRow getItem(int position)
     {
         return loggerRowDto.get(position);
     }
@@ -78,18 +79,11 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
         return position;
     }
 
-    @Override
-    public void onClick(View v)
+    public void Update(ExerciseLoggerRow row)
     {
-        Log.i("nlubej", "it clicked");
-
-    }
-
-    public void Update(LoggerRowDto row)
-    {
-        for(LoggerRowDto dto : loggerRowDto)
+        for(ExerciseLoggerRow dto : loggerRowDto)
         {
-            if(row.LogId == dto.LogId)
+            if(row.LoggedWorkoutId == dto.LoggedWorkoutId)
             {
                 dto.Rep = row.Rep;
                 dto.Weight = row.Weight;
@@ -99,9 +93,9 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
 
     public void MarkForEdit(int logId, boolean flag)
     {
-        for(LoggerRowDto dto : loggerRowDto)
+        for(ExerciseLoggerRow dto : loggerRowDto)
         {
-            if(dto.LogId == logId)
+            if(dto.LoggedWorkoutId == logId)
             {
                 dto.MarkForEdit = flag;
             }
@@ -115,9 +109,9 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
     public ArrayList<Integer> GetIdsInAscOrder()
     {
         ArrayList<Integer> ids = new ArrayList<>();
-        for(LoggerRowDto dto : loggerRowDto)
+        for(ExerciseLoggerRow dto : loggerRowDto)
         {
-            ids.add(dto.LogId);
+            ids.add(dto.LoggedWorkoutId);
         }
 
         return ids;
@@ -126,9 +120,36 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
     public void UpdateWorkoutSetNumbers()
     {
         int i = 0;
-        for(LoggerRowDto dto : loggerRowDto)
+        for(ExerciseLoggerRow dto : loggerRowDto)
         {
             dto.Set = ++i;
+        }
+    }
+
+    public void RemoveNote(ExerciseLoggerRow row)
+    {
+        for(ExerciseLoggerRow dto : loggerRowDto)
+        {
+            if(dto.LoggedWorkoutId == row.LoggedWorkoutId)
+            {
+                dto.Note = null;
+                dto.HasNote = false;
+            }
+        }
+    }
+
+    public void UpdateNote(ExerciseLoggerRow row)
+    {
+        for(ExerciseLoggerRow dto : loggerRowDto)
+        {
+            if(dto.LoggedWorkoutId == row.LoggedWorkoutId)
+            {
+                dto.Note = row.Note;
+                dto.HasNote = true;
+
+                if(dto.Note == null || dto.Note.compareTo("") == 0)
+                    dto.HasNote = false;
+            }
         }
     }
 
@@ -151,7 +172,7 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent)
+    public View getView(final int position, View convertView, final ViewGroup parent)
     {
         View row = convertView;
         ProgramViewHolder holder;
@@ -169,9 +190,37 @@ public class LoggerAdapter extends BaseAdapter implements View.OnClickListener
             holder = (ProgramViewHolder) row.getTag();
         }
 
-        final LoggerRowDto temp = loggerRowDto.get(position);
+        final ExerciseLoggerRow temp = loggerRowDto.get(position);
 
-        holder.note.setImageDrawable(new IconDrawable(ctx, Iconify.IconValue.zmdi_comment_text_alt).colorRes(R.color.silver).sizeDp(30));
+        if(!temp.HasNote)
+        {
+            holder.note.setImageDrawable(new IconDrawable(ctx, Iconify.IconValue.zmdi_comment_text_alt).colorRes(R.color.silver).sizeDp(30));
+        }
+        else
+        {
+            holder.note.setImageDrawable(new IconDrawable(ctx, Iconify.IconValue.zmdi_comment_text_alt).colorRes(R.color.PrimaryColor).sizeDp(30));
+        }
+
+        holder.note.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                AddExerciseNoteDialog dialog = new AddExerciseNoteDialog();
+                dialog.SetData(parentClass, db);
+                Bundle b = new Bundle();
+                if (temp.Note != null && temp.Note.compareTo("") != 0)
+                {
+                    b.putString("NOTE", temp.Note);
+                }
+                b.putInt("LOGGED_WORKOUT_ID", temp.LoggedWorkoutId);
+                dialog.setArguments(b);
+                dialog.show(parentClass.getFragmentManager(), "");
+            }
+        });
+
+
+
         holder.personalBest.setVisibility(View.INVISIBLE);
 
         holder.set.setText(String.valueOf(temp.Set));

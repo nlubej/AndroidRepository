@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/white">
 
 
     <SearchView
@@ -14,18 +15,27 @@
         android:layout_alignParentEnd="true"
         android:iconifiedByDefault="false"/>
 
-
-    <ListView
-        android:id="@+id/listView"
-        android:layout_below="@id/searchView"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/header2"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:divider="@color/silver"
-        android:dividerHeight="1.0dp"
-        android:layout_margin="15dp"
-        android:padding="8dp"
-        android:textAlignment="textStart"
-        android:gravity="start">
+        android:focusable="true"
+        android:layout_below="@+id/searchView"
+        layout="@layout/row_workout_set2" />
 
-    </ListView>
+        <com.baoyz.swipemenulistview.SwipeMenuListView
+            android:id="@+id/swipeListView"
+            android:layout_width="fill_parent"
+            android:layout_below="@+id/header2"
+            android:divider="@null"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:textAlignment="textStart"
+            android:descendantFocusability="afterDescendants"
+            android:focusableInTouchMode="true"
+            android:gravity="start"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"/>
 </RelativeLayout>

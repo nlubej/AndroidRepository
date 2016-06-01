@@ -27,7 +27,6 @@ public class AddProgramDialog extends DialogFragment implements View.OnClickList
     private QueryFactory db;
     private OnItemChanged callback;
     private Context context;
-    private int programId;
     private MaterialEditText program;
     private AlertDialog alertDialog;
 

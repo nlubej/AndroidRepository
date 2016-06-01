@@ -10,17 +10,17 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.util.Pair;
 
 import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.DataTransferObjects.ExerciseType;
-import nlubej.gains.DataTransferObjects.LoggerViewRowDto;
+import nlubej.gains.DataTransferObjects.LoggedViewRowDto;
 import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.Queries.ExerciseQueries;
 import nlubej.gains.Database.Queries.LogQueries;
 import nlubej.gains.Database.Queries.ProgramQueries;
 import nlubej.gains.Database.Queries.RoutineQueries;
+import nlubej.gains.Database.Queries.WorkoutQueries;
 
 
 public class QueryFactory
@@ -172,9 +172,10 @@ public class QueryFactory
         return c.getInt(0);
     }
 
-    public int GetNextWorkoutNumber()
+    public int GetNextWorkoutNumber(int exerciseId)
     {
-        Cursor c = db.rawQuery("SELECT COALESCE((MAX(WORKOUT_NUMBER) +1), 1) FROM LOGGED_WORKOUT ", null);
+        Cursor c = db.rawQuery("SELECT COALESCE((MAX(l.WORKOUT_NUMBER) +1), 1) FROM LOGGED_WORKOUT l " +
+                " JOIN ROUTINE_EXERCISE re ON l.ROUTINE_EXERCISE_ID  = re.ROUTINE_EXERCISE_ID WHERE re.EXERCISE_ID = ? ", new String[]{ String.valueOf(exerciseId) });
         if(c.getCount() < 1)
             return -1;
 
@@ -231,29 +232,46 @@ public class QueryFactory
         return routineDto;
     }
 
-    public ArrayList<LoggerViewRowDto> SelectLoggedWorkouts(int exerciseId)
+    public ArrayList<LoggedViewRowDto> SelectLoggedWorkouts(int exerciseId)
     {
-        ArrayList<LoggerViewRowDto> loggerRows = new ArrayList<>();
+        ArrayList<LoggedViewRowDto> loggerRows = new ArrayList<>();
 
         String query = LogQueries.SelectLoggedWorkouts(exerciseId);
         final Cursor c = db.rawQuery(query, null);
-
+        int lasWorkoutNum = -1;
         if (c.getCount() != 0)
         {
             while (c.moveToNext())
             {
-                LoggerViewRowDto dto = new LoggerViewRowDto();
-                dto.LogId = c.getInt(0);
+                LoggedViewRowDto dto = new LoggedViewRowDto();
+                dto.LoggedWorkoutId = c.getInt(0);
                 dto.Set = c.getInt(1);
                 dto.Rep = c.getString(2);
                 dto.Weight = c.getString(3);
                 dto.Note = c.getString(4);
+                dto.WorkoutNumber = c.getInt(5);
+                dto.HasNote = (dto.Note != null && dto.Note.compareTo("") != 0);
+
+                if(lasWorkoutNum > dto.WorkoutNumber || lasWorkoutNum == -1)
+                {
+                    loggerRows.add(InsertWorkoutSummary(dto.WorkoutNumber));
+                    lasWorkoutNum = dto.WorkoutNumber;
+                }
 
                 loggerRows.add(dto);
             }
             c.close();
         }
         return loggerRows;
+    }
+
+    private LoggedViewRowDto InsertWorkoutSummary(int workoutNumber)
+    {
+        LoggedViewRowDto dto = new LoggedViewRowDto();
+        dto.IsSummary = true;
+        dto.WorkoutNumber = workoutNumber;
+
+        return dto;
     }
 
     public ArrayList<ExerciseDto> SelectExercises(int routineID)
@@ -271,6 +289,8 @@ public class QueryFactory
                 dto.Name = c.getString(1);
                 dto.Position = c.getInt(2);
                 dto.Type = nlubej.gains.Enums.ExerciseType.FromInteger(c.getInt(3));
+                dto.RoutineId = c.getInt(4);
+                dto.RoutineExerciseId = c.getInt(5);
 
                 exerciseDto.add(dto);
             }
@@ -292,7 +312,6 @@ public class QueryFactory
                 dto.Id = c.getInt(0);
                 dto.Name = c.getString(1);
                 dto.Type = nlubej.gains.Enums.ExerciseType.FromInteger(c.getInt(2));
-
                 exerciseDto.add(dto);
             }
         }
@@ -383,12 +402,32 @@ public class QueryFactory
         db.update(tableName, initialValues, where, null);
     }
 
+    public int InsertIntoTable(String tableName, String... params )
+    {
+        ContentValues initialValues = new ContentValues();
+        for(int i=0; i < params.length; i = i+2)
+        {
+            initialValues.put(params[i], params[i + 1]);
+        }
+
+        return (int) db.insert(tableName,null, initialValues);
+    }
+
     public int InsertProgram(String programName)
     {
         ContentValues initialValues = new ContentValues();
         initialValues.put("PROGRAM_NAME", programName);
 
         return (int) db.insert("PROGRAM", null, initialValues);
+    }
+
+    public int InsertExerciseNote(int logId, String note)
+    {
+        ContentValues initialValues = new ContentValues();
+        initialValues.put("NOTE", note);
+        initialValues.put("LOG_ID", logId);
+
+        return (int) db.insert("WORKOUT_NOTE", null, initialValues);
     }
 
     public int InsertRoutine(String routineName, int programId)
@@ -410,14 +449,14 @@ public class QueryFactory
         return (int) db.insert("EXERCISE", null, initialValues);
     }
 
-    public int InsertExerciseLog(int exerciseId, int currentWorkoutNumber, int set, String rep, String weight)
+    public int InsertExerciseLog(int routineExerciseId, int currentWorkoutNumber, int set, String rep, String weight)
     {
         ContentValues initialValues = new ContentValues();
         initialValues.put("LOGGED_SET", set);
         initialValues.put("LOGGED_REP", rep);
         initialValues.put("LOGGED_WEIGHT", weight);
         initialValues.put("WORKOUT_NUMBER", currentWorkoutNumber);
-        initialValues.put("EXERCISE_ID", exerciseId);
+        initialValues.put("ROUTINE_EXERCISE_ID", routineExerciseId);
 
         return (int) db.insert("LOGGED_WORKOUT", null, initialValues);
     }
@@ -473,12 +512,24 @@ public class QueryFactory
 
     public void DeleteExercise(String exerciseIds, String routineId)
     {
-        //delete workout logs
-        db.delete("LOGGED_WORKOUT", "EXERCISE_ID IN (?)", new String[]{ exerciseIds});
-        //delete notes
-        db.delete("WORKOUT_NOTE", "EXERCISE_ID IN (?)", new String[]{ exerciseIds});
+        //delete notes and workout logs
+        SelectAllFromLoggedWorkout();
+        String deleteRoutinesQuery = ExerciseQueries.SelectWorkoutNotes(exerciseIds, routineId);
+        Cursor cursor = db.rawQuery(deleteRoutinesQuery, null);
+
+        if (cursor.getCount() != 0)
+        {
+            cursor.moveToNext();
+            String workoutLogIds = cursor.getString(0);
+
+            db.delete("WORKOUT_NOTE", "LOGGED_WORKOUT_ID IN (?)", new String[]{workoutLogIds});
+            db.delete("LOGGED_WORKOUT", "LOGGED_WORKOUT_ID IN (?)", new String[]{workoutLogIds});
+
+            cursor.close();
+        }
+
         //delete routine exercise connection
-        db.delete("ROUTINE_EXERCISE", "EXERCISE_ID IN (?) and ROUTINE_ID =?", new String[]{ exerciseIds, routineId});
+        int deleted3 = db.delete("ROUTINE_EXERCISE", "EXERCISE_ID IN (?) and ROUTINE_ID =?", new String[]{exerciseIds, routineId});
 
         String query = ExerciseQueries.SelectRoutineExerciseConnections(exerciseIds);
         final Cursor c = db.rawQuery(query, null);
@@ -487,6 +538,38 @@ public class QueryFactory
             //delete exercise
             db.delete("EXERCISE", "EXERCISE_ID IN (?)", new String[]{ exerciseIds});
         }
+        else
+        {
+            UpdateWorkoutNumberAll(exerciseIds);
+        }
+    }
+
+    public void UpdateWorkoutNumber(int workoutNumber)
+    {
+        db.execSQL(String.format("UPDATE LOGGED_WORKOUT SET WORKOUT_NUMBER = WORKOUT_NUMBER-1 WHERE WORKOUT_NUMBER > %s", String.valueOf(workoutNumber)));
+    }
+
+    public void UpdateWorkoutNumberAll(String exerciseIds)
+    {
+        //first select all workout logs
+        Cursor c = db.rawQuery("SELECT DISTINCT l.WORKOUT_NUMBER  FROM LOGGED_WORKOUT l" +
+                " JOIN ROUTINE_EXERCISE re on re.ROUTINE_EXERCISE_ID = l.ROUTINE_EXERCISE_ID WHERE re.EXERCISE_ID IN (?) ORDER BY l.WORKOUT_NUMBER ASC" ,new String[] { exerciseIds });
+
+        if(c.getCount() != 0)
+        {
+            int i = 1;
+            ContentValues initialValues = new ContentValues();
+
+            while(c.moveToNext())
+            {
+                int workoutNumber = c.getInt(0);
+
+                initialValues.put("WORKOUT_NUMBER", i++);
+                db.update("LOGGED_WORKOUT", initialValues, String.format("WORKOUT_NUMBER = %d", workoutNumber), null);
+                initialValues.clear();
+            }
+        }
+        c.close();
     }
 
     public boolean DeleteRecord(String tableName, String where, String[] whereArgs)
@@ -514,6 +597,21 @@ public class QueryFactory
         args.put("EXERCISE_NAME", exerciseName);
         args.put("EXERCISE_TYPE", exerciseType);
         return db.update("EXERCISE", args, "EXERCISE_ID =?", new String[]{String.valueOf(exerciseId) }) > 0;
+    }
+
+    public void SelectAllFromLoggedWorkout()
+    {
+        Cursor c = db.rawQuery("SELECT l.LOGGED_WORKOUT_ID, l.WORKOUT_NUMBER, re.EXERCISE_ID, re.ROUTINE_ID FROM LOGGED_WORKOUT l" +
+                " JOIN ROUTINE_EXERCISE re on re.ROUTINE_EXERCISE_ID = l.ROUTINE_EXERCISE_ID" ,null);
+       if(c.getCount() != 0)
+       {
+           Log.i("Nlubej", "LOGGED_WORKOUT_ID   WORKOUT_NUMBER    EXERCISE_ID     ROUTINE_ID");
+           while(c.moveToNext())
+           {
+               Log.i("Nlubej", c.getInt(0) + "      " + c.getInt(1) + "      " + c.getInt(2) + "      " + c.getInt(3));
+           }
+       }
+        c.close();
     }
 }
 /*

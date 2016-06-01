@@ -292,6 +292,11 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
         UpdateCursor();
     }
 
+    @Override
+    public void OnRemoved(RoutineDto row)
+    {
+    }
+
     private void SetResult()
     {
         Intent intent = new Intent();
@@ -327,6 +332,11 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
                 UpdateCursor();
 
                 SetResult();
+
+                if(routineAdapter.getCount() > 0)
+                {
+                    swipeListView.setSelection(routineAdapter.getCount() - 1);
+                }
                 break;
         }
 

@@ -7,13 +7,14 @@ import nlubej.gains.Enums.ExerciseType;
 /**
  * Created by nlubej on 21.10.2015.
  */
-public class LoggerRowDto
+public class LoggedViewRowDto
 {
-    public LoggerRowDto()
+
+    public LoggedViewRowDto()
     {
     }
 
-    public LoggerRowDto(int set, String rep, String weight)
+    public LoggedViewRowDto(int set, String rep, String weight)
     {
         this.Set = set;
         this.Rep = rep;
@@ -21,9 +22,12 @@ public class LoggerRowDto
     }
 
 
-    public int LogId;
+    public int LoggedWorkoutId;
     public int Set;
     public String Rep;
     public String Weight;
-    public boolean MarkForEdit;
+    public String Note;
+    public boolean HasNote;
+    public boolean IsSummary;
+    public int WorkoutNumber;
 }

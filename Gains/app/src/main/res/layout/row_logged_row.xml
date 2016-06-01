@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp"
+                android:clickable="false" >
+
+
+    <ImageView
+        android:id="@+id/log_note"
+        android:layout_width="0dp"
+        android:background="@drawable/button_primary_effect"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:clickable="false"
+        android:src="@drawable/plus" />
+
+    <TextView
+        android:id="@+id/personal_record"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:text="PR"
+        android:textColor="@color/colorAccent"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"/>
+
+
+    <TextView
+        android:id="@+id/set"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/iv_icon"
+        android:layout_gravity="center_vertical|left"
+        android:text="1"
+        android:textColor="@color/custom_black"
+
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+    <TextView
+        android:id="@+id/rep"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical|left"
+        android:layout_toRightOf="@+id/iv_icon"
+        android:text="8"
+        android:textColor="@color/custom_black"
+
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/weight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical|left"
+        android:layout_toRightOf="@+id/iv_icon"
+        android:text="147.5"
+        android:textColor="@color/custom_black"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+
+
+
+</LinearLayout>
