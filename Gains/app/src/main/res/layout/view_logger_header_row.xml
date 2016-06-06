@@ -1,5 +1,6 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:id="@+id/rlayout"
         android:clickable="true"
         android:focusable="true"
@@ -179,9 +180,7 @@
             android:text="ADD"
             android:textColor="@color/white">
 
-            <requestFocus />
         </Button>
-
 
         <include
             android:id="@+id/header2"
@@ -189,6 +188,5 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/addNew"
             layout="@layout/row_workout_set2" />
-
 
     </RelativeLayout>

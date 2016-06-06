@@ -11,13 +11,13 @@ import br.liveo.interfaces.OnItemClickListener;
 import br.liveo.interfaces.OnPrepareOptionsMenuLiveo;
 import br.liveo.navigationliveo.NavigationLiveo;
 import nlubej.gains.R;
+import nlubej.gains.interfaces.OnBackPressedListener;
 
 
 public class MainActivity extends NavigationLiveo implements OnItemClickListener, OnPrepareOptionsMenuLiveo
 {
-
-
-private HelpLiveo mHelpLiveo;
+	protected OnBackPressedListener onBackPressedListener;
+	private HelpLiveo mHelpLiveo;
 
 	@Override
 	public void onInt(Bundle savedInstanceState) {
@@ -52,7 +52,19 @@ private HelpLiveo mHelpLiveo;
 	}
 
 
-    @Override //The "R.id.container" should be used in "beginTransaction (). Replace"
+	@Override
+	public void onBackPressed() {
+		if (onBackPressedListener != null)
+			onBackPressedListener.doBack();
+		else
+			super.onBackPressed();
+	}
+
+	public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
+		this.onBackPressedListener = onBackPressedListener;
+	}
+
+	@Override //The "R.id.container" should be used in "beginTransaction (). Replace"
 	public void onItemClick(int position) {
 		Fragment mFragment;
 		FragmentManager mFragmentManager = getFragmentManager();
@@ -98,4 +110,11 @@ private HelpLiveo mHelpLiveo;
     {
         this.userEmail.setText("test");
     }
+
+
+	@Override
+	protected void onDestroy() {
+		onBackPressedListener = null;
+		super.onDestroy();
+	}
 }

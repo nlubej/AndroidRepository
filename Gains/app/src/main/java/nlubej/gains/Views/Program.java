@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -36,7 +38,7 @@ import nlubej.gains.Enums.Constants;
 import nlubej.gains.R;
 import nlubej.gains.interfaces.*;
 
-public class Program extends Fragment implements OnItemClickListener, OnItemChanged<ProgramDto>, OnClickListener, SwipeMenuListView.OnMenuItemClickListener
+public class Program extends Fragment implements OnItemClickListener, OnItemChanged<ProgramDto>, OnClickListener, SwipeMenuListView.OnMenuItemClickListener, OnBackPressedListener
 {
     private Context context;
     private QueryFactory db;
@@ -47,11 +49,13 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
     static final int UPDATE_ACTIVITY_RESULT = 1;
     static final int RESULT_OK = 1;
     private FloatingActionMenu menuRed;
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View fragment = inflater.inflate(R.layout.view_program, container, false);
+        ((MainActivity) getActivity()).setOnBackPressedListener(this);
 
         InitComponents(fragment);
         SetData();
@@ -159,7 +163,6 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
         return true;
     }*/
 
-
     @Override
     public void onClick(View v)
     {
@@ -202,7 +205,7 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
 
                 if(programAdapter.getCount() > 0)
                 {
-                    swipeListView.setSelection(programAdapter.getCount() - 1);
+                    swipeListView.setSelection(position - 1);
                 }
 
                 break;
@@ -229,5 +232,22 @@ public class Program extends Fragment implements OnItemClickListener, OnItemChan
     public void OnRemoved(ProgramDto row)
     {
 
+    }
+
+    @Override
+    public void doBack()
+    {
+        Toast.makeText(context, "Click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                if((getActivity()) != null )
+                    ((MainActivity) getActivity()).setOnBackPressedListener(Program.this);
+            }
+        }, 2000);
+
+        ((MainActivity) getActivity()).setOnBackPressedListener(null);
     }
 }

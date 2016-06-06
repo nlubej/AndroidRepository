@@ -35,7 +35,7 @@ public class LogQueries {
 
     public static String SelectLoggedWorkouts(int routineExerciseId)
     {
-        return String.format("SELECT l.LOGGED_WORKOUT_ID, l.LOGGED_SET, l.LOGGED_WEIGHT, l.LOGGED_REP, note.NOTE, l.WORKOUT_NUMBER  FROM LOGGED_WORKOUT l " +
+        return String.format("SELECT l.LOGGED_WORKOUT_ID, l.LOGGED_SET, l.LOGGED_REP, l.LOGGED_WEIGHT, note.NOTE, l.WORKOUT_NUMBER  FROM LOGGED_WORKOUT l " +
                 "LEFT JOIN WORKOUT_NOTE note on note.LOGGED_WORKOUT_ID = l.LOGGED_WORKOUT_ID " +
                 "JOIN ROUTINE_EXERCISE re on re.ROUTINE_EXERCISE_ID = l.ROUTINE_EXERCISE_ID " +
                 "WHERE re.EXERCISE_ID = %d  ORDER BY l.WORKOUT_NUMBER desc" ,routineExerciseId);

@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
@@ -29,14 +31,17 @@ import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.DataTransferObjects.ExerciseLoggerRow;
 import nlubej.gains.DataTransferObjects.LoggedViewRowDto;
 import nlubej.gains.Database.QueryFactory;
+import nlubej.gains.Dialogs.AddRoutineDialog;
+import nlubej.gains.Dialogs.UpdateLoggedWorkoutDialog;
 import nlubej.gains.Enums.Constants;
 import nlubej.gains.R;
+import nlubej.gains.interfaces.OnBackPressedListener;
 import nlubej.gains.interfaces.OnItemChanged;
 
 /**
  * Created by nlubej on 19.10.2015.
  */
-public class LogViewer extends Fragment implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener , OnItemChanged<LoggedViewRowDto>, SwipeMenuListView.OnMenuItemClickListener, View.OnFocusChangeListener
+public class LogViewer extends Fragment implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener , OnItemChanged<LoggedViewRowDto>, SwipeMenuListView.OnMenuItemClickListener, View.OnFocusChangeListener, OnBackPressedListener
 {
     private QueryFactory db;
     private ArrayList<ExerciseDto> exerciseDto;
@@ -48,6 +53,7 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
     private SearchView searchView;
     LoggedWorkoutAdapter loggedWorkoutAdapter;
     LinearLayout header;
+    private ExerciseDto selectedExercise;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +62,7 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
         final View view = inflater.inflate(R.layout.view_loger_viewer, container, false);
         context = getActivity();
 
+        ((MainActivity) getActivity()).setOnBackPressedListener(this);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         searchView = (SearchView) view.findViewById(R.id.searchView);
         searchView = (SearchView) view.findViewById(R.id.searchView);
@@ -84,20 +91,19 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
                 {
                     case 0:
                         SwipeMenuItem showDetails = new SwipeMenuItem(view.getContext());
-                        showDetails.setWidth(100);
-                        showDetails.setIcon(new IconDrawable(view.getContext(), Iconify.IconValue.zmdi_info_outline).actionBarSize().colorRes(R.color.gray).actionBarSize());
+                        showDetails.setWidth(120);
+                        showDetails.setIcon(new IconDrawable(view.getContext(), Iconify.IconValue.zmdi_info_outline).actionBarSize().colorRes(R.color.gray).sizeDp(30));
                         menu.addMenuItem(showDetails);
-                        break;
 
                     case 1:
                         SwipeMenuItem editProgram = new SwipeMenuItem(view.getContext());
-                        editProgram.setWidth(100);
-                        editProgram.setIcon(new IconDrawable(view.getContext(), Iconify.IconValue.zmdi_edit).actionBarSize().colorRes(R.color.gray).actionBarSize());
+                        editProgram.setWidth(120);
+                        editProgram.setIcon(new IconDrawable(view.getContext(), Iconify.IconValue.zmdi_edit).actionBarSize().colorRes(R.color.PrimaryColor).sizeDp(30));
                         menu.addMenuItem(editProgram);
 
                         SwipeMenuItem deleteItem = new SwipeMenuItem(view.getContext());
-                        deleteItem.setWidth(100);
-                        deleteItem.setIcon(new IconDrawable(view.getContext(), Iconify.IconValue.zmdi_delete).actionBarSize().colorRes(R.color.red).actionBarSize());
+                        deleteItem.setWidth(120);
+                        deleteItem.setIcon(new IconDrawable(view.getContext(), Iconify.IconValue.zmdi_delete).actionBarSize().colorRes(R.color.red).sizeDp(30));
                         menu.addMenuItem(deleteItem);
 
                 }
@@ -157,7 +163,7 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
             InputMethodManager im = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             im.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-            header.requestFocus();
+            header.setVisibility(View.GONE);
             return true;
         }
 
@@ -180,7 +186,7 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
         if(filteredExerciseDto.size() == 0)
             return;
 
-        ExerciseDto selectedExercise = filteredExerciseDto.get((int) id);
+        selectedExercise = filteredExerciseDto.get((int) id);
         if(filteredExerciseDto.size() <= id)
             return;
 
@@ -201,42 +207,79 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
         loggedWorkoutAdapter.AddAll(loggerRows);
         loggedWorkoutAdapter.notifyDataSetChanged();
         swipeListView.setAdapter(loggedWorkoutAdapter);
-        header.setVisibility(View.VISIBLE);
+        if(loggerRows.size() > 0)
+        {
+            header.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            header.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public boolean onMenuItemClick(int position, SwipeMenu menu, int index)
     {
-        LoggedViewRowDto row = loggedWorkoutAdapter.getItem(position);
-        switch (index) {
-            case 0: //edit
-                break;
-            case 1: //delete
-                db.Open();
-                boolean isDeleted = db.DeleteRecord("LOGGED_WORKOUT", "LOGGED_WORKOUT_ID = ?", new String[]{ String.valueOf(row.LoggedWorkoutId) });
-                db.UpdateWorkoutSetNumbers(loggedWorkoutAdapter.GetIdsInAscOrder(row.WorkoutNumber));
-                db.Close();
+        if(menu.getViewType() == 0)
+        {
 
-                if(!isDeleted)
-                    break;
-
-                loggedWorkoutAdapter.Remove(row);
-                loggedWorkoutAdapter.UpdateWorkoutSetNumbers(row.WorkoutNumber);
-                if(loggedWorkoutAdapter.getCount() == 0)
-                {
-                    header.setVisibility(View.INVISIBLE);
-                }
-
-                swipeListView.setAdapter(loggedWorkoutAdapter);
-                loggedWorkoutAdapter.notifyDataSetChanged();
-                if(loggedWorkoutAdapter.getCount() > 0)
-                {
-                    swipeListView.setSelection(loggedWorkoutAdapter.getCount() - 1);
-                }
-                //TODO delte summary if no workout logs
-                break;
         }
+        else
+        {
+            LoggedViewRowDto row = loggedWorkoutAdapter.getItem(position);
+            switch (index)
+            {
+                case 0: //edit
 
+                    UpdateLoggedWorkoutDialog addDialog = new UpdateLoggedWorkoutDialog();
+                    addDialog.SetData(LogViewer.this, db);
+                    Bundle b = new Bundle();
+                    b.putString("EXERCISE_NAME", selectedExercise.Name);
+                    b.putInt("LOGGED_WORKOUT_ID", row.LoggedWorkoutId);
+                    b.putString("REP", row.Rep);
+                    b.putString("WEIGHT", row.Weight);
+                    addDialog.setArguments(b);
+                    addDialog.show(getFragmentManager(), "");
+
+                    break;
+                case 1: //delete
+                    db.Open();
+                    boolean isDeleted = db.DeleteRecord("LOGGED_WORKOUT", "LOGGED_WORKOUT_ID = ?", new String[]{String.valueOf(row.LoggedWorkoutId)});
+                    db.UpdateWorkoutSetNumbers(loggedWorkoutAdapter.GetIdsInAscOrder(row.WorkoutNumber));
+                    db.Close();
+
+                    if (!isDeleted)
+                        break;
+
+                    loggedWorkoutAdapter.Remove(row);
+                    if (loggedWorkoutAdapter.CanRemoveSummary(row.WorkoutNumber))
+                    {
+                        //remove summary
+                        loggedWorkoutAdapter.Remove(loggedWorkoutAdapter.getItem(position - 1));
+                        loggedWorkoutAdapter.UpdateFollowingWorkoutNumber(row.WorkoutNumber);
+                        //update workout numbers
+                        db.Open();
+                        db.UpdateFollowingWorkoutNumber(row.WorkoutNumber);
+                        db.Close();
+
+                    }
+                    loggedWorkoutAdapter.UpdateWorkoutSetNumbers(row.WorkoutNumber);
+                    if (loggedWorkoutAdapter.getCount() == 0)
+                    {
+                        header.setVisibility(View.INVISIBLE);
+                    }
+
+                    swipeListView.setAdapter(loggedWorkoutAdapter);
+                    loggedWorkoutAdapter.notifyDataSetChanged();
+                    if (loggedWorkoutAdapter.getCount() > 0)
+                    {
+                        swipeListView.setSelection(position - 1);
+                    }
+
+                    break;
+            }
+
+        }
         return false;
     }
 
@@ -244,18 +287,21 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
     public void OnAdded(LoggedViewRowDto row)
     {
         loggedWorkoutAdapter.UpdateNote(row);
+        loggedWorkoutAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void OnUpdated(LoggedViewRowDto row)
     {
         loggedWorkoutAdapter.UpdateNote(row);
+        loggedWorkoutAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void OnRemoved(LoggedViewRowDto row)
     {
         loggedWorkoutAdapter.RemoveNote(row);
+        loggedWorkoutAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -263,5 +309,24 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
     {
             InputMethodManager im = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             im.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    @Override
+    public void doBack()
+    {
+        Toast.makeText(getActivity(), "Click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable()
+        {
+
+            @Override
+            public void run()
+            {
+                if ((getActivity()) != null)
+                    ((MainActivity) getActivity()).setOnBackPressedListener(LogViewer.this);
+            }
+        }, 2000);
+
+        ((MainActivity) getActivity()).setOnBackPressedListener(null);
     }
 }

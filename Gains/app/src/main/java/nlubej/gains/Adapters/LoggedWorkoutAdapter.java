@@ -137,11 +137,19 @@ public class LoggedWorkoutAdapter extends BaseAdapter implements View.OnClickLis
         {
             if(dto.LoggedWorkoutId == row.LoggedWorkoutId)
             {
-                dto.Note = row.Note;
-                dto.HasNote = true;
+                if(row.IsUpdatingNote)
+                {
+                    dto.Note = row.Note;
+                    dto.HasNote = true;
 
-                if(dto.Note == null || dto.Note.compareTo("") == 0)
-                    dto.HasNote = false;
+                    if(dto.Note == null || dto.Note.compareTo("") == 0)
+                        dto.HasNote = false;
+                }
+                else
+                {
+                    dto.Weight = row.Weight;
+                    dto.Rep = row.Rep;
+                }
             }
         }
     }
@@ -154,6 +162,31 @@ public class LoggedWorkoutAdapter extends BaseAdapter implements View.OnClickLis
             {
                 dto.Note = null;
                 dto.HasNote = false;
+            }
+        }
+    }
+
+    public boolean CanRemoveSummary(int workoutNumber)
+    {
+        int logsLeft = 0;
+        for(LoggedViewRowDto dto : loggerRowDto)
+        {
+            if(dto.WorkoutNumber ==  workoutNumber)
+            {
+                logsLeft++;
+            }
+        }
+
+        return logsLeft <= 1;
+    }
+
+    public void UpdateFollowingWorkoutNumber(int workoutNumber)
+    {
+        for(LoggedViewRowDto dto : loggerRowDto)
+        {
+            if(dto.WorkoutNumber > workoutNumber)
+            {
+                dto.WorkoutNumber--;
             }
         }
     }

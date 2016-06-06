@@ -30,4 +30,5 @@ public class LoggedViewRowDto
     public boolean HasNote;
     public boolean IsSummary;
     public int WorkoutNumber;
+    public boolean IsUpdatingNote;
 }

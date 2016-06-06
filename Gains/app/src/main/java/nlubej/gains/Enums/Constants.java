@@ -6,4 +6,5 @@ package nlubej.gains.Enums;
 public class Constants
 {
    public static String DEFAULT_PROGRAM_KEY = "DEFAULT_PROGRAM";
+   public static String WEIGHT_INCREMENT_KEY = "WEIGHT_INCREMENT";
 }

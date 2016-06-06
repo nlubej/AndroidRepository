@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +19,8 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.MaterialCommunityIcons;
@@ -28,11 +31,12 @@ import nlubej.gains.Adapters.RoutineAdapter;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.R;
+import nlubej.gains.interfaces.OnBackPressedListener;
 
 /**
  * Created by nlubej on 19.10.2015.
  */
-public class NewWorkout extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, View.OnTouchListener
+public class NewWorkout extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, View.OnTouchListener, OnBackPressedListener
 {
 
     private ListView ListView;
@@ -48,6 +52,7 @@ public class NewWorkout extends Fragment implements AdapterView.OnItemClickListe
         Iconify.with(new MaterialCommunityModule());
 
         View rootView = inflater.inflate(R.layout.view_start_workout, container, false);
+        ((MainActivity) getActivity()).setOnBackPressedListener(this);
 
         db = new QueryFactory(getActivity());
         ListView = (ListView) rootView.findViewById(R.id.listView);
@@ -166,5 +171,24 @@ public class NewWorkout extends Fragment implements AdapterView.OnItemClickListe
         i.putExtra("ROUTINE_NAME", selectedItem.Name);
 
         startActivity(i);
+    }
+
+    @Override
+    public void doBack()
+    {
+        Toast.makeText(getActivity(), "Click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable()
+        {
+
+            @Override
+            public void run()
+            {
+                if ((getActivity()) != null)
+                    ((MainActivity) getActivity()).setOnBackPressedListener(NewWorkout.this);
+            }
+        }, 2000);
+
+        ((MainActivity) getActivity()).setOnBackPressedListener(null);
     }
 }

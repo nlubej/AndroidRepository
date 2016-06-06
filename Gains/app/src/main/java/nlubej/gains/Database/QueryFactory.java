@@ -544,7 +544,7 @@ public class QueryFactory
         }
     }
 
-    public void UpdateWorkoutNumber(int workoutNumber)
+    public void UpdateFollowingWorkoutNumber(int workoutNumber)
     {
         db.execSQL(String.format("UPDATE LOGGED_WORKOUT SET WORKOUT_NUMBER = WORKOUT_NUMBER-1 WHERE WORKOUT_NUMBER > %s", String.valueOf(workoutNumber)));
     }

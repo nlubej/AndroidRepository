@@ -335,7 +335,7 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
 
                 if(routineAdapter.getCount() > 0)
                 {
-                    swipeListView.setSelection(routineAdapter.getCount() - 1);
+                    swipeListView.setSelection(position - 1);
                 }
                 break;
         }

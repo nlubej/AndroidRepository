@@ -11,12 +11,16 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/myTheme"
-            android:name=".Views.MainActivity">
+            android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".Views.MainActivity">
         </activity>
 
         <activity

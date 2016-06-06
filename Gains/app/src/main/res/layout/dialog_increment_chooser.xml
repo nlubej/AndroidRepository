@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_margin="15dp"
+
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Weight Increment"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:padding="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"
+        android:textColor="@color/PrimaryColor"
+        android:layout_marginTop="15dp"/>
+
+    <View
+        android:id="@+id/seperator2"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_alignEnd="@+id/listView"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/header"
+        android:background="@color/lighter_gray" />
+
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:divider="@color/lighter_gray"
+        android:dividerHeight="1.0dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:padding="8dp"
+        android:layout_below="@+id/header"
+        android:layout_above="@+id/button_yes_no"
+        android:textAlignment="textStart"
+        android:gravity="start" />
+
+</RelativeLayout>

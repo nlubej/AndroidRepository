@@ -1,19 +1,20 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
    
     <item
-        
-        android:id="@+id/edit"
+
+        android:id="@+id/showPrevious"
          android:orderInCategory="100"
         android:icon="@android:drawable/ic_menu_add"
-        android:title="Edit"
-        android:showAsAction="always"/>
+        android:title="Show Previous"
+        app:showAsAction="always"/>
     
     
     <item
-        android:id="@+id/delete"
+        android:id="@+id/stopwatch"
          android:orderInCategory="200"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Delete"
-        android:showAsAction="always"/>
+        android:title="Stopwatch"
+        app:showAsAction="always"/>
     
 </menu>

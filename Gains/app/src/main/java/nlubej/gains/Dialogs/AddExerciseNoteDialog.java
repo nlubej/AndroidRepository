@@ -127,6 +127,7 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
                         LoggedViewRowDto row = new LoggedViewRowDto();
                         row.LoggedWorkoutId = logId;
                         row.Note = noteTxt.getText().toString();
+                        row.IsUpdatingNote = true;
 
                         callback.OnAdded(row);
                     }
@@ -154,6 +155,7 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
                         {
                             LoggedViewRowDto row = new LoggedViewRowDto();
                             row.LoggedWorkoutId = logId;
+                            row.IsUpdatingNote = true;
 
                             callback.OnRemoved(row);
                         }
@@ -179,6 +181,7 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
                             LoggedViewRowDto row = new LoggedViewRowDto();
                             row.LoggedWorkoutId = logId;
                             row.Note = noteTxt.getText().toString();
+                            row.IsUpdatingNote = true;
 
                             callback.OnUpdated(row);
                         }

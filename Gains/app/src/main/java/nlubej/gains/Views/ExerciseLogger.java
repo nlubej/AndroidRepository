@@ -1,14 +1,21 @@
 package nlubej.gains.Views;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -16,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -29,10 +37,15 @@ import nlubej.gains.Adapters.LoggerAdapter;
 import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.DataTransferObjects.ExerciseLoggerRow;
 import nlubej.gains.Database.QueryFactory;
+import nlubej.gains.Dialogs.IncrementChooserDialog;
+import nlubej.gains.Dialogs.StopwatchDialog;
+import nlubej.gains.Enums.Constants;
 import nlubej.gains.R;
+import nlubej.gains.Tools;
 import nlubej.gains.interfaces.OnItemChanged;
+import nlubej.gains.interfaces.OnSelection;
 
-public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListView.OnMenuItemClickListener, OnClickListener, AdapterView.OnItemClickListener, OnItemChanged<ExerciseLoggerRow>
+public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListView.OnMenuItemClickListener, OnClickListener, AdapterView.OnItemClickListener, OnItemChanged<ExerciseLoggerRow>, OnSelection<Double>
 {
     private Context context;
     private QueryFactory db;
@@ -51,7 +64,7 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
     private ArrayList<ExerciseDto> exerciseCollection;
     private TextView exerciseName;
     private Button addNew;
-
+    private BigDecimal incrementWeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,9 +82,17 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
 
         fragment = inflater.inflate(R.layout.view_logger_header_row, null, false);
         headerLayout = (LinearLayout) fragment.findViewById(R.id.header2);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         InitComponents();
         SetData();
+
+        previousExercise.setEnabled(false);
+        if(exerciseCollection.size() == 1)
+        {
+            nextExercise.setEnabled(false);
+        }
     }
 
     private void InitComponents()
@@ -82,7 +103,7 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
 
         db = new QueryFactory(context);
         loggerAdapter = new LoggerAdapter(this, db);
-
+        incrementWeight = BigDecimal.valueOf(Tools.ToDouble(prefs.getString(Constants.WEIGHT_INCREMENT_KEY, "1"), 2));
         ImageView repsPlus = (ImageView) fragment.findViewById(R.id.repsPlus);
         ImageView repsMinus = (ImageView) fragment.findViewById(R.id.repsMinus);
         ImageView weightPlus = (ImageView) fragment.findViewById(R.id.weightPlus);
@@ -94,11 +115,6 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
         previousExercise = (ImageView) findViewById(R.id.previousExercise);
         nextExercise = (ImageView) findViewById(R.id.nextExercise);
         headerLayout.setVisibility(View.INVISIBLE);
-
-        if (currentExerciseLogNumber == 0)
-        {
-            previousExercise.setEnabled(false);
-        }
 
 
         addNew.setOnClickListener(this);
@@ -160,32 +176,76 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
         RefreshAdapter();
     }
 
-/*
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    public boolean onCreateOptionsMenu(Menu menu)
     {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.menu_program, menu);
+        getMenuInflater().inflate(R.menu.menu_exercise_logger, menu);
+        menu.findItem(R.id.more).setIcon(new IconDrawable(this, Iconify.IconValue.zmdi_more_vert).colorRes(R.color.white).actionBarSize());
+        menu.findItem(R.id.increment).setIcon(new IconDrawable(this, Iconify.IconValue.zmdi_tune).colorRes(R.color.white).actionBarSize());
+        return true;
     }
-*/
-  /*  @Override
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         int id = item.getItemId();
 
         if (id == android.R.id.home)
         {
+            onBackPressed();
         }
-        return true;
-    }*/
+        if (id == R.id.more)
+        {
+            ShowPopup();
+        }
+        if (id == R.id.increment)
+        {
+            IncrementChooserDialog dialog = new IncrementChooserDialog();
+            dialog.SetData(this);
+            dialog.show(getFragmentManager(),"");
+        }
 
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void ShowPopup(){
+        View menuItemView = findViewById(R.id.more);
+        PopupMenu popup = new PopupMenu(context, menuItemView);
+        MenuInflater inflate = popup.getMenuInflater();
+        inflate.inflate(R.menu.popup, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+                switch (item.getItemId())
+                {
+                    case R.id.stopwatch:
+
+                        StopwatchDialog dialog = new StopwatchDialog();
+                        dialog.SetData(ExerciseLogger.this);
+                        dialog.show(getFragmentManager(), "");
+                        break;
+                }
+
+                return true;
+            }
+
+        });
+        popup.show();
+    }
 
     @Override
     public void onClick(View v)
     {
+        if(incrementWeight.intValue() == 0)
+        {
+            incrementWeight = BigDecimal.valueOf(Tools.ToDouble(prefs.getString(Constants.WEIGHT_INCREMENT_KEY, "1"), 2));
+        }
+
         int val;
-        double dval;
+        BigDecimal dval;
         switch (v.getId())
         {
             case R.id.addNew:
@@ -264,20 +324,18 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
                 break;
 
             case R.id.repsPlus:
-                val = ToInt(editReps.getText().toString()) + 1;
+                val = Tools.ToInt(editReps.getText().toString()) + 1;
                 editReps.setText(String.valueOf(val));
                 break;
             case R.id.repsMinus:
-                val = ToInt(editReps.getText().toString()) - 1;
+                val = Tools.ToInt(editReps.getText().toString()) - 1;
                 editReps.setText(String.valueOf(val));
                 break;
             case R.id.weightPlus:
-                dval = ToDouble(editWeight.getText().toString()) + 1;
-                editWeight.setText(String.valueOf(dval));
+                Increment();
                 break;
             case R.id.weightMinus:
-                dval = ToDouble(editWeight.getText().toString()) - 1;
-                editWeight.setText(String.valueOf(dval));
+                Decrement();
                 break;
         }
     }
@@ -306,16 +364,6 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
         loggerAdapter.AddAll(exerciseLogs.get(currentExerciseLogNumber));
         loggerAdapter.notifyDataSetChanged();
 
-    }
-
-    private double ToDouble(String value)
-    {
-        return Double.parseDouble(value);
-    }
-
-    private int ToInt(String value)
-    {
-        return Integer.parseInt(value);
     }
 
     @Override
@@ -356,7 +404,7 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
 
                 if(loggerAdapter.getCount() > 0)
                 {
-                    swipeListView.setSelection(loggerAdapter.getCount() - 1);
+                    swipeListView.setSelection(position - 1);
                 }
                 break;
         }
@@ -386,5 +434,24 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
     public void OnRemoved(ExerciseLoggerRow row)
     {
         loggerAdapter.RemoveNote(row);
+    }
+
+    @Override
+    public void OnSelection(Double newIncrement)
+    {
+        prefs.edit().putString(Constants.WEIGHT_INCREMENT_KEY, String.valueOf(newIncrement)).apply();
+        incrementWeight = BigDecimal.valueOf(newIncrement);
+    }
+
+    public void Increment(){
+        BigDecimal dval = BigDecimal.valueOf(Tools.ToDouble(editWeight.getText().toString(), 2));
+        dval = dval.add(incrementWeight);
+        editWeight.setText(String.valueOf(dval));
+    }
+
+    public void Decrement(){
+        BigDecimal dval = BigDecimal.valueOf(Tools.ToDouble(editWeight.getText().toString(), 2));
+        dval = dval.subtract(incrementWeight);
+        editWeight.setText(String.valueOf(dval));
     }
 }

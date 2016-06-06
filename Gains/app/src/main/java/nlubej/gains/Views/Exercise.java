@@ -332,7 +332,7 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
 
                 if(exerciseAdapter.getCount() > 0)
                 {
-                    swipeListView.setSelection(exerciseAdapter.getCount() - 1);
+                    swipeListView.setSelection(position - 1);
                 }
 
                 //TODO DELTE FROM WOKROUT NOTE PRODUCED ERROR

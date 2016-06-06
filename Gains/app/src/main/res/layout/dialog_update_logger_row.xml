@@ -1,0 +1,20 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="1" >
+
+    <include android:id="@+id/update"
+        layout="@layout/view_logger_header_row"
+             android:layout_marginTop="15dp"
+             android:layout_height="wrap_content"
+             android:layout_width="fill_parent"/>
+
+    <include layout="@layout/button_yes_no"
+             android:layout_marginTop="15dp"
+            android:layout_below="@id/update"
+             android:layout_height="wrap_content"
+             android:layout_width="fill_parent"/>
+
+</RelativeLayout>
