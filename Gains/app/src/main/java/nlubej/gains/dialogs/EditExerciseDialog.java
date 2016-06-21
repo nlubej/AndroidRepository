@@ -105,7 +105,7 @@ public class EditExerciseDialog extends DialogFragment implements View.OnClickLi
 
                 if (wantToCloseDialog)
                 {
-                    parent.OnUpdated(new ExerciseDto(exerciseId,exerciseName.getText().toString(),((ExerciseType)exerciseType.getSelectedItem()).Id));
+                    parent.OnUpdated(new ExerciseDto(exerciseId, exerciseName.getText().toString(),((ExerciseType)exerciseType.getSelectedItem()).Id));
                     alertDialog.dismiss();
                 }
                 break;

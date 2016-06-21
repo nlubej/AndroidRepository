@@ -19,6 +19,8 @@ public class ExerciseDto
     public int WorkoutNumber;
     public int RoutineExerciseId;
     public int RoutineId;
+    public String RoutineName;
+    public boolean IsNew;
 
     public ExerciseDto()
     {
@@ -29,6 +31,23 @@ public class ExerciseDto
         this.Id = exerciseId;
         this.Name = exerciseName;
         this.Type = ExerciseType.FromInteger(exerciseType);
+    }
+
+    public ExerciseDto(int exerciseId, String exerciseName, int exerciseType, int routineExerciseId)
+    {
+        this.Id = exerciseId;
+        this.Name = exerciseName;
+        this.Type = ExerciseType.FromInteger(exerciseType);
+        this.RoutineExerciseId = routineExerciseId;
+    }
+
+    public ExerciseDto(int exerciseId, String exerciseName, int exerciseType, int routineExerciseId, boolean isNew)
+    {
+        this.Id = exerciseId;
+        this.Name = exerciseName;
+        this.Type = ExerciseType.FromInteger(exerciseType);
+        this.RoutineExerciseId = routineExerciseId;
+        IsNew = isNew;
     }
 
     public static ExerciseDto ToDto(MatrixCursor cursor)

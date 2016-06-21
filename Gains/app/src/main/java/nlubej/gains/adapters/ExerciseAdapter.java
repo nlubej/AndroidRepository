@@ -19,13 +19,19 @@ import nlubej.gains.Views.Exercise;
  */
 public class ExerciseAdapter extends BaseAdapter
 {
+
+    public enum DisplayColumn {
+        EXERCISE_TYPE, ROUTINE_NAME
+    }
+
     private ArrayList<ExerciseDto> exerciseDto;
-    Context ctx;
-    public ExerciseAdapter(Context ctx)
+    private Context ctx;
+    private DisplayColumn display;
+    public ExerciseAdapter(Context ctx, DisplayColumn display)
     {
         this.ctx = ctx;
-
         exerciseDto = new ArrayList();
+        this.display = display;
     }
 
 
@@ -137,7 +143,14 @@ public class ExerciseAdapter extends BaseAdapter
         ExerciseDto temp = exerciseDto.get(position);
 
         routineHolder.name.setText(temp.Name);
-        routineHolder.subName.setText(temp.Type.Description);
+        if(display == DisplayColumn.EXERCISE_TYPE)
+        {
+            routineHolder.subName.setText(temp.Type.Description);
+        }
+        else
+        {
+            routineHolder.subName.setText(temp.RoutineName);
+        }
 
         return row;
     }

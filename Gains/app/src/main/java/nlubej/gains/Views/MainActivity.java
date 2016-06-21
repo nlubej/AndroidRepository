@@ -1,5 +1,6 @@
 package nlubej.gains.Views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -10,6 +11,7 @@ import br.liveo.Model.HelpLiveo;
 import br.liveo.interfaces.OnItemClickListener;
 import br.liveo.interfaces.OnPrepareOptionsMenuLiveo;
 import br.liveo.navigationliveo.NavigationLiveo;
+import nlubej.gains.Database.AndroidDatabaseManager;
 import nlubej.gains.R;
 import nlubej.gains.interfaces.OnBackPressedListener;
 
@@ -22,9 +24,9 @@ public class MainActivity extends NavigationLiveo implements OnItemClickListener
 	@Override
 	public void onInt(Bundle savedInstanceState) {
 		// User Information
-		this.userName.setText("Current program");
-		this.userEmail.setText("I will make lots of gains");
-		this.userBackground.setImageResource(R.drawable.gaains);
+		//this.userName.setText("Current program");
+	//	this.userEmail.setText("I will make lots of gains");
+		//this.userBackground.setImageResource(R.drawable.gaains);
 
         this.setOnPrepareOptionsMenu(this);
 		// Creating items navigation
@@ -44,8 +46,11 @@ public class MainActivity extends NavigationLiveo implements OnItemClickListener
 		//with(this, Navigation.THEME_LIGHT). add theme light
 
 		with(this) // default theme is dark
-				.startingPosition(2) //Starting position in the list
+				.startingPosition(0) //Starting position in the list
 				.addAllHelpItem(mHelpLiveo.getHelp()).setOnPrepareOptionsMenu(onPrepare)
+				.colorItemSelected(R.color.PrimaryColor)
+				.colorNameSubHeader(R.color.PrimaryColor)
+
 				.removeHeader()
 				//.header
 				.build();
@@ -79,9 +84,15 @@ public class MainActivity extends NavigationLiveo implements OnItemClickListener
 				mFragment = new LogViewer();
 				break;
 			case 3:
+
+
+
+
 				mFragment = new OneRepMaxCalculator();
 				break;
 			case 4:
+				Intent dbmanager = new Intent(getApplicationContext(),AndroidDatabaseManager.class);
+				startActivity(dbmanager);
 				mFragment = new OneRepMaxCalculator();
 				break;
 			case 5:

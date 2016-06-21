@@ -11,7 +11,9 @@ import android.widget.Button;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import nlubej.gains.DataTransferObjects.ProgramDto;
+import java.util.ArrayList;
+
+import nlubej.gains.DataTransferObjects.LoggedRowDto;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.R;

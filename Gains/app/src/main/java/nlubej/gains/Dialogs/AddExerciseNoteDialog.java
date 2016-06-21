@@ -7,14 +7,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import nlubej.gains.DataTransferObjects.ExerciseLoggerRow;
-import nlubej.gains.DataTransferObjects.LoggedViewRowDto;
+import nlubej.gains.DataTransferObjects.LoggedRowDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.R;
 import nlubej.gains.Views.ExerciseLogger;
@@ -27,6 +26,7 @@ import nlubej.gains.interfaces.OnItemChanged;
 public class AddExerciseNoteDialog extends DialogFragment implements View.OnClickListener
 {
 
+    private boolean isInPreviewMode;
     private Object fragmentClass;
     private QueryFactory db;
     private OnItemChanged callback;
@@ -44,7 +44,7 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
         {
             if(fragmentClass instanceof LogViewer)
             {
-                callback = (OnItemChanged<LoggedViewRowDto>) fragmentClass;
+                callback = (OnItemChanged<LoggedRowDto>) fragmentClass;
             }
             else if (fragmentClass instanceof  ExerciseLogger)
             {
@@ -61,18 +61,17 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
         }
     }
 
-    public void SetData(Object fragment, QueryFactory database)
+    public void SetData(Object fragment, QueryFactory database, boolean previewMode)
     {
         this.fragmentClass = fragment;
         db = database;
+        isInPreviewMode = previewMode;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         context = getActivity();
-
-
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -92,6 +91,13 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
         yes.setOnClickListener(this);
         no.setOnClickListener(this);
 
+        if(isInPreviewMode)
+        {
+            no.setVisibility(View.INVISIBLE);
+            noteTxt.setFocusable(false);
+            noteTxt.setClickable(false);
+            noteTxt.clearFocus();
+        }
 
         builder.setView(view);
         alertDialog = builder.create();
@@ -104,11 +110,16 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
     @Override
     public void onClick(View v)
     {
-        Boolean wantToCloseDialog = true;
         switch (v.getId())
         {
 
             case R.id.btn_yes:
+
+                if(isInPreviewMode)
+                {
+                    alertDialog.dismiss();
+                    return;
+                }
 
                 if(!IsValid() && !isUpdating)
                 {
@@ -124,7 +135,7 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
 
                     if(fragmentClass instanceof LogViewer)
                     {
-                        LoggedViewRowDto row = new LoggedViewRowDto();
+                        LoggedRowDto row = new LoggedRowDto();
                         row.LoggedWorkoutId = logId;
                         row.Note = noteTxt.getText().toString();
                         row.IsUpdatingNote = true;
@@ -153,7 +164,7 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
 
                         if(fragmentClass instanceof LogViewer)
                         {
-                            LoggedViewRowDto row = new LoggedViewRowDto();
+                            LoggedRowDto row = new LoggedRowDto();
                             row.LoggedWorkoutId = logId;
                             row.IsUpdatingNote = true;
 
@@ -161,7 +172,7 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
                         }
                         else if (fragmentClass instanceof  ExerciseLogger)
                         {
-                            LoggedViewRowDto row = new LoggedViewRowDto();
+                            LoggedRowDto row = new LoggedRowDto();
                             row.LoggedWorkoutId = logId;
 
                             callback.OnRemoved(row);
@@ -178,7 +189,7 @@ public class AddExerciseNoteDialog extends DialogFragment implements View.OnClic
 
                         if(fragmentClass instanceof LogViewer)
                         {
-                            LoggedViewRowDto row = new LoggedViewRowDto();
+                            LoggedRowDto row = new LoggedRowDto();
                             row.LoggedWorkoutId = logId;
                             row.Note = noteTxt.getText().toString();
                             row.IsUpdatingNote = true;

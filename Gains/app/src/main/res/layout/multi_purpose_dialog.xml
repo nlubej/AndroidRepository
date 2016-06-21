@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_margin="15dp"
+
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Header"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:padding="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"
+        android:textColor="@color/PrimaryColor"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:layout_alignParentEnd="true"/>
+
+
+
+    <View
+        android:id="@+id/seperator"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/header"
+        android:background="@color/lighter_gray" />
+
+
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/layout1"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/seperator"
+        android:layout_marginTop="20dp"
+        android:layout_height="45dp">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:text="Do you want to finish the workout?"
+            android:background="@drawable/button_effect_white"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_marginRight="5dp"
+            android:clickable="true"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/button_ok_cancel"
+             android:layout_marginTop="15dp"
+             android:layout_below="@id/layout1"
+             android:layout_height="wrap_content"
+             android:layout_width="fill_parent"/>
+
+</RelativeLayout>

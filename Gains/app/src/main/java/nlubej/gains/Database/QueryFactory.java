@@ -6,21 +6,23 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import nlubej.gains.DataTransferObjects.CompleteWorkoutDto;
 import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.DataTransferObjects.ExerciseType;
-import nlubej.gains.DataTransferObjects.LoggedViewRowDto;
+import nlubej.gains.DataTransferObjects.LoggedRowDto;
+import nlubej.gains.DataTransferObjects.LoggedSummaryRowDto;
 import nlubej.gains.DataTransferObjects.ProgramDto;
 import nlubej.gains.DataTransferObjects.RoutineDto;
 import nlubej.gains.Database.Queries.ExerciseQueries;
 import nlubej.gains.Database.Queries.LogQueries;
 import nlubej.gains.Database.Queries.ProgramQueries;
 import nlubej.gains.Database.Queries.RoutineQueries;
-import nlubej.gains.Database.Queries.WorkoutQueries;
 
 
 public class QueryFactory
@@ -46,6 +48,61 @@ public class QueryFactory
     private SQLiteDatabase db;
     private final Context context;
     private String param;
+
+    public ArrayList<Cursor> getData(String Query)
+    {
+        //get writable database
+        SQLiteDatabase sqlDB = dbHelper.getWritableDatabase();
+        String[] columns = new String[]{"mesage"};
+        //an array list of cursor to save two cursors one has results from the query
+        //other cursor stores error message if any errors are triggered
+        ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
+        MatrixCursor Cursor2 = new MatrixCursor(columns);
+        alc.add(null);
+        alc.add(null);
+
+
+        try
+        {
+            String maxQuery = Query;
+            //execute the query results will be save in Cursor c
+            Cursor c = sqlDB.rawQuery(maxQuery, null);
+
+
+            //add value to cursor2
+            Cursor2.addRow(new Object[]{"Success"});
+
+            alc.set(1, Cursor2);
+            if (null != c && c.getCount() > 0)
+            {
+
+
+                alc.set(0, c);
+                c.moveToFirst();
+
+                return alc;
+            }
+            return alc;
+        }
+        catch (SQLException sqlEx)
+        {
+            Log.d("printing exception", sqlEx.getMessage());
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[]{"" + sqlEx.getMessage()});
+            alc.set(1, Cursor2);
+            return alc;
+        }
+        catch (Exception ex)
+        {
+
+            Log.d("printing exception", ex.getMessage());
+
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[]{"" + ex.getMessage()});
+            alc.set(1, Cursor2);
+            return alc;
+        }
+    }
 
     public class DatabaseHelper extends SQLiteOpenHelper
     {
@@ -207,11 +264,11 @@ public class QueryFactory
         return programDto;
     }
 
-    public ArrayList<RoutineDto> SelectRoutines(int programId)
+    public ArrayList<RoutineDto> SelectRoutines(int programId, boolean skipEmptyRoutines)
     {
         ArrayList<RoutineDto> routineDto = new ArrayList<>();
 
-        String query = RoutineQueries.SelectRoutines(programId);
+        String query = RoutineQueries.SelectRoutines(programId, skipEmptyRoutines);
         final Cursor c = db.rawQuery(query, null);
 
         if (c.getCount() != 0)
@@ -232,9 +289,9 @@ public class QueryFactory
         return routineDto;
     }
 
-    public ArrayList<LoggedViewRowDto> SelectLoggedWorkouts(int exerciseId)
+    public ArrayList<LoggedRowDto> SelectLoggedWorkouts(int exerciseId)
     {
-        ArrayList<LoggedViewRowDto> loggerRows = new ArrayList<>();
+        ArrayList<LoggedRowDto> loggerRows = new ArrayList<>();
 
         String query = LogQueries.SelectLoggedWorkouts(exerciseId);
         final Cursor c = db.rawQuery(query, null);
@@ -243,7 +300,7 @@ public class QueryFactory
         {
             while (c.moveToNext())
             {
-                LoggedViewRowDto dto = new LoggedViewRowDto();
+                LoggedRowDto dto = new LoggedRowDto();
                 dto.LoggedWorkoutId = c.getInt(0);
                 dto.Set = c.getInt(1);
                 dto.Rep = c.getString(2);
@@ -265,9 +322,61 @@ public class QueryFactory
         return loggerRows;
     }
 
-    private LoggedViewRowDto InsertWorkoutSummary(int workoutNumber)
+    public ArrayList<CompleteWorkoutDto> SelectLoggedWorkoutsGroupedByWorkoutNumber(int exerciseId, int currentWorkoutNumber)
     {
-        LoggedViewRowDto dto = new LoggedViewRowDto();
+        String query = LogQueries.SelectLoggedWorkouts(exerciseId);
+        final Cursor c = db.rawQuery(query, null);
+        int lasWorkoutNum = -1;
+        if (c.getCount() != 0)
+        {
+            CompleteWorkoutDto completeDto = new CompleteWorkoutDto();
+            ArrayList<CompleteWorkoutDto> completeWorkoutDtos = new ArrayList<>();
+
+            while (c.moveToNext())
+            {
+                LoggedRowDto dto = new LoggedRowDto();
+                dto.LoggedWorkoutId = c.getInt(0);
+                dto.Set = c.getInt(1);
+                dto.Rep = c.getString(2);
+                dto.Weight = c.getString(3);
+                dto.Note = c.getString(4);
+                dto.WorkoutNumber = c.getInt(5);
+                dto.HasNote = (dto.Note != null && dto.Note.compareTo("") != 0);
+
+                if(dto.WorkoutNumber == currentWorkoutNumber)
+                    continue;
+
+                if(lasWorkoutNum > dto.WorkoutNumber || lasWorkoutNum == -1)
+                {
+                    if(lasWorkoutNum != -1)
+                    {
+                        completeWorkoutDtos.add(completeDto);
+                        //remove reference and create new object
+                        completeDto = new CompleteWorkoutDto();
+                    }
+
+                    completeDto.LoggedRows.add(InsertWorkoutSummary(dto.WorkoutNumber));
+                    lasWorkoutNum = dto.WorkoutNumber;
+                }
+
+                completeDto.LoggedRows.add(dto);
+
+                if(c.isLast())
+                {
+                    completeWorkoutDtos.add(completeDto);
+                }
+            }
+            c.close();
+
+            return completeWorkoutDtos;
+        }
+
+        return null;
+    }
+
+    private LoggedRowDto InsertWorkoutSummary(int workoutNumber)
+    {
+        LoggedRowDto dto = new LoggedRowDto();
         dto.IsSummary = true;
         dto.WorkoutNumber = workoutNumber;
 
@@ -332,6 +441,8 @@ public class QueryFactory
                 dto.Id = c.getInt(0);
                 dto.Name = c.getString(1);
                 dto.Type = nlubej.gains.Enums.ExerciseType.FromInteger(c.getInt(2));
+                dto.RoutineExerciseId =c.getInt(3);
+                dto.RoutineName = c.getString(4);
 
                 exerciseDto.add(dto);
             }

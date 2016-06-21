@@ -7,14 +7,14 @@ import nlubej.gains.Enums.ExerciseType;
 /**
  * Created by nlubej on 21.10.2015.
  */
-public class LoggedViewRowDto
+public class LoggedRowDto
 {
 
-    public LoggedViewRowDto()
+    public LoggedRowDto()
     {
     }
 
-    public LoggedViewRowDto(int set, String rep, String weight)
+    public LoggedRowDto(int set, String rep, String weight)
     {
         this.Set = set;
         this.Rep = rep;

@@ -1,0 +1,379 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_margin="15dp"
+
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Workout Summary"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:padding="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"
+        android:textColor="@color/PrimaryColor"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:layout_alignParentEnd="true"/>
+
+    <View
+        android:id="@+id/seperator"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_below="@+id/header"
+        android:background="@color/lighter_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_margin="15dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seperator"
+        android:orientation="vertical">
+
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentStart="true">
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seperator"
+                android:layout_alignParentStart="true">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="SETS"
+
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/PrimaryColor"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="PREVIOUS"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="16"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:id="@+id/currSets"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="14"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:id="@+id/prevSets"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentStart="true">
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seperator"
+                android:layout_alignParentStart="true">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="REPS"
+
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/PrimaryColor"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="PREVIOUS"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="112"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:id="@+id/currReps"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="78"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:id="@+id/prevReps"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentStart="true">
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seperator"
+                android:layout_alignParentStart="true">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="WEIGHT LIFTED"
+
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/PrimaryColor"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="PREVIOUS"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="1245 Kg"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:id="@+id/currWeight"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="1040 Kg"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:id="@+id/prevWeight"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:id="@+id/l1v"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentStart="true">
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seperator"
+                android:layout_alignParentStart="true">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="DURATION"
+
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/PrimaryColor"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="PREVIOUS"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="1 h 46 min"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:id="@+id/currDuration"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="1 h 35 min"
+                    android:paddingLeft="5dp"
+                    android:gravity="left|center_vertical"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:id="@+id/prevDuration"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</RelativeLayout>

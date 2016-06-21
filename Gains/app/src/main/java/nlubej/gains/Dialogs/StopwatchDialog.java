@@ -65,9 +65,12 @@ public class StopwatchDialog extends DialogFragment implements AdapterView.OnIte
         stopResume = (Button) view.findViewById(R.id.stop_resume);
         reset = (Button) view.findViewById(R.id.reset);
 
+       // Button exit = (Button) view.findViewById(R.id.btn_exit);
+
         start.setOnClickListener(this);
         stopResume.setOnClickListener(this);
         reset.setOnClickListener(this);
+        //exit.setOnClickListener(this);
 
         start.setVisibility(View.VISIBLE);
         stopResume.setVisibility(View.INVISIBLE);
@@ -145,6 +148,10 @@ public class StopwatchDialog extends DialogFragment implements AdapterView.OnIte
                 timeWhenStoped = 0;
                 chrono.setText("00:00:00");
                 break;
+
+           // case R.id.btn_exit:
+           //    alertDialog.dismiss();
+           //     break;
         }
     }
 }

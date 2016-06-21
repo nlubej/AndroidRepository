@@ -1,0 +1,35 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/button_yes_no"
+              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              android:layout_alignParentBottom="true">
+
+
+    <Button
+        android:id="@+id/btn_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="textEnd"
+        android:background="@drawable/btn_bg"
+        android:layout_weight="100"
+        android:text="Cancel"
+        android:clickable="true"
+        android:visibility="invisible"
+        android:textColor="@color/DarkColor">
+    </Button>
+
+    <Button
+        android:id="@+id/btn_exit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_bg"
+        android:layout_gravity="end"
+        android:layout_weight="0"
+        android:text="EXIT"
+        android:textColor="@color/DarkColor"
+        android:textStyle="bold">
+    </Button>
+
+
+</LinearLayout>

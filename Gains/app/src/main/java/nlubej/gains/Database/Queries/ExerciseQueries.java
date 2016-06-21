@@ -40,15 +40,17 @@ public class ExerciseQueries
     {
         if(routineId == -1)
         {
-            return String.format("SELECT DISTINCT e.EXERCISE_ID, e.EXERCISE_NAME, e.EXERCISE_TYPE FROM EXERCISE e" +
-                    " JOIN ROUTINE_EXERCISE re ON re.EXERCISE_ID = e.EXERCISE_ID ORDER BY e.CREATED_ON");
+            return String.format("SELECT DISTINCT e.EXERCISE_ID, e.EXERCISE_NAME, e.EXERCISE_TYPE, re.ROUTINE_EXERCISE_ID, r.ROUTINE_NAME FROM EXERCISE e" +
+                    " JOIN ROUTINE_EXERCISE re ON re.EXERCISE_ID = e.EXERCISE_ID" +
+                    " JOIN ROUTINE r ON re.ROUTINE_ID = r.ROUTINE_ID ORDER BY r.ROUTINE_ID ASC, e.CREATED_ON desc");
         }
         else
         {
-            return String.format("SELECT DISTINCT e.EXERCISE_ID, e.EXERCISE_NAME, e.EXERCISE_TYPE FROM EXERCISE e" +
+            return String.format("SELECT DISTINCT e.EXERCISE_ID, e.EXERCISE_NAME, e.EXERCISE_TYPE, re.ROUTINE_EXERCISE_ID, r.ROUTINE_NAME FROM EXERCISE e" +
                     " JOIN ROUTINE_EXERCISE re ON re.EXERCISE_ID = e.EXERCISE_ID" +
+                    " JOIN ROUTINE r ON re.ROUTINE_ID = r.ROUTINE_ID " +
                     " WHERE re.ROUTINE_ID != %d " +
-                    " ORDER BY e.CREATED_ON", routineId);
+                    " ORDER BY r.ROUTINE_ID ASC, e.CREATED_ON desc", routineId);
         }
     }
 

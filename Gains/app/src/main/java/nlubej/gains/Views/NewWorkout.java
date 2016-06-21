@@ -74,7 +74,7 @@ public class NewWorkout extends Fragment implements AdapterView.OnItemClickListe
     public void SetData()
     {
         db.Open();
-        ArrayList<RoutineDto> routineDto = db.SelectRoutines(prefs.getInt("DEFAULT_PROGRAM", -1));
+        ArrayList<RoutineDto> routineDto = db.SelectRoutines(prefs.getInt("DEFAULT_PROGRAM", -1), true);
         db.Close();
 
         if(routineDto.size() == 0)

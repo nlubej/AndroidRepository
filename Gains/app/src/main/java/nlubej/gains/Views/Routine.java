@@ -123,7 +123,7 @@ public class Routine extends AppCompatActivity implements OnItemClickListener, O
     public void SetData()
     {
         db.Open();
-        ArrayList<RoutineDto> routineDto = db.SelectRoutines(programId);
+        ArrayList<RoutineDto> routineDto = db.SelectRoutines(programId, false);
         db.Close();
 
         routineAdapter.AddAll(routineDto);

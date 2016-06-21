@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -28,10 +27,8 @@ import java.util.ArrayList;
 import nlubej.gains.Adapters.ExerciseAdapter;
 import nlubej.gains.Adapters.LoggedWorkoutAdapter;
 import nlubej.gains.DataTransferObjects.ExerciseDto;
-import nlubej.gains.DataTransferObjects.ExerciseLoggerRow;
-import nlubej.gains.DataTransferObjects.LoggedViewRowDto;
+import nlubej.gains.DataTransferObjects.LoggedRowDto;
 import nlubej.gains.Database.QueryFactory;
-import nlubej.gains.Dialogs.AddRoutineDialog;
 import nlubej.gains.Dialogs.UpdateLoggedWorkoutDialog;
 import nlubej.gains.Enums.Constants;
 import nlubej.gains.R;
@@ -41,7 +38,7 @@ import nlubej.gains.interfaces.OnItemChanged;
 /**
  * Created by nlubej on 19.10.2015.
  */
-public class LogViewer extends Fragment implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener , OnItemChanged<LoggedViewRowDto>, SwipeMenuListView.OnMenuItemClickListener, View.OnFocusChangeListener, OnBackPressedListener
+public class LogViewer extends Fragment implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener , OnItemChanged<LoggedRowDto>, SwipeMenuListView.OnMenuItemClickListener, View.OnFocusChangeListener, OnBackPressedListener
 {
     private QueryFactory db;
     private ArrayList<ExerciseDto> exerciseDto;
@@ -77,7 +74,7 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
         header.setVisibility(View.GONE);
 
         db = new QueryFactory(context);
-        exerciseAdapter = new ExerciseAdapter(getActivity());
+        exerciseAdapter = new ExerciseAdapter(getActivity(), ExerciseAdapter.DisplayColumn.EXERCISE_TYPE);
         loggedWorkoutAdapter = new LoggedWorkoutAdapter(this, db);
 
         InitData();
@@ -201,7 +198,7 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
     private void SetUpLogData(int exerciseId)
     {
         db.Open();
-        ArrayList<LoggedViewRowDto> loggerRows = db.SelectLoggedWorkouts(exerciseId);
+        ArrayList<LoggedRowDto> loggerRows = db.SelectLoggedWorkouts(exerciseId);
         db.Close();
 
         loggedWorkoutAdapter.AddAll(loggerRows);
@@ -226,7 +223,7 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
         }
         else
         {
-            LoggedViewRowDto row = loggedWorkoutAdapter.getItem(position);
+            LoggedRowDto row = loggedWorkoutAdapter.getItem(position);
             switch (index)
             {
                 case 0: //edit
@@ -284,21 +281,21 @@ public class LogViewer extends Fragment implements SearchView.OnQueryTextListene
     }
 
     @Override
-    public void OnAdded(LoggedViewRowDto row)
+    public void OnAdded(LoggedRowDto row)
     {
         loggedWorkoutAdapter.UpdateNote(row);
         loggedWorkoutAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void OnUpdated(LoggedViewRowDto row)
+    public void OnUpdated(LoggedRowDto row)
     {
         loggedWorkoutAdapter.UpdateNote(row);
         loggedWorkoutAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void OnRemoved(LoggedViewRowDto row)
+    public void OnRemoved(LoggedRowDto row)
     {
         loggedWorkoutAdapter.RemoveNote(row);
         loggedWorkoutAdapter.notifyDataSetChanged();

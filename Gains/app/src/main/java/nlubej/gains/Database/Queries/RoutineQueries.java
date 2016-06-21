@@ -28,7 +28,7 @@ public class RoutineQueries
         return String.format("DELETE FROM EXERCISE WHERE EXERCISE_ID IN (" + "SELECT EXERCISE_ID FROM EXERCISE WHERE ROUTINE_ID = %d)", routineId);
     }
 
-    public static String SelectRoutines(int programId)
+    public static String SelectRoutines(int programId, boolean skipEmptyRoutines)
     {
         return String.format("SELECT ROUTINE_ID, ROUTINE_NAME, ROUTINE_POS, PROGRAM_ID, EXERCISE_COUNT " +
                 " FROM ( " +
@@ -36,8 +36,8 @@ public class RoutineQueries
                 "LEFT JOIN ROUTINE_EXERCISE e on e.ROUTINE_ID = r.ROUTINE_ID " +
                 "WHERE PROGRAM_ID = %s " +
                 "GROUP BY r.ROUTINE_ID, r.ROUTINE_NAME, r.ROUTINE_POS, r.PROGRAM_ID )" +
-                "WHERE EXERCISE_COUNT > 0 " +
-                "ORDER BY ROUTINE_POS ASC " ,programId);
+                " %s " +
+                "ORDER BY ROUTINE_POS ASC " ,programId, (skipEmptyRoutines) ? "WHERE EXERCISE_COUNT > 0 " : "");
     }
 
     public static String InsertRoutine(String routineName, int programId)

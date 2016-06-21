@@ -12,4 +12,10 @@
         android:orderInCategory="90"
         android:title=""
         app:showAsAction="always|withText"/>
+
+    <item
+        android:id="@+id/finish"
+        android:orderInCategory="80"
+        android:title="FINISH"
+        app:showAsAction="always|withText"/>
 </menu>

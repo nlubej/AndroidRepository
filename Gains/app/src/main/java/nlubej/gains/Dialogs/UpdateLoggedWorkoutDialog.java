@@ -15,18 +15,14 @@ import android.widget.TextView;
 
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 
-import fr.ganfra.materialspinner.MaterialSpinner;
 import nlubej.gains.Adapters.ExerciseTypeAdapter;
-import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.DataTransferObjects.ExerciseType;
-import nlubej.gains.DataTransferObjects.LoggedViewRowDto;
+import nlubej.gains.DataTransferObjects.LoggedRowDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.R;
-import nlubej.gains.Views.Exercise;
 import nlubej.gains.Views.LogViewer;
 import nlubej.gains.interfaces.OnItemChanged;
 
@@ -36,7 +32,7 @@ import nlubej.gains.interfaces.OnItemChanged;
 public class UpdateLoggedWorkoutDialog extends DialogFragment implements View.OnClickListener
 {
     private QueryFactory db;
-    private OnItemChanged<LoggedViewRowDto> parent;
+    private OnItemChanged<LoggedRowDto> parent;
     private Context context;
 
     private int loggedWorkoutId;
@@ -122,7 +118,7 @@ public class UpdateLoggedWorkoutDialog extends DialogFragment implements View.On
                 db.UpdateTable("LOGGED_WORKOUT", String.format("LOGGED_WORKOUT_ID = %s", loggedWorkoutId), new String[]{"LOGGED_WEIGHT", editWeight.getText().toString(), "LOGGED_REP", editReps.getText().toString()});
                 db.Close();
 
-                LoggedViewRowDto row = new LoggedViewRowDto();
+                LoggedRowDto row = new LoggedRowDto();
                 row.Rep = editReps.getText().toString();
                 row.LoggedWorkoutId = loggedWorkoutId;
                 row.Weight = editWeight.getText().toString();

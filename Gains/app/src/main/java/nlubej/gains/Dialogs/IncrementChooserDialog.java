@@ -35,9 +35,9 @@ public class IncrementChooserDialog extends DialogFragment implements AdapterVie
                     "0.15",
                     "0.25",
                     "0.50",
-                    "1",
-                    "1.5",
-                    "2"
+                    "1.00",
+                    "1.50",
+                    "2.00"
             };
 
     public void SetData(ExerciseLogger context)

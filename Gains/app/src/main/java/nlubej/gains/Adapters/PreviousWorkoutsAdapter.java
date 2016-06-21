@@ -19,6 +19,7 @@ import com.malinskiy.materialicons.Iconify;
 
 import java.util.ArrayList;
 
+import nlubej.gains.DataTransferObjects.CompleteWorkoutDto;
 import nlubej.gains.DataTransferObjects.LoggedRowDto;
 import nlubej.gains.Database.QueryFactory;
 import nlubej.gains.Dialogs.AddExerciseNoteDialog;
@@ -29,71 +30,36 @@ import nlubej.gains.Views.LogViewer;
 /**
  * Created by nlubej on 28.4.2016.
  */
-public class LoggedWorkoutAdapter extends BaseAdapter implements View.OnClickListener
+public class PreviousWorkoutsAdapter extends BaseAdapter implements View.OnClickListener
 {
-    private final QueryFactory db;
-    private final LogViewer parentClass;
-    private ArrayList<LoggedRowDto> loggerRowDto;
+    private final ExerciseLogger parentClass;
+    private CompleteWorkoutDto completeWorkoutDto;
     Context ctx;
 
-    private SharedPreferences prefs;
-
-    public LoggedWorkoutAdapter(LogViewer parent, QueryFactory database)
+    public PreviousWorkoutsAdapter(ExerciseLogger parent)
     {
         this.parentClass = parent;
-        this.ctx = parent.getActivity();
-        loggerRowDto = new ArrayList<>();
-        db = database;
-        prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-    }
-
-    public LoggedWorkoutAdapter(ExerciseLogger parent, QueryFactory database)
-    {
-        this.parentClass = null;
         this.ctx = parent.getApplicationContext();
-        loggerRowDto = new ArrayList<>();
-        db = database;
-        prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        completeWorkoutDto = new CompleteWorkoutDto();
+        completeWorkoutDto.LoggedRows = new ArrayList<>();
     }
 
     @Override
     public int getCount()
     {
-        return loggerRowDto.size();
+        return completeWorkoutDto.LoggedRows.size();
     }
 
 
-    public void AddAll(ArrayList<LoggedRowDto> programDto)
+    public void AddAll(ArrayList<LoggedRowDto> completeDtos)
     {
-        this.loggerRowDto.clear();
-        this.loggerRowDto.addAll(programDto);
+        this.completeWorkoutDto.LoggedRows.clear();
+        this.completeWorkoutDto.LoggedRows.addAll(completeDtos);
     }
 
     public void Add(LoggedRowDto row)
     {
-        loggerRowDto.add(row);
-    }
-
-    public ArrayList<Integer> GetIdsInAscOrder(int workoutNumber)
-    {
-        ArrayList<Integer> ids = new ArrayList<>();
-        for(LoggedRowDto dto : loggerRowDto)
-        {
-            if(dto.WorkoutNumber == workoutNumber && dto.LoggedWorkoutId != 0)
-                ids.add(dto.LoggedWorkoutId);
-        }
-
-        return ids;
-    }
-
-    public void UpdateWorkoutSetNumbers(int workoutNumber)
-    {
-        int i = 0;
-        for(LoggedRowDto dto : loggerRowDto)
-        {
-            if(dto.WorkoutNumber == workoutNumber && dto.LoggedWorkoutId != 0)
-                dto.Set = ++i;
-        }
+        completeWorkoutDto.LoggedRows.add(row);
     }
 
     @Override
@@ -105,7 +71,7 @@ public class LoggedWorkoutAdapter extends BaseAdapter implements View.OnClickLis
     @Override
     public int getItemViewType(int position) {
         // current menu type
-        if(loggerRowDto.get(position).IsSummary)
+        if(completeWorkoutDto.LoggedRows.get(position).IsSummary)
             return 0;
 
         return 1;
@@ -113,13 +79,13 @@ public class LoggedWorkoutAdapter extends BaseAdapter implements View.OnClickLis
 
     public void Remove(LoggedRowDto item)
     {
-        loggerRowDto.remove(item);
+        completeWorkoutDto.LoggedRows.remove(item);
     }
 
     @Override
     public LoggedRowDto getItem(int position)
     {
-        return loggerRowDto.get(position);
+        return completeWorkoutDto.LoggedRows.get(position);
     }
 
     @Override
@@ -131,72 +97,6 @@ public class LoggedWorkoutAdapter extends BaseAdapter implements View.OnClickLis
     @Override
     public void onClick(View v)
     {
-        if(v.getId() == R.id.log_note)
-        {
-            Toast.makeText(ctx, "nlubej", Toast.LENGTH_SHORT).show();
-        }
-        Log.i("nlubej", "it clicked");
-
-    }
-
-    public void UpdateNote(LoggedRowDto row)
-    {
-        for(LoggedRowDto dto : loggerRowDto)
-        {
-            if(dto.LoggedWorkoutId == row.LoggedWorkoutId)
-            {
-                if(row.IsUpdatingNote)
-                {
-                    dto.Note = row.Note;
-                    dto.HasNote = true;
-
-                    if(dto.Note == null || dto.Note.compareTo("") == 0)
-                        dto.HasNote = false;
-                }
-                else
-                {
-                    dto.Weight = row.Weight;
-                    dto.Rep = row.Rep;
-                }
-            }
-        }
-    }
-
-    public void RemoveNote(LoggedRowDto row)
-    {
-        for(LoggedRowDto dto : loggerRowDto)
-        {
-            if(dto.LoggedWorkoutId == row.LoggedWorkoutId)
-            {
-                dto.Note = null;
-                dto.HasNote = false;
-            }
-        }
-    }
-
-    public boolean CanRemoveSummary(int workoutNumber)
-    {
-        int logsLeft = 0;
-        for(LoggedRowDto dto : loggerRowDto)
-        {
-            if(dto.WorkoutNumber ==  workoutNumber)
-            {
-                logsLeft++;
-            }
-        }
-
-        return logsLeft <= 1;
-    }
-
-    public void UpdateFollowingWorkoutNumber(int workoutNumber)
-    {
-        for(LoggedRowDto dto : loggerRowDto)
-        {
-            if(dto.WorkoutNumber > workoutNumber)
-            {
-                dto.WorkoutNumber--;
-            }
-        }
     }
 
 
@@ -206,29 +106,11 @@ public class LoggedWorkoutAdapter extends BaseAdapter implements View.OnClickLis
         private LinearLayout exerciseSummary;
         private View divider;
 
-        private ImageView note;
-        private TextView personalBest;
-        private TextView set;
-        private TextView rep;
-        private TextView weight;
-        private ImageView icon;
-        private TextView workoutNumber;
-        private TextView date;
-
         public ProgramViewHolder(View v)
         {
             workingRow = (LinearLayout)v.findViewById(R.id.logged_sets);
             exerciseSummary = (LinearLayout)v.findViewById(R.id.logged_summary);
             divider = (View)v.findViewById(R.id.divider);
-
-            /*note = (ImageView) v.findViewById(R.id.log_note);
-            personalBest = (TextView) v.findViewById(R.id.personal_record);
-            set = (TextView) v.findViewById(R.id.set);
-            rep = (TextView) v.findViewById(R.id.rep);
-            weight = (TextView) v.findViewById(R.id.weight);
-            icon = (ImageView) v.findViewById(R.id.workout_info);
-            workoutNumber = (TextView) v.findViewById(R.id.workout_number);
-            date = (TextView) v.findViewById(R.id.workout_date);*/
         }
     }
 
@@ -250,7 +132,7 @@ public class LoggedWorkoutAdapter extends BaseAdapter implements View.OnClickLis
             holder = (ProgramViewHolder) row.getTag();
         }
 
-        final LoggedRowDto temp = loggerRowDto.get(position);
+        final LoggedRowDto temp = completeWorkoutDto.LoggedRows.get(position);
 
         if(temp.IsSummary)
         {
@@ -279,18 +161,18 @@ public class LoggedWorkoutAdapter extends BaseAdapter implements View.OnClickLis
             {
                 @Override
                 public void onClick(View v)
-                    {
-                        AddExerciseNoteDialog dialog = new AddExerciseNoteDialog();
-                        dialog.SetData(parentClass, db, false);
-                        Bundle b = new Bundle();
-                        if (temp.Note != null && temp.Note.compareTo("") != 0)
-                        {
-                            b.putString("NOTE", temp.Note);
-                        }
-                        b.putInt("LOGGED_WORKOUT_ID", temp.LoggedWorkoutId);
-                        dialog.setArguments(b);
-                        dialog.show(parentClass.getFragmentManager(), "");
-                    }
+                {
+                    AddExerciseNoteDialog dialog = new AddExerciseNoteDialog();
+                    dialog.SetData(parentClass, null, true);
+                    Bundle b = new Bundle();
+                    if (temp.Note != null)
+                        b.putString("NOTE", temp.Note);
+                    else
+                        b.putString("NOTE", "");
+
+                    dialog.setArguments(b);
+                    dialog.show(parentClass.getFragmentManager(), "");
+                }
             });
 
             if(!temp.HasNote)

@@ -20,7 +20,7 @@
         android:longClickable="false"
         android:inputType="textCapSentences"/>
 
-    <include layout="@layout/button_yes_no"
+    <include layout="@layout/button_ok_cancel"
              android:layout_marginTop="15dp"
             android:layout_below="@id/note_txt"
              android:layout_height="wrap_content"

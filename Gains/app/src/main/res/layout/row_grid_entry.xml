@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:descendantFocusability="blocksDescendants">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true">
+
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="SETS"
+            android:paddingLeft="5dp"
+            android:gravity="left|center_vertical"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:clickable="true"
+            android:textStyle="bold"
+            android:textColor="@color/PrimaryColor"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="PREVIOUS"
+            android:paddingLeft="5dp"
+            android:gravity="left|center_vertical"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:clickable="true"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentStart="true">
+
+
+        <TextView
+            android:id="@+id/currentVal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="16"
+            android:paddingLeft="5dp"
+            android:gravity="left|center_vertical"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:clickable="true"
+            android:textStyle="bold"
+            android:textColor="@color/DarkColor"/>
+
+        <TextView
+            android:id="@+id/previousVal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="14"
+            android:paddingLeft="5dp"
+            android:gravity="left|center_vertical"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:clickable="true"
+            android:textStyle="bold"
+            android:textColor="@color/DarkColor"/>
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

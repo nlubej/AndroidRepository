@@ -207,7 +207,7 @@ public class LoggerAdapter extends BaseAdapter
             public void onClick(View v)
             {
                 AddExerciseNoteDialog dialog = new AddExerciseNoteDialog();
-                dialog.SetData(parentClass, db);
+                dialog.SetData(parentClass, db, false);
                 Bundle b = new Bundle();
                 if (temp.Note != null && temp.Note.compareTo("") != 0)
                 {

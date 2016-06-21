@@ -11,7 +11,7 @@
              android:layout_height="wrap_content"
              android:layout_width="fill_parent"/>
 
-    <include layout="@layout/button_yes_no"
+    <include layout="@layout/button_ok_cancel"
              android:layout_marginTop="15dp"
             android:layout_below="@id/update"
              android:layout_height="wrap_content"

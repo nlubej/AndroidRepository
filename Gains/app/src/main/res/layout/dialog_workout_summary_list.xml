@@ -2,14 +2,14 @@
     android:layout_width="match_parent"
     android:layout_margin="15dp"
 
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Weight Increment"
+        android:text="Workout Summary"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:padding="8dp"
@@ -18,14 +18,15 @@
         android:textStyle="bold"
         android:textColor="@color/PrimaryColor"
         android:layout_marginTop="15dp"
-        android:layout_alignParentEnd="true"
-        android:gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:layout_alignParentEnd="true"/>
+
+
 
     <View
-        android:id="@+id/seperator2"
+        android:id="@+id/seperator"
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:layout_alignEnd="@+id/listView"
         android:focusable="true"
         android:clickable="true"
         android:layout_marginRight="15dp"
@@ -33,19 +34,16 @@
         android:layout_below="@+id/header"
         android:background="@color/lighter_gray" />
 
-
     <ListView
-        android:id="@+id/listView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:divider="@color/lighter_gray"
-        android:dividerHeight="0.0dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:padding="8dp"
-        android:layout_below="@+id/header"
-        android:layout_above="@+id/button_yes_no"
-        android:textAlignment="textStart"
-        android:gravity="start" />
+        android:id="@+id/gridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:horizontalSpacing="0dp"
+        android:dividerHeight="0dp"
+        android:divider="@color/nliveo_transparent"
+        android:layout_margin="15dp"
+        android:layout_below="@+id/seperator">
+    </ListView>
+
 
 </RelativeLayout>

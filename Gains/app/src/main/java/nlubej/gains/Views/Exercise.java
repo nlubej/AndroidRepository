@@ -54,6 +54,7 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
     FloatingActionButton addExistingButton;
     FloatingActionButton addNewButton;
     private FloatingActionMenu menuRed;
+    private String routineName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -62,7 +63,7 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
         setContentView(R.layout.view_routine_exercise);
 
         Intent intent = getIntent();
-        String routineName = intent.getStringExtra("ROUTINE_NAME");
+        routineName = intent.getStringExtra("ROUTINE_NAME");
         routineID = intent.getIntExtra("ROUTINE_ID", 1);
 
         setTitle(routineName);
@@ -121,7 +122,7 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
 
         swipeListView.setMenuCreator(creator);
         dragSortAdapter = new SimpleDragSortCursorAdapter(getApplicationContext(), R.layout.row_rearrange_item, null, new String[]{"Name", "ExerciseTypeDescription"}, new int[] {R.id.name, R.id.subName}, 0);
-        exerciseAdapter = new ExerciseAdapter(this);
+        exerciseAdapter = new ExerciseAdapter(this, ExerciseAdapter.DisplayColumn.EXERCISE_TYPE);
 
         dragSortListView.setAdapter(dragSortAdapter);
         swipeListView.setAdapter(exerciseAdapter);
@@ -250,6 +251,7 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
                 addExisting.SetData(this, db, exerciseAdapter.GetAllIds());
                 Bundle b = new Bundle();
                 b.putInt("ROUTINE_ID", routineID);
+                b.putString("ROUTINE_NAME", routineName);
                 addExisting.setArguments(b);
                 addExisting.show(getFragmentManager(), "");
 
@@ -260,6 +262,7 @@ public class Exercise extends AppCompatActivity implements OnItemChanged<Exercis
                 addDialog.SetData(Exercise.this);
                 Bundle bu = new Bundle();
                 bu.putInt("ROUTINE_ID", routineID);
+                bu.putString("ROUTINE_NAME", routineName);
                 addDialog.setArguments(bu);
                 addDialog.show(Exercise.this. getFragmentManager(), "");
 

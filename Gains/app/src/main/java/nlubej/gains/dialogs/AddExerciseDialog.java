@@ -29,7 +29,8 @@ import nlubej.gains.interfaces.OnItemChanged;
 public class AddExerciseDialog extends DialogFragment implements View.OnClickListener
 {
     private QueryFactory db;
-    private OnItemChanged parent;
+    private Object parent;
+    private OnItemChanged<ExerciseDto> callback;
     private Context context;
     private int routineId;
     private MaterialEditText exerciseName;
@@ -39,7 +40,27 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
     private ArrayList<ExerciseType> exerciseTypes;
     private ArrayAdapter exerciseTypeAdapter;
 
-    public void SetData(Exercise exercise)
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        try
+        {
+            callback = (OnItemChanged<ExerciseDto>) parent;
+
+            if(callback == null)
+            {
+                throw new ClassCastException("Calling Fragment must implement OnSubmit");
+            }
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException("Calling Fragment must implement OnSubmit");
+        }
+    }
+
+    public void SetData(Object exercise)
     {
         parent = exercise;
     }
@@ -88,6 +109,7 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
     public void onClick(View v)
     {
         int exerciseId = 0;
+        int routineExercise = 0;
         Boolean wantToCloseDialog = true;
         switch (v.getId())
         {
@@ -101,10 +123,10 @@ public class AddExerciseDialog extends DialogFragment implements View.OnClickLis
 
                 db.Open();
                 exerciseId = db.InsertExercise(exerciseName.getText().toString(), ((ExerciseType)exerciseType.getSelectedItem()).Id, routineId);
-                exerciseId = db.InsertRoutineExerciseConnection(routineId, exerciseId);
+                routineExercise = db.InsertRoutineExerciseConnection(routineId, exerciseId);
                 db.Close();
 
-                parent.OnAdded(new ExerciseDto(exerciseId, exerciseName.getText().toString(),((ExerciseType)exerciseType.getSelectedItem()).Id));
+                callback.OnAdded(new ExerciseDto(exerciseId, exerciseName.getText().toString(),((ExerciseType)exerciseType.getSelectedItem()).Id, routineExercise, true));
                 alertDialog.dismiss();
 
                 break;

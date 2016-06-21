@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_margin="15dp"
 
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/header"
@@ -17,7 +17,9 @@
         android:layout_alignParentStart="true"
         android:textStyle="bold"
         android:textColor="@color/PrimaryColor"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:layout_alignParentEnd="true"/>
 
     <View
         android:id="@+id/chronoSeperator"
@@ -54,7 +56,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
@@ -81,13 +83,14 @@
     </LinearLayout>
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:layout_marginTop="20dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
-    android:layout_below="@+id/chronometer">
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/chronometer">
 
     <Button
         android:id="@+id/stop_resume"
@@ -125,7 +128,15 @@
         android:text="RESET"
         android:textColor="@color/white"
         android:textStyle="bold"/>
-</LinearLayout>
 
+    </LinearLayout>
+<!--
+    <include layout="@layout/button_exit"
+             android:layout_marginTop="15dp"
+             android:layout_marginRight="15dp"
+             android:layout_below="@id/layout"
+             android:layout_height="wrap_content"
+             android:layout_width="fill_parent"
+             android:id="@+id/include"/>-->
 
 </RelativeLayout>

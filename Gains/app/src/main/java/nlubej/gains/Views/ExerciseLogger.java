@@ -36,16 +36,22 @@ import com.malinskiy.materialicons.Iconify;
 import nlubej.gains.Adapters.LoggerAdapter;
 import nlubej.gains.DataTransferObjects.ExerciseDto;
 import nlubej.gains.DataTransferObjects.ExerciseLoggerRow;
+import nlubej.gains.DataTransferObjects.LoggedRowDto;
 import nlubej.gains.Database.QueryFactory;
+import nlubej.gains.Dialogs.ConfirmationDialog;
 import nlubej.gains.Dialogs.IncrementChooserDialog;
+import nlubej.gains.Dialogs.PopupDialog;
+import nlubej.gains.Dialogs.PreviousWorkoutsDialog;
 import nlubej.gains.Dialogs.StopwatchDialog;
 import nlubej.gains.Enums.Constants;
 import nlubej.gains.R;
 import nlubej.gains.Tools;
+import nlubej.gains.interfaces.OnCopyLog;
 import nlubej.gains.interfaces.OnItemChanged;
+import nlubej.gains.interfaces.OnNoteChanged;
 import nlubej.gains.interfaces.OnSelection;
 
-public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListView.OnMenuItemClickListener, OnClickListener, AdapterView.OnItemClickListener, OnItemChanged<ExerciseLoggerRow>, OnSelection<Double>
+public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListView.OnMenuItemClickListener, OnClickListener, AdapterView.OnItemClickListener, OnNoteChanged<ExerciseLoggerRow>, OnSelection<Double>, OnCopyLog<ArrayList<ExerciseLoggerRow>>, OnItemChanged<ExerciseDto>
 {
     private Context context;
     private QueryFactory db;
@@ -182,6 +188,7 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
         getMenuInflater().inflate(R.menu.menu_exercise_logger, menu);
         menu.findItem(R.id.more).setIcon(new IconDrawable(this, Iconify.IconValue.zmdi_more_vert).colorRes(R.color.white).actionBarSize());
         menu.findItem(R.id.increment).setIcon(new IconDrawable(this, Iconify.IconValue.zmdi_tune).colorRes(R.color.white).actionBarSize());
+        //menu.findItem(R.id.finish).setIcon(new IconDrawable(this, Iconify.IconValue.zmdi_check_all).colorRes(R.color.colorAccent).sizeDp(30));
         return true;
     }
 
@@ -190,50 +197,37 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
     {
         int id = item.getItemId();
 
-        if (id == android.R.id.home)
+        switch(id)
         {
-            onBackPressed();
-        }
-        if (id == R.id.more)
-        {
-            ShowPopup();
-        }
-        if (id == R.id.increment)
-        {
-            IncrementChooserDialog dialog = new IncrementChooserDialog();
-            dialog.SetData(this);
-            dialog.show(getFragmentManager(),"");
+            case android.R.id.home:
+                onBackPressed();
+                break;
+
+            case R.id.more:
+                ShowPopup();
+                break;
+
+            case R.id.increment:
+                IncrementChooserDialog dialog = new IncrementChooserDialog();
+                dialog.SetData(this);
+                dialog.show(getFragmentManager(),"");
+                break;
+
+            case R.id.finish:
+                ConfirmationDialog confDialog = new ConfirmationDialog();
+                confDialog.SetData(this);
+                confDialog.show(getFragmentManager(), "");
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     public void ShowPopup(){
-        View menuItemView = findViewById(R.id.more);
-        PopupMenu popup = new PopupMenu(context, menuItemView);
-        MenuInflater inflate = popup.getMenuInflater();
-        inflate.inflate(R.menu.popup, popup.getMenu());
 
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
-        {
-            @Override
-            public boolean onMenuItemClick(MenuItem item)
-            {
-                switch (item.getItemId())
-                {
-                    case R.id.stopwatch:
-
-                        StopwatchDialog dialog = new StopwatchDialog();
-                        dialog.SetData(ExerciseLogger.this);
-                        dialog.show(getFragmentManager(), "");
-                        break;
-                }
-
-                return true;
-            }
-
-        });
-        popup.show();
+        PopupDialog dialog = new PopupDialog();
+        dialog.SetData(this, db, exerciseCollection, currentExerciseLogNumber);
+        dialog.show(getFragmentManager(), "");
     }
 
     @Override
@@ -383,33 +377,47 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
                 addNew.setTag(position);
                 break;
             case 1: //delete
-                db.Open();
-                boolean isDeleted = db.DeleteRecord("LOGGED_WORKOUT", "LOGGED_WORKOUT_ID = ?", new String[]{ String.valueOf(row.LoggedWorkoutId) });
-                db.UpdateWorkoutSetNumbers(loggerAdapter.GetIdsInAscOrder());
-                db.Close();
 
-                if(!isDeleted)
-                    break;
+                DeleteRow(String.valueOf(row.LoggedWorkoutId));
 
-                exerciseLogs.get(currentExerciseLogNumber).remove(position);
-                loggerAdapter.Remove(row);
-                loggerAdapter.UpdateWorkoutSetNumbers();
-                if(loggerAdapter.getCount() == 0)
-                {
-                    headerLayout.setVisibility(View.INVISIBLE);
-                }
+                RefreshAfterDeletion(row, position);
 
-                swipeListView.setAdapter(loggerAdapter);
-                loggerAdapter.notifyDataSetChanged();
-
-                if(loggerAdapter.getCount() > 0)
-                {
-                    swipeListView.setSelection(position - 1);
-                }
                 break;
         }
 
         return false;
+    }
+
+    private void RefreshAfterDeletion(ExerciseLoggerRow row, int position)
+    {
+        exerciseLogs.get(currentExerciseLogNumber).remove(position);
+        loggerAdapter.Remove(row);
+        loggerAdapter.UpdateWorkoutSetNumbers();
+
+        db.Open();
+        db.UpdateWorkoutSetNumbers(loggerAdapter.GetIdsInAscOrder());
+        db.Close();
+
+        if(loggerAdapter.getCount() == 0)
+        {
+            headerLayout.setVisibility(View.INVISIBLE);
+        }
+
+        swipeListView.setAdapter(loggerAdapter);
+        loggerAdapter.notifyDataSetChanged();
+
+        if(loggerAdapter.getCount() > 0)
+        {
+            swipeListView.setSelection(position - 1);
+        }
+    }
+
+    private void DeleteRow(String loggedWorkoutId)
+    {
+        db.Open();
+        db.DeleteRecord("LOGGED_WORKOUT", "LOGGED_WORKOUT_ID = ?", new String[]{loggedWorkoutId});
+        db.Close();
+
     }
 
     @Override
@@ -419,19 +427,19 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
     }
 
     @Override
-    public void OnAdded(ExerciseLoggerRow row)
+    public void OnNoteAdded(ExerciseLoggerRow row)
     {
         loggerAdapter.UpdateNote(row);
     }
 
     @Override
-    public void OnUpdated(ExerciseLoggerRow row)
+    public void OnNoteUpdated(ExerciseLoggerRow row)
     {
         loggerAdapter.UpdateNote(row);
     }
 
     @Override
-    public void OnRemoved(ExerciseLoggerRow row)
+    public void OnNoteRemoved(ExerciseLoggerRow row)
     {
         loggerAdapter.RemoveNote(row);
     }
@@ -453,5 +461,45 @@ public class ExerciseLogger extends AppCompatActivity implements SwipeMenuListVi
         BigDecimal dval = BigDecimal.valueOf(Tools.ToDouble(editWeight.getText().toString(), 2));
         dval = dval.subtract(incrementWeight);
         editWeight.setText(String.valueOf(dval));
+    }
+
+    @Override
+    public void OnCopy(ArrayList<ExerciseLoggerRow> rows)
+    {
+        for(int i= 0; i<exerciseLogs.get(currentExerciseLogNumber).size(); i++)
+        {
+            ExerciseLoggerRow row = exerciseLogs.get(currentExerciseLogNumber).get(i);
+            DeleteRow(String.valueOf(row.LoggedWorkoutId));
+
+            RefreshAfterDeletion(row, i);
+            i--;  //decrement index because item was deleted
+        }
+
+        exerciseLogs.get(currentExerciseLogNumber).addAll(rows);
+        loggerAdapter.AddAll(rows);
+        loggerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void OnAdded(ExerciseDto row)
+    {
+        nextExercise.setEnabled(true);
+
+        db.Open();
+        row.WorkoutNumber = db.GetNextWorkoutNumber(row.Id);
+        db.Close();
+
+        exerciseCollection.add(row);
+        exerciseLogs.add(new ArrayList<ExerciseLoggerRow>());
+    }
+
+    @Override
+    public void OnUpdated(ExerciseDto row)
+    {
+    }
+
+    @Override
+    public void OnRemoved(ExerciseDto row)
+    {
     }
 }

@@ -36,6 +36,7 @@
             android:name=".Views.ExerciseLogger">
         </activity>
 
+        <activity android:name=".Database.AndroidDatabaseManager" />
 
     </application>
 
